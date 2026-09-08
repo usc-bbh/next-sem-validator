@@ -252,6 +252,13 @@ const SPAN = DAY_END - DAY_START;
 // anchored by USC cardinal for the first course.
 const PALETTE = ["#990000", "#1a7f37", "#1d4ed8", "#9a6a00", "#6f42c1", "#0e7490", "#b3006b"];
 
+// Seat-availability colours for the calendar. Matches the same fullness
+// test the validator uses (is_full OR zero open seats), so a block can't
+// read "open" while the validator fails it for being full.
+const SEAT_OPEN = "#1a7f37";
+const SEAT_FULL = "#c1121f";
+const isOpen = (s) => !s.is_full && s.open_seats !== 0;
+
 function Calendar({ blocks }) {
   const hours = [];
   for (let h = 8; h <= 21; h++) hours.push(h);
@@ -508,9 +515,14 @@ export default function App() {
   };
 
   const pickedList = Object.values(picked);
+  // Calendar blocks are coloured by seat availability, not by course:
+  // green = seats open, cardinal = full. Same two colours the section
+  // picker already uses for its "N open" / "Full" label, so the two
+  // views agree. Per-course accent colours (colorFor) still drive the
+  // course cards in the left column.
   const blocks = pickedList
     .filter((s) => s.start_time && s.days?.length)
-    .map((s) => ({ ...s, color: colorFor(s.course_name) }));
+    .map((s) => ({ ...s, color: isOpen(s) ? SEAT_OPEN : SEAT_FULL }));
 
   // Build the section-aware payload we agreed with Tanzil:
   //   [{ course: "CSCI 104", sections: ["29903", "30119"] }]
@@ -698,24 +710,8 @@ export default function App() {
             <span className="mono" style={{ fontSize: 12, color: totalUnits > 18 ? "#c1121f" : "#5a5a60", background: "#fff", border: "1px solid #e2e2e6", borderRadius: 20, padding: "4px 11px" }}>{totalUnits} units · {pickedList.length} sections</span>
           </div>
 
-          <Calendar blocks={blocks} />
-
-          <button onClick={runValidate} disabled={!canValidate} className="validate-btn"
-            style={{ width: "100%", marginTop: 16, padding: "13px", borderRadius: 10, border: "none",
-              cursor: canValidate ? "pointer" : "not-allowed",
-              background: canValidate ? "linear-gradient(135deg, #b3131a, #990000)" : "#e6e6e9",
-              color: canValidate ? "#fff" : "#a0a0a6", fontWeight: 700, fontSize: 14, fontFamily: "inherit",
-              boxShadow: canValidate ? "0 4px 14px rgba(153,0,0,0.26)" : "none", letterSpacing: "0.01em" }}>
-            {validating ? "Validating…" : "Validate schedule"}
-          </button>
-          {needSections.length > 0 && (
-            <div style={{ marginTop: 9, fontSize: 12, color: "#7a7a80", textAlign: "center" }}>
-              Pick at least one section for {needSections.join(", ")} to validate.
-            </div>
-          )}
-
           {result && (
-            <div style={{ marginTop: 16 }}>
+            <div style={{ marginBottom: 16 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14, padding: "13px 15px", borderRadius: 12,
                 background: result.overall_status === "valid" ? "#eaf7ef" : result.overall_status === "warning" ? "#fff8e1" : "#fdecea",
                 border: `1px solid ${result.overall_status === "valid" ? "#a7dcb8" : result.overall_status === "warning" ? "#ffd54f" : "#f2b8b3"}`,
@@ -750,6 +746,22 @@ export default function App() {
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          <Calendar blocks={blocks} />
+
+          <button onClick={runValidate} disabled={!canValidate} className="validate-btn"
+            style={{ width: "100%", marginTop: 16, padding: "13px", borderRadius: 10, border: "none",
+              cursor: canValidate ? "pointer" : "not-allowed",
+              background: canValidate ? "linear-gradient(135deg, #b3131a, #990000)" : "#e6e6e9",
+              color: canValidate ? "#fff" : "#a0a0a6", fontWeight: 700, fontSize: 14, fontFamily: "inherit",
+              boxShadow: canValidate ? "0 4px 14px rgba(153,0,0,0.26)" : "none", letterSpacing: "0.01em" }}>
+            {validating ? "Validating…" : "Validate schedule"}
+          </button>
+          {needSections.length > 0 && (
+            <div style={{ marginTop: 9, fontSize: 12, color: "#7a7a80", textAlign: "center" }}>
+              Pick at least one section for {needSections.join(", ")} to validate.
             </div>
           )}
         </div>
