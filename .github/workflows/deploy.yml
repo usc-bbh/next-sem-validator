@@ -1,8 +1,11 @@
 # .github/workflows/deploy.yml
 #
-# Builds the Vite site and deploys it to GitHub Pages automatically
+# Builds the Vite site in gui/ and deploys it to GitHub Pages automatically
 # whenever main is pushed. No VPN needed — this just builds static
 # files, unlike the live-seats workflow which needs USC network access.
+#
+# The build copies analytics/validate_next_semester.py into the site
+# (gui's prebuild step), so the page always runs the current validator.
 
 name: Deploy to GitHub Pages
 
@@ -23,6 +26,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gui
     steps:
       - uses: actions/checkout@v4
 
@@ -31,6 +37,7 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
+          cache-dependency-path: gui/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -41,7 +48,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ./gui/dist
 
   deploy:
     needs: build

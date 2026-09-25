@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Copied from analytics/ at dev/build time (gui prebuild) — not a source file
+gui/public/validator/

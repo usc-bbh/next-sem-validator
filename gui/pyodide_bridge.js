@@ -8,7 +8,7 @@
  *   const result = await validateSchedule(plannedCourses, starsReport, catalog, deptClearance);
  *
  * Returns the same { overall_status, course_results, summary } shape
- * documented in validator/README.md.
+ * documented in analytics/README.md.
  *
  * This file replaces mockValidate() — once loaded, the JS duplicate
  * of the validation logic is gone and the Python is the single source
