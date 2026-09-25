@@ -112,7 +112,7 @@ table below is only what the validator reads from it today.
 
 ### `dept_clearance`
 
-The exact shape of `dept_clearance.json` at the repo root — passed in
+The exact shape of `data/dept_clearance.json` (in this module) — passed in
 explicitly rather than read from a hardcoded path. The validator requires
 `_schema_version == "1.4"` and raises `ValueError` immediately if it doesn't
 match, rather than silently misreading an unfamiliar shape.
@@ -183,12 +183,12 @@ specific course/section is blocked outright.
 ## Running tests
 
 ```bash
-python3 -m pip install -r validator/requirements-dev.txt  # first time only
-python3 -m pytest validator/test/
+python3 -m pip install -r analytics/requirements-dev.txt  # first time only
+python3 -m pytest analytics/test/
 ```
 
 ## Try it against the mock fixtures
 
 ```bash
-python3 validator/validate_next_semester.py
+python3 analytics/validate_next_semester.py
 ```

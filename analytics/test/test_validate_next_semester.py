@@ -51,6 +51,13 @@ def test_parse_planned_entry_raises_when_sections_empty():
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
+# STARS report fixtures are shared with the parser: the same <name>.json is the
+# parser's expected output AND the validator's stars_summary input. It lives in
+# the repo-root fixtures/stars/ directory, owned by neither module, so a change
+# to the parser's output shape breaks a validator test immediately.
+REPO_ROOT = Path(__file__).resolve().parents[2]
+SHARED_STARS = REPO_ROOT / "fixtures" / "stars"
+
 
 def load_fixture(name):
     import json
@@ -58,9 +65,15 @@ def load_fixture(name):
     return json.loads((FIXTURES / name).read_text())
 
 
+def load_shared_stars(name):
+    import json
+
+    return json.loads((SHARED_STARS / name).read_text())
+
+
 @pytest.fixture
 def stars_summary():
-    return load_fixture("mock_stars_report.json")
+    return load_shared_stars("mock_stars_report.json")
 
 
 @pytest.fixture
@@ -75,7 +88,7 @@ def course_catalog():
 
 @pytest.fixture
 def dept_clearance():
-    return load_fixture("../../../dept_clearance.json")
+    return load_fixture("../../data/dept_clearance.json")
 
 
 # ---- normalize_code ---------------------------------------------------------
@@ -149,6 +162,17 @@ def test_d_clearance_warns_generically_for_unknown_department(dept_clearance):
     result = _check_d_clearance("ZZZZ 100", {"has_d_clearance": True}, by_prefix)
     assert result.status == "warning"
     assert len(result.reasons) == 1  # only the generic reason, no dept-specific text found
+
+
+def test_d_clearance_warns_with_department_text_for_also_covers_prefix(dept_clearance):
+    """ECE isn't its own dept_code entry -- it's listed under EE's also_covers_prefixes --
+    so this covers the case that used to fall through to the generic warning even though
+    department contact info exists for it."""
+    by_prefix = _dept_clearance_by_prefix(dept_clearance)
+    entry = {"has_d_clearance": True}
+    result = _check_d_clearance("ECE 201", entry, by_prefix)
+    assert result.status == "warning"
+    assert any("myviterbi" in r.lower() for r in result.reasons)
 
 
 def test_d_clearance_schema_version_guard_raises(dept_clearance):
