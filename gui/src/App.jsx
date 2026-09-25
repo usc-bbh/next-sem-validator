@@ -594,7 +594,7 @@ export default function App() {
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ width: 42, height: 42, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 21, fontWeight: 700, color: "#990000", background: "#ffcc00", boxShadow: "0 3px 10px rgba(0,0,0,0.25)" }}>{"✓"}</div>
           <div>
-            <div className="serif" style={{ fontSize: 23, fontWeight: 700, letterSpacing: "-0.01em", color: "#fff", lineHeight: 1.1 }}>Next Semester Validator</div>
+            <div className="serif" style={{ fontSize: 23, fontWeight: 700, letterSpacing: "-0.01em", color: "#fff", lineHeight: 1.1 }}>RegCheck</div>
             <a href="https://usc-bbh.github.io/bbh-website/" target="_blank" rel="noopener noreferrer"
               style={{ fontSize: 12.5, color: "rgba(255,255,255,0.82)", marginTop: 3, display: "block", textDecoration: "none" }}
               onMouseEnter={(e) => e.currentTarget.style.textDecoration = "underline"}
