@@ -26,9 +26,11 @@ before registering. Live at https://usc-bbh.github.io/next-sem-validator/.
 `npm run build` copy `analytics/validate_next_semester.py` into
 `gui/public/validator/`, so the page always runs the current Python.
 
-The validator, its data, and `fixtures/stars/` mirror `validator/` and
-`fixtures/stars/` in
-[bbh-course-reg-project](https://github.com/tanzilhussain/bbh-course-reg-project).
+This repo is the only home of the STARS parser (`gui/stars-parser/`) and the
+validator (`analytics/`), so fix both here. Neither has a copy in
+[bbh-course-reg-project](https://github.com/usc-bbh/bbh-course-reg-project)
+any more. The parser may move back there if the bbh degree planner starts
+using it. `fixtures/stars/` is still mirrored in bbh.
 
 ## Run the app
 
