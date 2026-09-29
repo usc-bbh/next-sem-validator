@@ -6,6 +6,9 @@
 #
 # The build copies analytics/validate_next_semester.py into the site
 # (gui's prebuild step), so the page always runs the current validator.
+#
+# The STARS parser comes from the gui/bbh submodule (bbh-course-reg-project,
+# pinned to a commit), so the checkout has to pull submodules.
 
 name: Deploy to GitHub Pages
 
@@ -31,6 +34,8 @@ jobs:
         working-directory: gui
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Set up Node
         uses: actions/setup-node@v4

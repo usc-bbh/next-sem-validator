@@ -1,0 +1,3 @@
+[submodule "gui/bbh"]
+	path = gui/bbh
+	url = https://github.com/usc-bbh/bbh-course-reg-project.git
