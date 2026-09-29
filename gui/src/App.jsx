@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
-import { parseStarsReport } from "../stars-parser";
+import { parseStarsReport } from "../bbh/stars-parser";
 
 // ─────────────────────────────────────────────────────────────
 // MOCK CATALOG — shaped like catalog/README.md schema v6.

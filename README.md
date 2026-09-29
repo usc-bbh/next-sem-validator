@@ -9,7 +9,7 @@ before registering. Live at https://usc-bbh.github.io/next-sem-validator/.
 .
 ├── gui/                 Web app (React + Vite) — what gets deployed to Pages
 │   ├── src/App.jsx          Schedule builder + validator UI
-│   ├── stars-parser/        Client-side STARS PDF parser (the GUI is its only consumer)
+│   ├── bbh/                 Submodule: bbh-course-reg-project, for its stars-parser/
 │   ├── pyodide_bridge.js    Runs the Python validator in the browser via Pyodide
 │   └── public/validator/    Generated at dev/build time from analytics/ — not committed
 │
@@ -26,13 +26,22 @@ before registering. Live at https://usc-bbh.github.io/next-sem-validator/.
 `npm run build` copy `analytics/validate_next_semester.py` into
 `gui/public/validator/`, so the page always runs the current Python.
 
-The validator, its data, and `fixtures/stars/` mirror `validator/` and
-`fixtures/stars/` in
-[bbh-course-reg-project](https://github.com/tanzilhussain/bbh-course-reg-project).
+This repo is the only home of the validator — fix it here. The STARS parser
+lives only in
+[bbh-course-reg-project](https://github.com/usc-bbh/bbh-course-reg-project)
+(`stars-parser/`, owned by the parser team). The app imports it from the
+`gui/bbh` submodule, pinned to a commit, so fix parser bugs there and then
+bump the pin:
+
+```bash
+git -C gui/bbh fetch && git -C gui/bbh checkout origin/main
+git add gui/bbh && git commit -m "Bump stars-parser"
+```
 
 ## Run the app
 
 ```bash
+git submodule update --init   # first time only — fetches the parser
 cd gui
 npm install
 npm run dev
