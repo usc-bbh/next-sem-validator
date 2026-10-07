@@ -302,10 +302,8 @@ Before committing any fixture, check that the preamble and diploma lines contain
 ## 11. Open questions
 
 - **Before M0: finish moving the parser into this repo.**
-  1. Merge `parser-from-bbh` here. It drops the `gui/bbh` submodule and points the app at `gui/stars-parser/`, whose code is identical to what `main` deploys today.
-  2. Then merge `fd17f90` (bbh's `stars-parser/` removal) into bbh through a new PR.
-
-  Doing them in that order means the deployed app never depends on code that's already been removed.
+  1. ~~Merge `parser-from-bbh` here.~~ Done in #3 (7 Oct): the `gui/bbh` submodule is gone and the app imports `gui/stars-parser/`.
+  2. Merge `fd17f90` (bbh's `stars-parser/` removal) into bbh through a new PR. It already updates bbh's README, CONTRIBUTING and degree-planner references. Constellation's README still says RegCheck pins `stars-parser/` through a submodule, so let nlj19366 know.
 - **Validator side, decide before M4:** how should the validator treat `gpa: null` on redacted reports? Skip GPA-threshold prerequisite checks and warn, or fail? And should the prerequisite check count only `source: "usc"` courses plus `equivalents`, so `ANTH101` from a community college can't match a USC `ANTH 101`? Recommendation: yes, to both the skip-with-warning and the stricter matching.
 - **Unredacted grades:** do real letter grades sit exactly on the row baseline? We can't tell from redacted samples. The 2pt tolerance handles either case, but the first unredacted report should confirm it.
 - **The 32-unit exam-credit cap** `[inferred]`: no sample's `TRNSFR WORK` exceeds 32 while the AP rows listed do. Confirm with advising before the degree planner relies on it.
