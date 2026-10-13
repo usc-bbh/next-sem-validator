@@ -2,96 +2,32 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import { parseStarsReport } from "../stars-parser";
 
 // ─────────────────────────────────────────────────────────────
-// MOCK CATALOG — shaped like catalog/README.md schema v6.
-// Replace with real per-course fetches: /catalog/20263/CSCI-104.json
+// Catalog loader — fetches the full scraped catalog from public/catalog.json.
+// The file is shaped as a flat object keyed by course name, each value
+// matching the v6 course schema (course_name, units, sections, etc.).
 // ─────────────────────────────────────────────────────────────
-const MOCK_CATALOG = {
-  "CSCI 103": {
-    course_name: "CSCI 103", units: 4, description: "Intro to programming in C/C++.",
-    has_lab: true, has_discussion: false, has_d_clearance: false, has_restrictions: false,
-    sections: {
-      lectures: [
-        { section_id: "30211", section_type: "lectures", mode: "Lecture", instructor: "Mark Redekopp", days: ["Tue", "Thu"], start_time: "11:00", end_time: "12:20", total_seats: 60, registered_seats: 16, open_seats: 44, is_full: false, is_cancelled: false, has_d_clearance: false, notes: null, link_code: null },
-      ],
-      labs: [
-        { section_id: "30212", section_type: "labs", mode: "Lab", instructor: "TBD", days: ["Wed"], start_time: "12:00", end_time: "12:50", total_seats: 30, registered_seats: 12, open_seats: 18, is_full: false, is_cancelled: false, has_d_clearance: false, notes: null, link_code: null },
-      ],
-    },
-  },
-  "CSCI 104": {
-    course_name: "CSCI 104", units: 4, description: "Data structures and OOP. Prerequisite: CSCI 103.",
-    has_lab: true, has_discussion: false, has_d_clearance: false, has_restrictions: false,
-    sections: {
-      lectures: [
-        { section_id: "29903", section_type: "lectures", mode: "Lecture", instructor: "Mark Redekopp", days: ["Mon", "Wed"], start_time: "10:00", end_time: "11:20", total_seats: 120, registered_seats: 108, open_seats: 12, is_full: false, is_cancelled: false, has_d_clearance: false, notes: null, link_code: null },
-      ],
-      labs: [
-        { section_id: "30119", section_type: "labs", mode: "Lab", instructor: "TBD", days: ["Fri"], start_time: "10:00", end_time: "11:50", total_seats: 30, registered_seats: 25, open_seats: 5, is_full: false, is_cancelled: false, has_d_clearance: false, notes: null, link_code: null },
-        { section_id: "29905", section_type: "labs", mode: "Lab", instructor: "TBD", days: ["Fri"], start_time: "14:00", end_time: "15:50", total_seats: 30, registered_seats: 30, open_seats: 0, is_full: true, is_cancelled: false, has_d_clearance: false, notes: null, link_code: null },
-      ],
-    },
-  },
-  "CSCI 170": {
-    course_name: "CSCI 170", units: 4, description: "Discrete methods in CS. Prerequisite: CSCI 103.",
-    has_lab: false, has_discussion: true, has_d_clearance: false, has_restrictions: false,
-    sections: {
-      lectures: [
-        { section_id: "30121", section_type: "lectures", mode: "Lecture", instructor: "Aaron Cote", days: ["Tue", "Thu"], start_time: "11:00", end_time: "12:20", total_seats: 100, registered_seats: 97, open_seats: 3, is_full: false, is_cancelled: false, has_d_clearance: false, notes: null, link_code: null },
-      ],
-      discussions: [
-        { section_id: "29929", section_type: "discussions", mode: "Discussion", instructor: "TBD", days: ["Fri"], start_time: "09:00", end_time: "09:50", total_seats: 30, registered_seats: 22, open_seats: 8, is_full: false, is_cancelled: false, has_d_clearance: false, notes: null, link_code: null },
-      ],
-    },
-  },
-  "MATH 226": {
-    course_name: "MATH 226", units: 4, description: "Calculus III. Prerequisite: MATH 126.",
-    has_lab: false, has_discussion: false, has_d_clearance: false, has_restrictions: false,
-    sections: {
-      lectures: [
-        { section_id: "39100", section_type: "lectures", mode: "Lecture", instructor: "N. Kosovalic", days: ["Mon", "Wed"], start_time: "10:00", end_time: "11:20", total_seats: 40, registered_seats: 20, open_seats: 20, is_full: false, is_cancelled: false, has_d_clearance: false, notes: null, link_code: null },
-        { section_id: "39101", section_type: "lectures", mode: "Lecture", instructor: "TBD", days: ["Tue", "Thu"], start_time: "14:00", end_time: "15:20", total_seats: 40, registered_seats: 25, open_seats: 15, is_full: false, is_cancelled: false, has_d_clearance: false, notes: null, link_code: null },
-      ],
-    },
-  },
-  "BUAD 311": {
-    course_name: "BUAD 311", units: 4, description: "Operations management.",
-    has_lab: false, has_discussion: false, has_d_clearance: false, has_restrictions: false,
-    sections: {
-      lectures: [
-        { section_id: "14911", section_type: "lectures", mode: "Lecture", instructor: "TBD", days: ["Mon", "Wed"], start_time: "08:00", end_time: "09:20", total_seats: 55, registered_seats: 45, open_seats: 10, is_full: false, is_cancelled: false, has_d_clearance: false, notes: null, link_code: null },
-        { section_id: "14913", section_type: "lectures", mode: "Lecture", instructor: "TBD", days: ["Mon", "Wed"], start_time: "12:00", end_time: "13:20", total_seats: 55, registered_seats: 50, open_seats: 5, is_full: false, is_cancelled: false, has_d_clearance: false, notes: null, link_code: null },
-      ],
-    },
-  },
-  "ACCT 370": {
-    course_name: "ACCT 370", units: 4, description: "Decision-making for accounting professionals.",
-    has_lab: false, has_discussion: false, has_d_clearance: true, has_restrictions: false,
-    sections: {
-      lectures: [
-        { section_id: "14025", section_type: "lectures", mode: "Lecture", instructor: "Taylor Wiesen", days: ["Tue", "Thu"], start_time: "14:00", end_time: "15:50", total_seats: 44, registered_seats: 44, open_seats: 0, is_full: true, is_cancelled: false, has_d_clearance: true, notes: null, link_code: null },
-        { section_id: "14027", section_type: "lectures", mode: "Lecture", instructor: "Taylor Wiesen", days: ["Tue", "Thu"], start_time: "18:00", end_time: "19:50", total_seats: 44, registered_seats: 10, open_seats: 34, is_full: false, is_cancelled: false, has_d_clearance: true, notes: null, link_code: null },
-      ],
-    },
-  },
-  "BUAD 494": {
-    course_name: "BUAD 494", units: 2, description: "Senior research and thesis.",
-    has_lab: false, has_discussion: false, has_d_clearance: false, has_restrictions: true,
-    sections: {
-      lectures: [
-        { section_id: "15124", section_type: "lectures", mode: "Lecture", instructor: "Sriram Dasu", days: ["Mon"], start_time: "17:00", end_time: "18:50", total_seats: 20, registered_seats: 8, open_seats: 12, is_full: false, is_cancelled: false, has_d_clearance: false, notes: "Section 15124 is for Honors Research and Thesis offered by the Data Sciences and Operations Department.", link_code: null },
-      ],
-    },
-  },
-  "WRIT 340": {
-    course_name: "WRIT 340", units: 4, description: "Advanced writing.",
-    has_lab: false, has_discussion: false, has_d_clearance: false, has_restrictions: false,
-    sections: {
-      lectures: [
-        { section_id: "60100", section_type: "lectures", mode: "Lecture", instructor: "TBD", days: ["Tue", "Thu"], start_time: "09:30", end_time: "10:50", total_seats: 19, registered_seats: 17, open_seats: 2, is_full: false, is_cancelled: false, has_d_clearance: false, notes: null, link_code: null },
-      ],
-    },
-  },
-};
+function useCatalog() {
+  const [catalog, setCatalog] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("./catalog.json", { credentials: "omit", cache: "force-cache" })
+      .then((r) => {
+        if (!r.ok) throw new Error(`Catalog fetch failed (${r.status})`);
+        return r.json();
+      })
+      .then((data) => {
+        if (!cancelled) setCatalog(data);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err.message);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  return { catalog, catalogError: error, catalogLoading: !catalog && !error };
+}
 
 // Demo fallback only — used before a real STARS PDF is uploaded, or if
 // parsing fails and the student hasn't filled in manual entry yet.
@@ -311,7 +247,7 @@ function Calendar({ blocks }) {
 const STATUS = {
   fail: { bg: "#fdecea", border: "#f2b8b3", dot: "#c1121f", label: "Blocker", icon: "!" },
   warning: { bg: "#fff8e1", border: "#ffd54f", dot: "#a06a00", label: "Heads-up", icon: "!" },
-  pass: { bg: "#eaf7ef", border: "#a7dcb8", dot: "#1a7f37", label: "OK", icon: "\u2713" },
+  pass: { bg: "#eaf7ef", border: "#a7dcb8", dot: "#1a7f37", label: "OK", icon: "✓" },
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -383,7 +319,7 @@ async function loadPyodideValidator() {
   return pyodide;
 }
 
-// Mock dept_clearance data — trimmed to departments relevant to MOCK_CATALOG.
+// Mock dept_clearance data — trimmed to departments relevant to demo.
 // Real file (from Tanzil's repo) has ~90 entries; this is a subset for demo
 // purposes. Once static hosting is set up, fetch the real dept_clearance.json
 // instead of using this constant.
@@ -420,6 +356,8 @@ const MOCK_DEPT_CLEARANCE = {
 };
 
 export default function App() {
+  const { catalog, catalogError, catalogLoading } = useCatalog();
+
   const [expanded, setExpanded] = useState([]);   // course names shown in picker
   const [picked, setPicked] = useState({});        // section_id -> {course_name, ...section}
   const [query, setQuery] = useState("");
@@ -490,12 +428,37 @@ export default function App() {
     return () => { cancelled = true; };
   }, []);
 
-  const courseNames = Object.keys(MOCK_CATALOG);
+  const courseNames = useMemo(() => catalog ? Object.keys(catalog) : [], [catalog]);
+
+  // Helper: collect all unique instructor names for a course (skipping TBD)
+  const getInstructors = (entry) => {
+    if (!entry?.sections) return [];
+    const names = new Set();
+    for (const secs of Object.values(entry.sections)) {
+      for (const s of secs) {
+        if (s.instructor && s.instructor !== "TBD") names.add(s.instructor);
+      }
+    }
+    return [...names];
+  };
+
   const suggestions = useMemo(() => {
-    if (!query.trim()) return [];
-    const q = query.toUpperCase().replace(/[\s-]/g, "");
-    return courseNames.filter((c) => c.replace(/\s/g, "").includes(q) && !expanded.includes(c)).slice(0, 6);
-  }, [query, expanded]);
+    if (!query.trim() || !catalog) return [];
+    const q = query.toLowerCase().replace(/[\s-]/g, "");
+    return courseNames.filter((c) => {
+      if (expanded.includes(c)) return false;
+      // Match on course code
+      if (c.replace(/\s/g, "").toLowerCase().includes(q)) return true;
+      const entry = catalog[c];
+      if (!entry) return false;
+      // Match on description
+      if (entry.description?.toLowerCase().replace(/[\s-]/g, "").includes(q)) return true;
+      // Match on instructor name
+      const instructors = getInstructors(entry);
+      if (instructors.some((name) => name.toLowerCase().replace(/[\s-]/g, "").includes(q))) return true;
+      return false;
+    }).slice(0, 8);
+  }, [query, expanded, courseNames, catalog]);
 
   const colorFor = (courseName) => PALETTE[expanded.indexOf(courseName) % PALETTE.length];
 
@@ -532,12 +495,12 @@ export default function App() {
     sections: pickedList.filter((s) => s.course_name === c).map((s) => s.section_id),
   }));
 
-  const totalUnits = expanded.reduce((sum, c) => sum + (MOCK_CATALOG[c]?.units || 0), 0);
+  const totalUnits = expanded.reduce((sum, c) => sum + (catalog?.[c]?.units || 0), 0);
 
   // Sections are required on every entry, so the GUI enforces it rather than
   // letting an invalid payload reach the validator.
   const needSections = payload.filter((p) => !p.sections.length).map((p) => p.course);
-  const canValidate = expanded.length > 0 && needSections.length === 0 && !validating;
+  const canValidate = expanded.length > 0 && needSections.length === 0 && !validating && !!catalog;
 
   const runValidate = async () => {
     setValidating(true);
@@ -548,13 +511,13 @@ export default function App() {
         const resultJson = bridge(
           JSON.stringify(payload),
           JSON.stringify(starsReport),
-          JSON.stringify(MOCK_CATALOG),
+          JSON.stringify(catalog),
           JSON.stringify(MOCK_DEPT_CLEARANCE)
         );
         setResult(JSON.parse(resultJson));
       } else {
         // ── Fallback: JS mock (delete this once Pyodide is confirmed working) ──
-        setResult(mockValidate(payload, starsReport, MOCK_CATALOG));
+        setResult(mockValidate(payload, starsReport, catalog));
       }
     } catch (err) {
       console.error("[validator] Validation error:", err);
@@ -566,6 +529,32 @@ export default function App() {
     }
     setValidating(false);
   };
+
+  // ── Loading / error states ──
+  if (catalogLoading) {
+    return (
+      <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#f4f4f5" }}>
+        <div style={{ textAlign: "center", color: "#7a7a80" }}>
+          <div style={{ fontSize: 28, marginBottom: 12 }}>⏳</div>
+          <div style={{ fontSize: 15, fontWeight: 600, color: "#1a1a1a" }}>Loading course catalog...</div>
+          <div style={{ fontSize: 12.5, marginTop: 6 }}>4,648 courses from Fall 2026 scrape</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (catalogError) {
+    return (
+      <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#f4f4f5" }}>
+        <div style={{ textAlign: "center", color: "#c1121f", maxWidth: 400 }}>
+          <div style={{ fontSize: 28, marginBottom: 12 }}>⚠️</div>
+          <div style={{ fontSize: 15, fontWeight: 600 }}>Failed to load course catalog</div>
+          <div style={{ fontSize: 12.5, marginTop: 6, color: "#7a7a80" }}>{catalogError}</div>
+          <div style={{ fontSize: 12, marginTop: 12, color: "#7a7a80" }}>Make sure <code>public/catalog.json</code> exists.</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", background: "#f4f4f5", color: "#1a1a1a", minHeight: "100vh" }}>
@@ -619,6 +608,9 @@ export default function App() {
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: pyodideStatus === "ready" ? "#6ee7a0" : pyodideStatus === "loading" ? "#ffcc00" : "#ffcc00", boxShadow: "0 0 6px currentColor" }} />
             {pyodideStatus === "ready" ? "Python" : pyodideStatus === "loading" ? "Loading Pyodide…" : "JS mock"}
           </div>
+          <div className="mono" style={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }}>
+            {courseNames.length.toLocaleString()} courses
+          </div>
         </div>
       </div>
 
@@ -635,17 +627,33 @@ export default function App() {
         <div>
           <div style={{ position: "relative", marginBottom: 18 }}>
             <input value={query} onChange={(e) => setQuery(e.target.value)}
-              placeholder="Add a course — try CSCI 104, ACCT 370, BUAD 494…"
+              placeholder="Add a course — search any of 4,648 Fall 2026 courses…"
               style={{ width: "100%", background: "#fff", border: "1px solid #d3d3d8", borderRadius: 10, padding: "12px 15px", color: "#1a1a1a", fontSize: 13.5, fontFamily: "inherit", transition: "border-color .15s ease, box-shadow .15s ease" }} />
             {suggestions.length > 0 && (
               <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "1px solid #d3d3d8", borderRadius: 10, marginTop: 6, zIndex: 20, overflow: "hidden", boxShadow: "0 14px 34px rgba(0,0,0,0.16)" }}>
-                {suggestions.map((c) => (
-                  <button key={c} onClick={() => addCourse(c)} className="suggestion"
-                    style={{ display: "flex", justifyContent: "space-between", width: "100%", textAlign: "left", padding: "10px 14px", border: "none", borderBottom: "1px solid #eeeef0", background: "transparent", color: "#1a1a1a", cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>
-                    <span><b>{c}</b> <span style={{ color: "#7a7a80" }}>{MOCK_CATALOG[c].units} units</span></span>
-                    <span style={{ color: "#990000", fontWeight: 700 }}>+</span>
-                  </button>
-                ))}
+                {suggestions.map((c) => {
+                  const entry = catalog[c];
+                  const instructors = entry ? getInstructors(entry) : [];
+                  const desc = entry?.description || "";
+                  // Show first ~60 chars of description
+                  const shortDesc = desc.length > 65 ? desc.slice(0, 62) + "..." : desc;
+                  return (
+                    <button key={c} onClick={() => addCourse(c)} className="suggestion"
+                      style={{ display: "flex", justifyContent: "space-between", width: "100%", textAlign: "left", padding: "10px 14px", border: "none", borderBottom: "1px solid #eeeef0", background: "transparent", color: "#1a1a1a", cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>
+                      <span style={{ minWidth: 0 }}>
+                        <span><b>{c}</b> <span style={{ color: "#7a7a80" }}>{entry?.units ?? "?"} units</span></span>
+                        {(instructors.length > 0 || shortDesc) && (
+                          <span style={{ display: "block", fontSize: 11, color: "#7a7a80", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                            {instructors.length > 0 && <span style={{ color: "#5a5a60" }}>{instructors.join(", ")}</span>}
+                            {instructors.length > 0 && shortDesc && " · "}
+                            {shortDesc}
+                          </span>
+                        )}
+                      </span>
+                      <span style={{ color: "#990000", fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>+</span>
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -658,11 +666,13 @@ export default function App() {
           )}
 
           {expanded.map((courseName) => {
-            const entry = MOCK_CATALOG[courseName];
+            const entry = catalog[courseName];
+            if (!entry) return null;
             const color = colorFor(courseName);
             return (
               <div key={courseName} className="course-card" style={{ border: "1px solid #e2e2e6", borderRadius: 12, marginBottom: 13, overflow: "hidden", background: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                <div style={{ padding: "12px 15px", background: "#f6f6f7", borderBottom: "1px solid #eaeaee", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, borderLeft: `4px solid ${color}` }}>
+                <div style={{ padding: "12px 15px", background: "#f6f6f7", borderBottom: "1px solid #eaeaee", borderLeft: `4px solid ${color}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
                   <div>
                     <span style={{ fontWeight: 700, fontSize: 14, color: "#1a1a1a" }}>{courseName}</span>
                     <span style={{ color: "#7a7a80", fontSize: 12, marginLeft: 8 }}>{entry.units} units</span>
@@ -674,6 +684,10 @@ export default function App() {
                     {entry.has_discussion && <Tag c="#1a7f37">Disc req</Tag>}
                     <button onClick={() => removeCourse(courseName)} className="remove-btn" style={{ background: "none", border: "none", color: "#9a9aa0", cursor: "pointer", fontSize: 16, padding: "1px 5px", borderRadius: 6, lineHeight: 1 }}>×</button>
                   </div>
+                  </div>
+                  {entry.description && (
+                    <div style={{ fontSize: 11.5, color: "#6b6b72", marginTop: 6, lineHeight: 1.45 }}>{entry.description}</div>
+                  )}
                 </div>
                 <div style={{ padding: "6px 9px 9px" }}>
                   {Object.entries(entry.sections).map(([group, secs]) => (
@@ -692,6 +706,9 @@ export default function App() {
                               <span className="mono" style={{ fontSize: 11.5, color: "#6b6b72", whiteSpace: "nowrap" }}>
                                 {s.days.join("/")} {fmt(s.start_time)}–{fmt(s.end_time)}
                               </span>
+                              {s.instructor && s.instructor !== "TBD" && (
+                                <span style={{ fontSize: 11, color: "#5a5a60", whiteSpace: "nowrap" }}>{s.instructor}</span>
+                              )}
                             </span>
                             <span style={{ display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
                               {s.has_d_clearance && <span style={{ fontSize: 9.5, color: "#a06a00", fontWeight: 700, border: "1px solid #ffd54f", background: "#fff8e1", borderRadius: 4, padding: "1px 4px" }}>D</span>}
@@ -725,7 +742,7 @@ export default function App() {
                 <span style={{ width: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "#fff", flexShrink: 0,
                   background: result.overall_status === "valid" ? "#1a7f37" : result.overall_status === "warning" ? "#a06a00" : "#c1121f",
                   boxShadow: `0 2px 8px ${result.overall_status === "valid" ? "rgba(26,127,55,0.4)" : result.overall_status === "warning" ? "rgba(160,106,0,0.4)" : "rgba(193,18,31,0.4)"}` }}>
-                  {result.overall_status === "valid" ? "\u2713" : "!"}
+                  {result.overall_status === "valid" ? "✓" : "!"}
                 </span>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 14.5, color: "#1a1a1a" }}>
