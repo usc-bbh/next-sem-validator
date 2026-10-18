@@ -1,12 +1,12 @@
-# STARS parser — plan of attack
+# STARS parser — design
 
-_Tanzil Hussain, with Claude support. October 2026._
+_Tanzil Hussain, with Claude support. October 2026. Revised after review by Vishal Gupta._
 
-**Owner: Tanzil Hussain**, for both the parser and the validator, as of October 2026. This replaces the ownership split proposed in `docs/parser-brief.md` §1. Owning both ends means changes to the output format between them can be made in one PR.
+**Owner: Tanzil Hussain**, for both the parser and the validator. Owning both ends means changes to the output format between them can be made in one PR.
 
-This is the plan for rebuilding the STARS parser in `gui/stars-parser/`. It replaces the build guidance in `docs/parser-brief.md` (in bbh-course-reg-project) wherever the two disagree. The brief's approach is mostly right. But testing it against 11 real redacted reports turned up several places where the report doesn't behave the way the brief, or `docs/reference/01-reading-a-stars-report.md`, describes. Each section below says what we'll do and why, and cites the report that forced the decision.
+This is the design for rebuilding the STARS parser in `gui/stars-parser/`, and the record of why it's built this way. It started as a build plan and supersedes `docs/parser-brief.md` in bbh-course-reg-project, which was retired on 14 Oct. It builds on that brief and on `docs/reference/01-reading-a-stars-report.md`, tested against 11 real redacted reports. Each section says what we'll do and why, and cites the report that forced the decision.
 
-The brief's own rule still holds: **if a real report contradicts this plan, the report wins.**
+One rule carries over from the brief: **if a real report contradicts this document, the report wins.**
 
 ---
 
@@ -20,13 +20,14 @@ The brief's own rule still holds: **if a real report contradicts this plan, the 
 - **Transfer credit:** classify by what the row actually is: USC course, exam credit (AP/IB), another school's own code, or generic `TR-` credit. The `TR` grade alone doesn't tell you which. Equivalences come from the `RE - SUB … FOR …` notes.
 - **Self-check:** units earned = completed USC rows + the `TRNSFR WORK` total. This held exactly on all 11 samples. The brief's check (transfer rows add up to `TRNSFR WORK`) fails on most of them, because exam credit is capped.
 - **Fixtures:** 11 redacted undergrad samples become shared `fixtures/stars/<name>.txt` + `.json` pairs. The JSON is checked by hand against the PDF, not generated and then trusted.
-- **Build order:** milestones in section 10. Each one is shippable on its own. The app gets the new parser at milestone 3.
+- **Checks:** four checks fail the parse outright. Two that the validator doesn't depend on only raise warnings, so a surprising but readable report doesn't lock a student out.
+- **Build order:** milestones in section 10. **The app keeps the current parser until M4.** M4 switches the app to the new parser and ships the validator fixes in the same release, so nothing new reaches students before then.
 
 ---
 
-## 2. Why a new plan
+## 2. Why this design
 
-### What the brief gets right, and we keep
+### What the brief got right, and we keep
 
 - One supported input: the single-column print-to-PDF from `experience.usc.edu`. No OCR, no two-column layout.
 - JavaScript, client-side, with PDF→text kept separate from text→data so parsing is testable from a terminal against `.txt` files.
@@ -36,7 +37,9 @@ The brief's own rule still holds: **if a real report contradicts this plan, the 
 - `RG` / `>IP` means in progress, including future-term registrations.
 - Fail loudly instead of returning a plausible-looking subset.
 
-### What real reports contradict
+### What real reports contradicted
+
+The "where it's made" column refers to the brief as it stood before it was retired, and to doc 01. Doc 01's transfer section was corrected on 14 Oct (bbh `a207ed2`), which fixes the three transfer rows upstream. The rest are recorded here only.
 
 | Claim | Where it's made | What the 11 samples show |
 |---|---|---|
@@ -55,8 +58,6 @@ The brief's own rule still holds: **if a real report contradicts this plan, the 
 | Every page has a header with a timestamp and the URL | doc 01 | Three samples have none. Date formats vary: `7/2/26, 7:26 PM` vs `28/09/2026, 18:42`. |
 | ~350+ non-empty lines | brief §5 | 280–405 across the samples. First-semester reports run under 300. |
 
-We'll file the doc corrections upstream separately (section 12). This plan just builds on what the reports show.
-
 ### Related work
 
 - **bbh PR #4** (`tanzil/stars-parser-scope-and-chunking`, open, last updated 8 Sept) already has a chunker (`chunker.js` plus tests), the scope narrowing, and the brief's three-value transfer `source`. It targets bbh's `stars-parser/`, which is being removed. Port the chunker into M0/M2 here, switch the `source` field to the revised taxonomy in section 7, then close PR #4.
@@ -71,6 +72,7 @@ We'll file the doc corrections upstream separately (section 12). This plan just 
 **Out of scope, and we delete the code rather than maintain it:**
 
 - `ocrExtract.js` and the `tesseract.js` dependency.
+- The OCR wording in `App.jsx`: the `OCR: page n/N` status, the `onProgress` callback that feeds it, and the failure message that mentions OCR.
 - The ten OCR fixtures in `test/fixtures/` (output from scanned two-column reports).
 - `test/parser.test.js`, which re-implements the parser inside the test file and so tests a copy.
 
@@ -205,7 +207,7 @@ Why this differs from the brief's three values:
 
 `prepared`, `programCode` and `catalogYear` come from the header. `degree` and `major` come from the title lines under `STARS - DEGREE PROGRESS REPORT` (for example `BACHELOR OF SCIENCE` / `ARTIFICIAL INTELLIGENCE FOR BUSINESS`). The rest:
 
-- `classLevel` and the entry term.
+- `classLevel`, and `entryTerm` from `Term of USC Entrance`. Pathwise needs the entry term to place a student's year columns.
 - `expectedGraduation`, when present.
 - Every `CURRENT POST` row, kept as a list; the double-degree sample has two.
 - `minors[]` with each minor's own catalog year (`MINOR CATALOG YEAR IS PROCESSED AS 20243`).
@@ -232,7 +234,7 @@ We keep the five fields the validator reads (`major`, `classLevel`, `gpa`, `comp
   "meta": { "prepared": "07/01/26", "programCode": "1915", "catalogYear": "20243",
             "redacted": true, "warnings": [] },
   "degree": "BS", "major": "Artificial Intelligence for Business",
-  "classLevel": "Senior", "gpa": null,
+  "classLevel": "Senior", "entryTerm": "20243", "gpa": null,
   "posts": [{ "program": "1915", "degree": "BS", "major": "BUAI", "school": "BUAD", "term": "20243" }],
   "minors": [{ "name": "Applied Analytics", "catalogYear": "20243" }],
   "units": { "required": 128, "earned": 96, "inProgress": 24, "transferTotal": 28 },
@@ -250,16 +252,20 @@ We keep the five fields the validator reads (`major`, `classLevel`, `gpa`, `comp
 
 ## 9. Stage 6 — check, and fail loudly
 
-Throw a `StarsParseError` naming the failed check. Never return a partial object. Checks:
+The checks come in two strengths. A **hard check** that fails means the parse fails: the parser never returns a partial object. A **warning** goes into `meta.warnings` and the parse still succeeds.
 
-1. **Landmarks present:** `header`, `currentPost`, `unitTotal`, `legend`.
-2. **Every master-list row parsed:** the number of term-led lines in `unitTotal` equals the rows produced from it.
-3. **Units earned reconcile:** the sum of printed units on completed USC rows from the master list, plus `TRNSFR WORK`, equals `EARNED`. Checked by hand on all 11 samples, with no exceptions.
-4. **Units in progress reconcile:** the sum of in-progress row units equals `IN-PROCESS`. Checked on `aibiz_sr_minor` (24), `aibiz_sr_forgiveness` (18), `aibiz_jr_doubledegree` (31), `ene_fr_withdrawals` (16) and `psyc_so_thematic` (18).
-5. **Class level matches units earned** (under 32 Freshman, 32–63.9 Sophomore, 64–95.9 Junior, 96+ Senior). Held on all 11.
-6. **No unlabelled block contains course rows** (section 6).
+| # | Check | Strength | Why |
+|---|---|---|---|
+| 1 | **Landmarks present:** `header`, `currentPost`, `unitTotal`, `legend`. | hard | Without them nothing downstream can be trusted. |
+| 2 | **Every master-list row parsed:** the number of term-led lines in `unitTotal` equals the rows produced from it. | hard | A missed row is a missing completed course, which the validator would act on. |
+| 3 | **Units earned reconcile:** the sum of printed units on completed USC rows from the master list, plus `TRNSFR WORK`, equals `EARNED`. | hard | The one check that proves the course list is complete. Held on all 11 samples, checked by hand. |
+| 4 | **Units in progress reconcile:** the sum of in-progress row units equals `IN-PROCESS`. | warning | The validator doesn't depend on it, and it was only checked on five samples (`aibiz_sr_minor` 24, `aibiz_sr_forgiveness` 18, `aibiz_jr_doubledegree` 31, `ene_fr_withdrawals` 16, `psyc_so_thematic` 18). |
+| 5 | **Class level matches units earned** (under 32 Freshman, 32–63.9 Sophomore, 64–95.9 Junior, 96+ Senior). | warning | The validator reads the printed class level, not this. Held on all 11, but a real report that trips it shouldn't lock a student out. |
+| 6 | **No unlabelled block contains course rows** (section 6). | hard | That's the "right pattern, wrong part of the document" bug, and it inflates the course list. |
 
-If check 3 fails on a real upload, the UI says the report couldn't be read reliably and offers manual entry. It does not show a course list that's probably wrong.
+**How a failure reaches the caller** is still to be settled with Pathwise (section 11). Internally, stage 6 throws a `StarsParseError` naming the failed check, so tests can assert exactly which check failed.
+
+If a hard check fails on a real upload, the UI says the report couldn't be read reliably and offers manual entry. It does not show a course list that's probably wrong.
 
 ---
 
@@ -267,13 +273,15 @@ If check 3 fails on a real upload, the UI says the report couldn't be read relia
 
 Each milestone ends with green tests and is small enough to review in one sitting.
 
+**Nothing new ships to students before M4.** Pushing to `main` deploys, so M1–M3 add the new parser as modules with their own tests. `App.jsx` keeps importing the current parser until M4. The reason is the validator: today it treats every row in `completedCourses` as passed USC credit, so a `W` or a transferred `ANTH101` clears a prerequisite, and retaking a withdrawn course shows "already completed". It also fails a GPA requirement when the GPA is `null`. Feeding it the new parser's richer rows before those fixes would make the results worse, not better. So M4 lands the validator fixes and the app switch together.
+
 | # | Milestone | Done when |
 |---|---|---|
-| M0 | **Clear the ground.** Delete OCR, the old fixtures and the self-copying test. Fix the README (source is `experience.usc.edu`, not `my.usc.edu`). | `node --test` runs and imports only real modules. |
-| M1 | **Stages 1–2 + fixture extraction script** (`scripts/extract-fixture.mjs`, Node, legacy pdfjs). Commit 11 `.txt` fixtures. | The section 4 sanity gates pass on all 11. Unit tests on synthetic fragments cover tolerance, columns and two different character widths. |
+| M0 | **Clear the ground.** Delete OCR (`ocrExtract.js`, `tesseract.js`, and the OCR wording in `App.jsx`), the old fixtures and the self-copying test. Fix the parser README (source is `experience.usc.edu`, not `my.usc.edu`). | `node --test` runs and imports only real modules. No mention of OCR is left in `gui/`. |
+| M1 | **Stages 1–2 + fixture extraction script** (`scripts/extract-fixture.mjs`, Node, legacy pdfjs). Commit 11 `.txt` fixtures and the redaction test (below). | The section 4 sanity gates pass on all 11. Unit tests on synthetic fragments cover tolerance, columns and two different character widths. |
 | M2 | **Stages 3–4.** Cleaning and the block label table. | Every block in every fixture is labelled or listed in `warnings`. A test shows the label table for each fixture. |
-| M3 | **Course list, transfers, checks 1–6.** Hand-checked `.json` for the validator's fields. **Switch the app to the new parser here.** | Units reconcile on all 11. The validator test suite loads the shared `.json` files. |
-| M4 | **Full header and output contract.** GPA as nullable, `equivalents`, `waivedCourses`, graduate-report refusal. | Golden tests for the full `.json`. The validator handles `gpa: null`. |
+| M3 | **Course list, transfers, checks 1–6.** Hand-checked `.json` for the validator's fields. Not wired into the app yet. | Units reconcile on all 11. The validator test suite loads the shared `.json` files. |
+| M4 | **Full output contract, validator fixes, and the app switch, as one release.** **Parser:** GPA as nullable, `entryTerm`, `equivalents`, `waivedCourses`, graduate-report refusal. **Validator:** prerequisite and already-completed checks skip rows with `passed: false`. A transfer row counts toward a prerequisite only through an `equivalents` entry, not by the shape of its code. A `null` GPA skips GPA-threshold checks with a warning instead of failing them. **App:** `App.jsx` imports the new parser. | Golden tests for the full `.json`. Validator tests cover a `W` row, a transfer `ANTH101` with no equivalence, a transfer with one, and `gpa: null`. The Pathwise questions in section 11 are settled. |
 | M5 | **Structured requirement blocks** for the degree planner. | Requirement blocks parsed for all 11 and agreed with Natalie and Francis on shape. |
 
 ### Fixtures
@@ -293,34 +301,38 @@ Each milestone ends with green tests and is small enough to review in one sittin
 | `ene_fr_withdrawals` | `3D04E54E…` | 130 units; `W` grades; European date format; 3.30pt characters |
 | `grad_apsy` | `45E77EB0…` | **Refusal test only.** No `.json`. |
 
-Before committing any fixture, check that the preamble and diploma lines contain only redaction `x`s (doc 01, "Where the personal information sits").
+**Redaction is checked by a test, not by hand.** `test/fixtures-redacted.test.js` runs over every `fixtures/stars/*.txt`, so a fixture that leaks can't be committed with the suite green. It fails if:
 
-**Still missing from the set:** an athlete (NCAA section), a study-abroad student, an unredacted report (real letter grades, real GPA), and a transfer that came in under a real USC code, if that happens at all. Ask for these through the collection tool. The NCAA skip ships untested until we have one.
+- the preamble (everything before the first `PREPARED:`), the `STARS Report for` / `ID#:` line, or the diploma name and address lines contain anything but redaction `x`s and their fixed labels;
+- a 10-digit student-ID-shaped number appears anywhere;
+- a course row's grade column holds a real letter grade instead of a redaction token (`Lp`, `Lf`, `Pp`, `Pn`) or a non-letter grade (`CR`, `TR`, `RG`, `W`);
+- a GPA value is anything but `X.XXX`.
+
+The rules come from doc 01, "Where the personal information sits", and from what STARSRedacter replaces.
+
+**Still missing from the set:** an athlete (NCAA section), a study-abroad student, an unredacted report (real letter grades, real GPA), and a transfer that came in under a real USC code, if that happens at all. Ask for these through the collection tool. The NCAA skip ships untested until we have one. An unredacted report can only be run locally to answer the baseline question in section 11. It can never become a fixture, and the redaction test stops it from being committed by accident.
 
 ---
 
 ## 11. Open questions
 
-- **Before M0: finish moving the parser into this repo.**
-  1. ~~Merge `parser-from-bbh` here.~~ Done in #3 (7 Oct): the `gui/bbh` submodule is gone and the app imports `gui/stars-parser/`.
-  2. Merge `fd17f90` (bbh's `stars-parser/` removal) into bbh through a new PR. It already updates bbh's README, CONTRIBUTING and degree-planner references. Constellation's README still says RegCheck pins `stars-parser/` through a submodule, so let nlj19366 know.
-- **Validator side, decide before M4:** how should the validator treat `gpa: null` on redacted reports? Skip GPA-threshold prerequisite checks and warn, or fail? And should the prerequisite check count only `source: "usc"` courses plus `equivalents`, so `ANTH101` from a community college can't match a USC `ANTH 101`? Recommendation: yes, to both the skip-with-warning and the stricter matching.
+### To settle with Natalie (Pathwise) before M4
+
+Pathwise's stub (`degree-planner/src/data/parseStarsReport.ts` in bbh) was written against the old parser contract. Three things need agreement:
+
+- **How a failed parse is reported.** Pathwise's stub expects `parseStarsReport()` to *resolve with `null`* on failure, and treats a rejection as an unexpected error. This design throws `StarsParseError`. Recommendation: keep both, at different layers.
+  - The text-level `parseStarsText()` throws, so tests can assert which check failed.
+  - The public `parseStarsReport(file, options)` catches that error and resolves `null`, reporting the reason through `onStatus`.
+
+  This keeps the contract both apps already handle (RegCheck's `App.jsx` treats `null` as "enter your info manually" too), and still never returns a partial object.
+- **Transfer labels.** Pathwise uses `usc` / `transfer_specific` / `transfer_generic`, from the retired brief. It needs to switch to the four values in section 7. Its sample student has a transfer `ESRM 150` tagged `transfer_specific`, which is the case the samples show doesn't exist: in the new labels it's `transfer`, with any USC equivalence carried in `equivalents`.
+- **`fixtures/stars/mock_stars_report.json`.** The validator tests and Pathwise's sample student both use it. Recommendation: keep it as a hand-written edge-case fixture next to the real redacted ones. At M4, update it to the new output shape in the same change in both repos (`fixtures/stars/` is mirrored in bbh), and add a contract test that every `fixtures/stars/*.json`, `mock_stars_report.json` included, matches the output shape. Then the hand-written file can't drift from what the parser actually produces.
+
+Pathwise's stub also lists gaps this design already closes: `entryTerm`, the prepared date (`meta.prepared`), per-row `source`, and one code spacing (`DEPT NNN`, section 7).
+
+### Other open questions
+
+- **Removing the old copy from bbh.** bbh `main` still has `stars-parser/`, and its README still says RegCheck pulls the parser in through a submodule. The removal commit `fd17f90` was never merged, so it's going in through a new PR. Constellation's README makes the same submodule claim, so let nlj19366 know.
 - **Unredacted grades:** do real letter grades sit exactly on the row baseline? We can't tell from redacted samples. The 2pt tolerance handles either case, but the first unredacted report should confirm it.
 - **The 32-unit exam-credit cap** `[inferred]`: no sample's `TRNSFR WORK` exceeds 32 while the AP rows listed do. Confirm with advising before the degree planner relies on it.
 - **Character-width inference** assumes one dominant fixed-width font per document. True on all 12 samples. Check 2 in section 9 catches a report where it isn't.
-
----
-
-## 12. Corrections to send upstream
-
-These belong in bbh-course-reg-project as an issue against `docs/reference/01-reading-a-stars-report.md` and `docs/parser-brief.md`, following that README's "the report wins" rule:
-
-- Course-row layout: glued flags, suffixes with spaces, padded codes, and `CR`/`W` grades.
-- Redaction tokens `Lp`/`Lf`/`Pp`/`Pn` and `X.XXX`.
-- Status codes `IP+`/`IP-`/`+R`/`OR)` and count labels `SET`/`HOUR`.
-- The post-legend internal audit blocks, the Renaissance block and the Dornsife block all repeat course rows.
-- How transfers actually appear (source codes plus `RE` notes), and that they can appear in both places.
-- The `TRNSFR WORK` cap, and the units-earned check that does hold (USC rows + `TRNSFR WORK`).
-- The residence and unit-total wording variants (130 units).
-- Missing browser headers and both date formats.
-- `AVE` appears on graduate reports from the same export, not only on legacy registrar reports.
