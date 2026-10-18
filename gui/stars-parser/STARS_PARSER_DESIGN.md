@@ -21,6 +21,7 @@ One rule carries over from the brief: **if a real report contradicts this docume
 - **Self-check:** units earned = completed USC rows + the `TRNSFR WORK` total. This held exactly on all 11 samples. The brief's check (transfer rows add up to `TRNSFR WORK`) fails on most of them, because exam credit is capped.
 - **Fixtures:** 11 redacted undergrad samples become shared `fixtures/stars/<name>.txt` + `.json` pairs. The JSON is checked by hand against the PDF, not generated and then trusted.
 - **Checks:** four checks fail the parse outright. Two that the validator doesn't depend on only raise warnings, so a surprising but readable report doesn't lock a student out.
+- **Review screen:** after every upload, the student sees what the parser read and can correct it before validating. A parse that fails opens the same screen empty, so a failure is never a dead end. Edits are marked as the student's, and the validator treats them as unconfirmed. See section 9.
 - **Build order:** milestones in section 10. **The app keeps the current parser until M4.** M4 switches the app to the new parser and ships the validator fixes in the same release, so nothing new reaches students before then.
 
 ---
@@ -236,7 +237,9 @@ This isn't needed by the validator, so it comes last, but stage 4 already lays t
 
 ## 8. Output contract
 
-We keep the five fields the validator reads (`major`, `classLevel`, `gpa`, `completedCourses`, `inProgressCourses`) and add to them. The validator reads only `.code` and `.grade` per course, so the additions don't break it.
+We keep the five fields the validator reads (`major`, `classLevel`, `gpa`, `completedCourses`, `inProgressCourses`) and add to them. Today the validator reads only `.code` and `.grade` per course, so the additions don't break it. From M4 it also reads `passed`, `source` and `origin` (section 10).
+
+`origin` is set by the app, not the parser: the parser always emits `"parsed"`, and the review screen sets `"student"` on rows the student adds or edits (section 9).
 
 ```jsonc
 {
@@ -249,7 +252,7 @@ We keep the five fields the validator reads (`major`, `classLevel`, `gpa`, `comp
   "units": { "required": 128, "earned": 96, "inProgress": 24, "transferTotal": 28 },
   "completedCourses": [
     { "term": "20243", "code": "BUAD 312", "rawCode": "BUAD312", "units": 4.0, "grade": "Lp",
-      "suffixes": ["G"], "flags": [], "source": "usc", "passed": true }
+      "suffixes": ["G"], "flags": [], "source": "usc", "passed": true, "origin": "parsed" }
   ],
   "inProgressCourses": [ /* same shape, grade "RG" */ ],
   "equivalents": [], "waivedCourses": ["DSCI281"],
@@ -274,7 +277,40 @@ The checks come in two strengths. A **hard check** that fails means the parse fa
 
 **How a failure reaches the caller** is still to be settled with Pathwise (section 11). Internally, stage 6 throws a `StarsParseError` naming the failed check, so tests can assert exactly which check failed.
 
-If a hard check fails on a real upload, the UI says the report couldn't be read reliably and offers manual entry. It does not show a course list that's probably wrong.
+If a hard check fails on a real upload, the app never shows a course list that's probably wrong. It opens the review screen empty instead (below).
+
+### The review screen
+
+Before validating, the student sees what the parser read from their report and can correct it. This is the safety net for failures no test predicted. Tests only cover the reports we have, and a student knows their own record better than any check we can write.
+
+**Why it's needed now.** Today's app tells a student whose parse failed that "manual entry is needed", but no manual entry exists: there's a `"manual"` state in `App.jsx` and nothing behind it. This design makes that dead end more likely, because a hard check fails the whole parse. And the warning-level checks (4 and 5) need somewhere to appear.
+
+**When it appears:**
+
+| Situation | What the screen shows |
+|---|---|
+| The parse succeeds | What was read, with anything doubtful flagged. The student confirms or edits. |
+| A hard check fails | The same screen, empty, with a plain-language reason ("we couldn't match your unit totals"). The student fills in what the validator needs: class level, GPA, completed and in-progress courses. This replaces the missing manual entry. |
+| The report is a graduate report (section 3) | A message that RegCheck only handles undergraduate reports. No form. |
+
+**What it shows:**
+
+- **Class level and GPA.** When the GPA is redacted (`X.XXX`) or missing, ask for it. Leaving it blank means GPA-based prerequisites are skipped with a warning.
+- **Completed and in-progress courses**, with term, code, grade and units.
+- **Flagged rows, each with a one-line reason:**
+  - a `W`, or anything else with `passed: false`: "won't count toward prerequisites";
+  - a transfer with no USC equivalent: "counts toward your units, not toward prerequisites";
+  - a generic `TR-` credit: same as above.
+- **Warnings from checks 4 and 5, in plain language.** For example: "your in-progress units don't match your report's total; check this list".
+
+**What the student can do:** add a course, remove one, change a grade, move a course between completed and in-progress, and set the GPA and class level. They can't edit equivalences. A student who believes a transfer covers a USC course adds that USC course themselves, which marks it as their own claim (below).
+
+**Rules:**
+
+1. **Edits are marked as the student's.** Any row the student adds or changes carries `origin: "student"`, and parsed rows carry `origin: "parsed"` (section 8). The validator never treats a student-entered row as proof of a prerequisite. If a prerequisite is met only by a student-entered row, the check comes back as a **warning** ("you added this; we couldn't confirm it from your report"), not a pass. Otherwise a typo becomes a cleared prerequisite.
+2. **Removing a parsed row just removes it.** That can only make the validator more cautious.
+3. **Nothing leaves the browser.** Edits live in page state. They aren't stored or logged, and they're gone when the page closes, the same as the report itself. Logging corrections would be a useful signal of parser bugs, but it breaks the privacy promise. A possible later addition, not part of M4: an explicit opt-in "report a parsing mistake" button that sends only *which field* was wrong, never report content.
+4. **The parser doesn't change.** The screen is UI in `gui/src/` (e.g. a `StarsReview` component) that reads the parser's output and hands the confirmed version to the validator. The parser's output stays exactly what it read.
 
 ---
 
@@ -290,7 +326,7 @@ Each milestone ends with green tests and is small enough to review in one sittin
 | M1 | **Stages 1–2 + fixture extraction script** (`scripts/extract-fixture.mjs`, Node, legacy pdfjs). Commit 11 `.txt` fixtures and the redaction test (below). | The section 4 sanity gates pass on all 11. Unit tests on synthetic fragments cover tolerance, columns and two different character widths. |
 | M2 | **Stages 3–4.** Cleaning and the block label table. | Every block in every fixture is labelled or listed in `warnings`. A test shows the label table for each fixture. |
 | M3 | **Course list, transfers, checks 1–6.** Hand-checked `.json` for the validator's fields. Not wired into the app yet. | Units reconcile on all 11. The validator test suite loads the shared `.json` files. |
-| M4 | **Full output contract, validator fixes, and the app switch, as one release.** **Parser:** GPA as nullable, `entryTerm`, `equivalents`, `waivedCourses`, graduate-report refusal. **Validator:** prerequisite and already-completed checks skip rows with `passed: false`. A transfer row counts toward a prerequisite only through an `equivalents` entry, not by the shape of its code. A `null` GPA skips GPA-threshold checks with a warning instead of failing them. **App:** `App.jsx` imports the new parser. | Golden tests for the full `.json`. Validator tests cover a `W` row, a transfer `ANTH101` with no equivalence, a transfer with one, and `gpa: null`. The Pathwise questions in section 11 are settled. |
+| M4 | **Full output contract, validator fixes, and the app switch, as one release.** **Parser:** GPA as nullable, `entryTerm`, `equivalents`, `waivedCourses`, graduate-report refusal. **Validator:** prerequisite and already-completed checks skip rows with `passed: false`. A transfer row counts toward a prerequisite only through an `equivalents` entry, not by the shape of its code. A `null` GPA skips GPA-threshold checks with a warning instead of failing them. A prerequisite met only by an `origin: "student"` row comes back as a warning, not a pass. **App:** `App.jsx` imports the new parser, and the review screen (section 9) sits between upload and validation, including the empty form for a failed parse. | Golden tests for the full `.json`. Validator tests cover a `W` row, a transfer `ANTH101` with no equivalence, a transfer with one, `gpa: null`, and a prerequisite met only by a student-entered row. The review screen works on both the success and the failure path. The Pathwise questions in section 11 are settled. |
 | M5 | **Structured requirement blocks** for Pathwise, starting from Constellation's requirement tree (section 7). | Requirement blocks parsed for all 11. The shape is agreed with Natalie and Francis, close enough that Constellation could consume it. |
 
 ### Fixtures
@@ -340,6 +376,8 @@ Pathwise's stub (`degree-planner/src/data/parseStarsReport.ts` in bbh) was writt
 Pathwise's stub also lists gaps this design already closes: `entryTerm`, the prepared date (`meta.prepared`), per-row `source`, and one code spacing (`DEPT NNN`, section 7).
 
 ### Other open questions
+
+- **Must the student confirm the review screen before validating?** Recommendation: open it automatically after every upload, and enable Validate once they press "Looks right" or make an edit. That's one click for a correct parse, and it stops anyone validating against a list they never saw. The alternative is showing the screen without blocking Validate. That's faster, but a student can skip straight past a wrong parse.
 
 - **Removing the old copy from bbh.** bbh `main` still has `stars-parser/`, and its README still says RegCheck pulls the parser in through a submodule. The removal commit `fd17f90` was never merged, so it's going in through bbh #7. Constellation's README made the same submodule claim; Natalie is updating it.
 - **Unredacted grades:** do real letter grades sit exactly on the row baseline? We can't tell from redacted samples. The 2pt tolerance handles either case, but the first unredacted report should confirm it.
