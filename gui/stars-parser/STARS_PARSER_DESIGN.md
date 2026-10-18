@@ -104,7 +104,7 @@ This is where the current parser fails before any parsing logic runs. Every fix 
 **Rebuild each line as fixed-width columns, not by joining strings.** The body is a fixed-width printout. Each PDF has a single dominant character width (3.61pt on US-locale prints, 3.30pt on the European-locale one). The left margin varies (term column at x=144.5 on one, 136.2 on another). So, for each document:
 
 1. Take the most common `width / str.length` across body fragments as the character width `cw`.
-2. Take the left margin `x0` as the minimum x of fragments that match `^\d{5}$` at the start of a line. Fall back to the minimum x of body fragments.
+2. Take the left margin `x0` as the minimum x of the divider rows (runs of underscores or asterisks), which every report has dozens of, flush with the body's left edge. Fall back to the minimum x of body fragments. Not the leftmost body fragment as the rule: STARSRedacter draws its `XXXX` over the footer URL at the page edge in the body's character width, and that shifted all of `cpns_so` 27 columns right. Whitespace fragments are ignored when measuring, because pdf.js reports their widths wrongly (4.82pt for a 3.61pt space).
 3. Place each fragment at column `round((x − x0) / cw)`, padding with spaces.
 
 The result is a monospaced line where every field of a course row lands in a fixed column, no matter how the PDF split the fragments. This one choice handles glued flags, spaced suffixes, padded codes and redaction tokens. Joining with `""` or `" "` can't handle all of those at once.
@@ -129,12 +129,15 @@ Stage 2's output is exactly what gets committed as `fixtures/stars/<name>.txt`. 
 
 ## 6. Stage 4 — split into labelled blocks
 
-Split on runs of underscores (divider rows). Asterisk runs frame banners. Then label each block from a **table of anchors**, matching the first line with regexes. The table is data, not code scattered through the parser, so a new variant is a one-line change with a test.
+Split on runs of underscores (divider rows). Asterisk runs frame banners. Then label each block from a **table of anchors** (`LABELS` in `blocks.js`), matching the block's heading with regexes. The heading is its first non-banner line joined with the next one, because some headings wrap (`…UNIQUE TO THE APPLIED` / `ANALYTICS MINOR:`). The table is data, not code scattered through the parser, so a new variant is a one-line change with a test.
 
 | Label | Anchors (any of) | Course rows inside? |
 |---|---|---|
-| `header` | `PREPARED:` … `PERTINENT DATA SECTION` | no |
-| `currentPost` | `CURRENT POST:` | no |
+| `header` | `PREPARED:` | no |
+| `pertinentData` | `PERTINENT DATA SECTION` (holds `CURRENT POST:`, class level, entry term, minors) | no |
+| `graduateData` | `GRADUATE PERTINENT DATA SECTION` | no; triggers the graduate refusal |
+| `summary` | `AT LEAST ONE REQUIREMENT HAS NOT BEEN SATISFIED` | no |
+| `notice` | the legend pointer, time-to-degree, practicum, Renaissance and international-student banners, GE limitations | no |
 | `unitTotal` (the master list) | `MINIMUM OF \d+ UNITS (IS )?REQUIRED` | **yes, authoritative** |
 | `residence` | `64-UNIT RESIDENCY`, `64 UNDERGRADUATE UNITS MUST` | no |
 | `upperDivision` | `32-UNIT UPPER DIVISION`, `32 UPPER DIVISION UNITS` | no |
@@ -143,7 +146,7 @@ Split on runs of underscores (divider rows). Asterisk runs frame banners. Then l
 | `dornsife104` | `104 UNITS APPLICABLE` | repeats, including transfers |
 | `writing`, `foreignLanguage`, `ge*`, `thematicOption`, `math`, `econ`, `accounting` | their headings | repeats |
 | `major*` | `MAJOR REQUIREMENTS`, `REQUIRED UPPER DIVISION BUSINESS`, `PRE-MAJOR`, `COMPUTATIONAL AREA`, … | repeats |
-| `minor*` | `MINOR REQUIREMENTS`, `UNIQUE TO THE .* MINOR` | repeats |
+| `minor`, `minorUnique` | `MINOR REQUIREMENTS FOR`, `MUST BE UNIQUE TO THE … MINOR` | repeats |
 | `unitCaps` | `PHYSICAL EDUCATION ACTIVITY` | repeats |
 | `currentRegistration` | `CURRENT REGISTRATION` | repeats |
 | `otherCourses` | `OTHER COURSES IN YOUR ACADEMIC ACCOUNT` | **yes, authoritative** |
@@ -152,12 +155,13 @@ Split on runs of underscores (divider rows). Asterisk runs frame banners. Then l
 | `internalAudit` | `INTERNAL USE ONLY`, `FA INTERNAL AUDITING` | repeats |
 | `ncaa` | `NCAA` | repeats |
 | `disclaimer` | `Degree Progress Advisement report has been prepared` | no |
+| `end` | `END OF ANALYSIS` | no |
 
 Rules:
 
 - **Course rows are harvested only from `unitTotal` and `otherCourses`.** There's one exception, transfer rows (section 7). Every other block repeats rows.
 - **Unrecognised blocks are kept, labelled `unknown`, and reported in a `warnings` list.** They aren't errors: reports vary by school and program, and we've seen 11. But if a block labelled `unknown` contains course rows, the parse fails. That's exactly the "right pattern, wrong part of the document" bug the brief warned about.
-- **Missing sections are normal.** No minor, no NCAA, no time-to-degree banner (missing on all three first-semester samples), no diploma block. The only required landmarks are `header`, `currentPost`, `unitTotal` and `legend`.
+- **Missing sections are normal.** No minor, no NCAA, no time-to-degree banner (missing on all three first-semester samples), no diploma block. The only required landmarks are `header`, `pertinentData` (with its `CURRENT POST:` line), `unitTotal` and `legend`.
 
 ---
 
@@ -165,13 +169,13 @@ Rules:
 
 ### Course rows, sliced by column
 
-Within the `unitTotal` and `otherCourses` blocks, a course row is a line whose first field is a 5-digit term. Fields are cut at fixed column offsets, calibrated once from the samples and asserted in tests:
+Within the `unitTotal` and `otherCourses` blocks, a course row is a line whose first field is a 5-digit term. Fields are cut at fixed column offsets from the column where the term starts (column 6 on every sample): code at +6, suffixes at +15, units at +19, grade at +24, flags at +27, title at +30. They were calibrated on all 12 samples and are asserted in tests:
 
 | Field | Example | Notes |
 |---|---|---|
 | term | `20243` | Kept raw. `99993` marks the `TRNSFR WORK` summary line: read it as `transferTotal`, never as a course. |
-| code | `BUAD312`, `IR  101`, `AP34:COMP`, `TR-COMP-2`, `HIS/AMERIC`, `DIPLOMA+2` | Taken as the whole field, so any code shape passes through. |
-| suffixes | `G`, `L`, `X`, `L G`, `LXG`, `XGW`, `GP` | Split into a set of letters. Spaces are padding. |
+| code | `BUAD312`, `IR  101`, `AP34:COMP`, `TR-COMP-2`, `HIS/AMERIC`, `DIPLOMA+2` | Up to 9 columns. Longer codes (`TRNSFR WORK`, `TR-BUSINESS`, `HIS/AMERIC`) appear only on transfer rows, which carry no suffixes, so a code that runs past the suffix column is read to its end. |
+| suffixes | `G`, `L`, `X`, `L G`, `LXG`, `XGW`, `GP` | Each letter has a column of its own (L, X, G, then W / P / M), so `L G` is L and G with X absent. Split into a list of letters. |
 | units | `4.0`, `0.0` | Number. |
 | grade | `A-`, `CR`, `TR`, `RG`, `W`, `Lp`, `Lf`, `Pp`, `Pn` | Kept exactly as printed. |
 | flags | `>IP`, `>FF`, `>D`, `>Z`, `>EX`, `>OS`, `>P`, `>R` | Fixed 3-character slot directly before the title, so `>IPCommunication` splits cleanly. |
@@ -183,7 +187,7 @@ Within the `unitTotal` and `otherCourses` blocks, a course row is a line whose f
 
 - In progress: `RG` or `>IP`.
 - Completed: everything else, including `W`, `>D`, `>FF` and `>Z` rows. They're on the record, but their earned units are whatever's printed (these print `0.0`) and they don't count as passed.
-- Passed follows the stopgap rule in doc 02 §7, extended to the redaction tokens.
+- Passed follows the stopgap rule in doc 02 §7, extended to the redaction tokens: not passed for `F`, `NP`, `NC`, `IN`, `IX`, `MG`, `NS`, `W`, `Lf`, `Pn`, or a deleted-credit flag (`>D`, `>Z`, `>FF`, `>OS`). In-progress rows have `passed: null`, since they haven't been decided.
 
 **Code normalisation:** emit `code` as `DEPT NNN[L]` when the raw code has that shape (`BUAD312` → `BUAD 312`, `IR  101` → `IR 101`), matching the validator fixture and `_normalize_code`. Always keep `rawCode`. Any other shape (`AP34:COMP`, `TR-…`) is passed through unchanged, never reshaped.
 
@@ -244,21 +248,24 @@ We keep the five fields the validator reads (`major`, `classLevel`, `gpa`, `comp
 ```jsonc
 {
   "meta": { "prepared": "07/01/26", "programCode": "1915", "catalogYear": "20243",
-            "redacted": true, "warnings": [] },
+            "redacted": true, "warnings": [ /* { "check": "unitsInProgress", "message": "…" } */ ] },
   "degree": "BS", "major": "Artificial Intelligence for Business",
-  "classLevel": "Senior", "entryTerm": "20243", "gpa": null,
+  "classLevel": "Senior", "entryTerm": "20243", "expectedGraduation": null, "gpa": null,
   "posts": [{ "program": "1915", "degree": "BS", "major": "BUAI", "school": "BUAD", "term": "20243" }],
-  "minors": [{ "name": "Applied Analytics", "catalogYear": "20243" }],
+  "minors": [{ "name": "Applied Analytics", "effectiveTerm": "20251", "catalogYear": "20243" }],
   "units": { "required": 128, "earned": 96, "inProgress": 24, "transferTotal": 28 },
   "completedCourses": [
-    { "term": "20243", "code": "BUAD 312", "rawCode": "BUAD312", "units": 4.0, "grade": "Lp",
-      "suffixes": ["G"], "flags": [], "source": "usc", "passed": true, "origin": "parsed" }
+    { "term": "20243", "code": "BUAD 312", "rawCode": "BUAD312", "title": "Statistics and Data Science f",
+      "units": 4, "grade": "Lp", "suffixes": ["G"], "flags": [], "source": "usc", "passed": true,
+      "origin": "parsed" }
   ],
-  "inProgressCourses": [ /* same shape, grade "RG" */ ],
+  "inProgressCourses": [ /* same shape, grade "RG" and/or flag ">IP", passed null */ ],
   "equivalents": [], "waivedCourses": ["DSCI281"],
-  "requirements": [ /* milestone 5 */ ]
+  "requirements": [ /* milestone 5; not emitted yet */ ]
 }
 ```
+
+`title` is the truncated title as printed, for display only (the review screen shows it). `effectiveTerm` is the term printed beside the minor's name on the `MINOR:` line.
 
 ---
 
@@ -275,7 +282,9 @@ The checks come in two strengths. A **hard check** that fails means the parse fa
 | 5 | **Class level matches units earned** (under 32 Freshman, 32–63.9 Sophomore, 64–95.9 Junior, 96+ Senior). | warning | The validator reads the printed class level, not this. Held on all 11, but a real report that trips it shouldn't lock a student out. |
 | 6 | **No unlabelled block contains course rows** (section 6). | hard | That's the "right pattern, wrong part of the document" bug, and it inflates the course list. |
 
-**How a failure reaches the caller** is still to be settled with Pathwise (section 11). Internally, stage 6 throws a `StarsParseError` naming the failed check, so tests can assert exactly which check failed.
+**How a failure reaches the caller** is still to be settled with Pathwise (section 11). Internally, stage 6 throws a `StarsParseError` whose `check` names what failed, so tests can assert exactly which check failed: `landmarks`, `masterListRows`, `unitsEarned` and `unlabelledRows` for checks 1, 2, 3 and 6; `graduate` for a graduate report; `notStars` when there's no `PREPARED:` line. The browser entry point adds `noText` (no text layer), `layout` (the section 4 sanity gates failed) and `unreadable` (pdf.js couldn't open the file). Warnings carry `check: "unitsInProgress"`, `"classLevel"` or `"unknownBlock"`.
+
+Check 1 also fails if there's more than one `unitTotal` block.
 
 If a hard check fails on a real upload, the app never shows a course list that's probably wrong. It opens the review screen empty instead (below).
 
@@ -317,6 +326,8 @@ Before validating, the student sees what the parser read from their report and c
 ## 10. Build order
 
 Each milestone ends with green tests and is small enough to review in one sitting.
+
+**Status, 18 October 2026.** M0–M3 are built, along with the parser's half of M4: the full output contract (nullable GPA, `entryTerm`, `equivalents`, `waivedCourses`), the graduate refusal, and the browser entry point `report.js`. The parser produces the committed `.json` exactly for all 11 samples, under Node and in Chrome. Still to do for M4: the validator fixes, updating `mock_stars_report.json` and adding the contract test, the review screen, pointing `index.js` at `report.js`, and the Pathwise questions in section 11. One caveat: the `.json` files were checked against a separate regex-based parse and one PDF by eye, not each against its PDF by hand. That hand check is still owed before M4.
 
 **Nothing new ships to students before M4.** Pushing to `main` deploys, so M1–M3 add the new parser as modules with their own tests. `App.jsx` keeps importing the current parser until M4. The reason is the validator: today it treats every row in `completedCourses` as passed USC credit, so a `W` or a transferred `ANTH101` clears a prerequisite, and retaking a withdrawn course shows "already completed". It also fails a GPA requirement when the GPA is `null`. Feeding it the new parser's richer rows before those fixes would make the results worse, not better. So M4 lands the validator fixes and the app switch together.
 

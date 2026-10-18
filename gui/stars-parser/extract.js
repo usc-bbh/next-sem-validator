@@ -2,7 +2,7 @@
 //
 // The only stage that touches pdf.js, and the library is passed in rather
 // than imported. The browser hands over pdfjs-dist's browser build
-// (pdfSource.js), and scripts/extract-fixture.mjs hands over the legacy
+// (report.js), and scripts/extract-fixture.mjs hands over the legacy
 // Node build, so this one function serves both.
 
 // Returns one array per page. Each fragment is

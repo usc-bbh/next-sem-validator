@@ -24,7 +24,7 @@ and the Python validator runs through Pyodide. No report is sent to a server.
 │   ├── test/                       pytest suite + catalog/planned-course fixtures
 │   └── README.md                   Input/output schema contract
 │
-├── fixtures/stars/      STARS summaries shared by the parser and the validator
+├── fixtures/stars/      Redacted sample reports: parser input (.txt) and expected output (.json)
 └── .github/workflows/   deploy.yml: builds gui/ and publishes it to Pages
 ```
 
@@ -63,7 +63,7 @@ python3 -m pytest analytics/test/
 
 ```bash
 cd gui
-node --test stars-parser/legacy/test/lineRebuilder.test.js
+npm test
 ```
 
 ## The parser rebuild
@@ -71,7 +71,9 @@ node --test stars-parser/legacy/test/lineRebuilder.test.js
 The parser is being rebuilt. The design, the reasons behind it, and the
 milestones are in
 [`gui/stars-parser/STARS_PARSER_DESIGN.md`](gui/stars-parser/STARS_PARSER_DESIGN.md).
-Until milestone M4, the app keeps using the current parser.
+The new parser is built through M3 and tested on 11 redacted reports, but
+until milestone M4 the app keeps using the old one, in
+`gui/stars-parser/legacy/`.
 
 ## Deploy
 
