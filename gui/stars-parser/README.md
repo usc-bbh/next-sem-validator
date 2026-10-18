@@ -13,16 +13,16 @@ Everything runs client-side. Nothing is sent to a server.
 
 ## Status
 
-The rebuilt parser (milestones M0–M3, plus the parser's half of M4) is in
-this folder, but **the app doesn't use it yet**. `index.js` still exports the
-old parser from `legacy/`. The switch happens at M4, in the same release as
-the validator fixes and the review screen, so nothing new reaches students
-before then. See the design doc, §10.
+Milestones M0–M4 are built. The app imports `parseStarsReport` from
+`index.js`, which re-exports `report.js`. Every upload goes through the review
+screen (`gui/src/StarsReview.jsx`) before it reaches the validator. See the
+design doc, §9–10.
 
 ## Layout
 
 ```
-report.js        Browser entry: parseStarsReport(file) → result or null   (M4 switches the app to this)
+index.js         What the app imports: re-exports report.js and parse.js
+report.js        Browser entry: parseStarsReport(file) → result or null
 parse.js         parseStarsText(text) → result, or throws StarsParseError  (stages 3–6; runs in Node)
 extract.js       Stage 1: pdf.js fragments (the pdf.js build is passed in)
 layout.js        Stage 2: lines by baseline, fixed-width columns, sanity gates
@@ -31,15 +31,14 @@ blocks.js        Stage 4: split on dividers, label blocks from the anchor table
 fields.js        Stage 5: course rows by column, transfer source, header fields
 checks.js        Stage 6: hard checks and warnings
 scripts/extract-fixture.mjs   Redacted PDF → fixtures/stars/<name>.txt
-legacy/          The old parser, which the app still uses until M4
 ```
 
 ## Usage
 
-From M4, in the app:
+In the app:
 
 ```js
-import { parseStarsReport } from "./stars-parser/report.js";
+import { parseStarsReport } from "./stars-parser";
 
 const result = await parseStarsReport(file, {
   onStatus: (msg) => console.log(msg),

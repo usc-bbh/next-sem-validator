@@ -14,6 +14,7 @@ and the Python validator runs through Pyodide. No report is sent to a server.
 .
 ├── gui/                 Web app (React + Vite), the part deployed to Pages
 │   ├── src/App.jsx          Schedule builder + validator UI
+│   ├── src/StarsReview.jsx  Review screen between upload and validation
 │   ├── stars-parser/        Client-side STARS PDF parser (the app is its only user)
 │   ├── pyodide_bridge.js    Runs the Python validator in the browser via Pyodide
 │   └── public/validator/    Generated at dev/build time from analytics/, not committed
@@ -68,12 +69,12 @@ npm test
 
 ## The parser rebuild
 
-The parser is being rebuilt. The design, the reasons behind it, and the
+The parser was rebuilt in October 2026. The design, the reasons behind it, and the
 milestones are in
 [`gui/stars-parser/STARS_PARSER_DESIGN.md`](gui/stars-parser/STARS_PARSER_DESIGN.md).
-The new parser is built through M3 and tested on 11 redacted reports, but
-until milestone M4 the app keeps using the old one, in
-`gui/stars-parser/legacy/`.
+The new parser is built and tested on 11 redacted reports. After every
+upload the student sees a review screen with what was read, can correct it,
+and confirms it before validating.
 
 ## Deploy
 

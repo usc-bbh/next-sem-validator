@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { parseStarsReport } from "../stars-parser";
+import StarsReview, { GraduateNotice } from "./StarsReview";
+import { EMPTY_REPORT } from "./emptyReport";
 
 // ─────────────────────────────────────────────────────────────
 // Catalog loader — fetches the full scraped catalog from public/catalog.json.
@@ -29,9 +31,9 @@ function useCatalog() {
   return { catalog, catalogError: error, catalogLoading: !catalog && !error };
 }
 
-// Demo fallback only — used before a real STARS PDF is uploaded, or if
-// parsing fails and the student hasn't filled in manual entry yet.
-// Matches Avi's real parser output shape exactly (see stars-parser/README.md).
+// Demo fallback only — used before a real STARS PDF is uploaded. The
+// validator reads rows without passed/source/origin as passed USC courses,
+// so this minimal shape still works.
 const DEMO_STARS = {
   completedCourses: [{ code: "CSCI103", grade: "A" }, { code: "MATH225", grade: "B+" }, { code: "WRIT150", grade: "A-" }],
   inProgressCourses: [],
@@ -236,45 +238,60 @@ export default function App() {
   const [result, setResult] = useState(null);
   const [validating, setValidating] = useState(false);
 
-  // ── Real STARS upload state ──
-  // starsReport starts as the demo fallback; once a student uploads a real
-  // PDF, this becomes Avi's actual parsed output. Everything downstream
-  // (Pyodide call, the STARS badge) reads from this state,
-  // not a hardcoded constant.
+  // ── STARS upload state ──
+  // starsReport starts as the demo fallback. An uploaded report goes through
+  // the review screen (StarsReview) first, and only the version the student
+  // confirms reaches the validator (STARS_PARSER_DESIGN.md §9).
   const [starsReport, setStarsReport] = useState(DEMO_STARS);
-  const [starsSource, setStarsSource] = useState("demo"); // "demo" | "parsing" | "parsed" | "manual" | "failed"
+  const [starsSource, setStarsSource] = useState("demo"); // "demo" | "parsing" | "review" | "confirmed" | "graduate"
   const [starsStatusMsg, setStarsStatusMsg] = useState("");
+  const [review, setReview] = useState(null); // { mode: "parsed" | "failed", initial, failure }
+  // Where Cancel on the review screen returns to: the demo, or the report
+  // the student confirmed before.
+  const sourceBeforeReview = useRef("demo");
   const fileInputRef = useRef(null);
+
+  const openReview = (next) => {
+    setReview(next);
+    setStarsSource("review");
+  };
 
   const handleStarsUpload = async (e) => {
     const file = e.target.files?.[0];
+    e.target.value = ""; // so choosing the same file again re-triggers this
     if (!file) return;
 
+    sourceBeforeReview.current = starsSource;
     setStarsSource("parsing");
     setStarsStatusMsg("Reading file…");
     setResult(null);
 
-    try {
-      const parsed = await parseStarsReport(file, {
-        onStatus: (msg) => setStarsStatusMsg(msg),
-      });
+    let failure = null;
+    const parsed = await parseStarsReport(file, {
+      onStatus: (msg) => setStarsStatusMsg(msg),
+      onFailure: (err) => { failure = err; },
+    });
 
-      if (!parsed) {
-        // The parser returns null when it can't read any text from the PDF.
-        setStarsSource("failed");
-        setStarsStatusMsg("Couldn't read this PDF automatically. Manual entry needed.");
-        return;
-      }
-
-      console.log("[stars] Raw parsed output:", JSON.stringify(parsed, null, 2));
-      setStarsReport(parsed);
-      setStarsSource("parsed");
-      setStarsStatusMsg(`Parsed — ${parsed.classLevel}, ${parsed.completedCourses.length} completed courses.`);
-    } catch (err) {
-      console.error("[stars] Parse error:", err);
-      setStarsSource("failed");
-      setStarsStatusMsg(`Parse error: ${err.message}. Manual entry needed.`);
+    if (parsed) {
+      openReview({ mode: "parsed", initial: parsed, failure: null });
+    } else if (failure?.check === "graduate") {
+      setStarsSource("graduate");
+    } else {
+      // A failed parse opens the same screen, empty, with the reason.
+      openReview({ mode: "failed", initial: EMPTY_REPORT, failure });
     }
+  };
+
+  const confirmReview = (confirmed) => {
+    setStarsReport(confirmed);
+    setStarsSource("confirmed");
+    setReview(null);
+    setResult(null);
+  };
+
+  const cancelReview = () => {
+    setReview(null);
+    setStarsSource(sourceBeforeReview.current);
   };
 
   // Pyodide state
@@ -371,7 +388,10 @@ export default function App() {
   // letting an invalid payload reach the validator.
   const needSections = payload.filter((p) => !p.sections.length).map((p) => p.course);
   const checkerReady = pyodideStatus === "ready"; // set only after pyodideRef is populated
-  const canValidate = expanded.length > 0 && needSections.length === 0 && !validating && !!catalog && checkerReady;
+  // An uploaded report must be confirmed on the review screen first, so no
+  // one validates against a course list they never saw.
+  const starsReady = starsSource === "demo" || starsSource === "confirmed";
+  const canValidate = expanded.length > 0 && needSections.length === 0 && !validating && !!catalog && checkerReady && starsReady;
 
   const runValidate = async () => {
     if (!checkerReady) return;
@@ -463,13 +483,19 @@ export default function App() {
           <input ref={fileInputRef} type="file" accept="application/pdf" onChange={handleStarsUpload} style={{ display: "none" }} />
           <button onClick={() => fileInputRef.current?.click()}
             className="mono chip"
-            style={{ fontSize: 11.5, color: starsSource === "parsed" ? "#eafaef" : starsSource === "failed" ? "#ffdede" : "#fff",
+            style={{ fontSize: 11.5, color: starsSource === "confirmed" ? "#eafaef" : "#fff",
               background: "rgba(255,255,255,0.16)", border: "1px solid rgba(255,255,255,0.35)", borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontFamily: "inherit" }}>
             {starsSource === "parsing" ? (starsStatusMsg || "Parsing…")
-              : starsSource === "parsed" ? `✓ STARS uploaded · ${starsReport.classLevel} · ${starsReport.completedCourses.length} completed`
-              : starsSource === "failed" ? "⚠ Parse failed — click to retry"
-              : `STARS · ${starsReport.classLevel} (demo) · ${starsReport.completedCourses.length} completed · click to upload real PDF`}
+              : starsSource === "confirmed" ? `✓ STARS checked · ${starsReport.classLevel} · ${starsReport.completedCourses.length} completed · upload another`
+              : starsSource === "review" ? "Reviewing your STARS report…"
+              : `STARS · ${starsReport.classLevel} (demo) · ${starsReport.completedCourses.length} completed · click to upload your PDF`}
           </button>
+          {starsSource === "confirmed" && (
+            <button onClick={() => { sourceBeforeReview.current = "confirmed"; openReview({ mode: "parsed", initial: starsReport, failure: null }); }} className="mono chip"
+              style={{ fontSize: 11.5, color: "#fff", background: "rgba(255,255,255,0.16)", border: "1px solid rgba(255,255,255,0.35)", borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontFamily: "inherit" }}>
+              Edit
+            </button>
+          )}
           <div className="mono" style={{ fontSize: 10, display: "flex", alignItems: "center", gap: 5, color: "#fff",
             background: "rgba(255,255,255,0.16)", border: "1px solid rgba(255,255,255,0.35)", borderRadius: 8, padding: "6px 10px" }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: pyodideStatus === "ready" ? "#6ee7a0" : pyodideStatus === "loading" ? "#ffcc00" : "#ff8a80", boxShadow: "0 0 6px currentColor" }} />
@@ -481,11 +507,12 @@ export default function App() {
         </div>
       </div>
 
-      {starsSource === "failed" && (
-        <div style={{ margin: "16px 28px 0", padding: "12px 16px", background: "#fdecea", border: "1px solid #f2b8b3", borderLeft: "4px solid #c1121f", borderRadius: 8, fontSize: 12.5, color: "#4a1210" }}>
-          Couldn't read that STARS PDF. Upload the report printed to PDF from experience.usc.edu. Manual entry
-          isn't built yet, so demo data is being used for now. Try a different PDF, or continue with the click above.
-        </div>
+      {review && (
+        <StarsReview key={review.mode + (review.failure?.check ?? "")} initial={review.initial} mode={review.mode}
+          failure={review.failure} onConfirm={confirmReview} onCancel={cancelReview} />
+      )}
+      {starsSource === "graduate" && (
+        <GraduateNotice onClose={() => setStarsSource(sourceBeforeReview.current)} />
       )}
 
       <div style={{ display: "grid", gridTemplateColumns: "minmax(340px, 430px) 1fr", gap: 24, padding: 28, alignItems: "start" }}>
@@ -657,6 +684,11 @@ export default function App() {
           {pyodideStatus === "loading" && (
             <div style={{ marginTop: 9, fontSize: 12, color: "#7a7a80", textAlign: "center" }}>
               Loading the checker…
+            </div>
+          )}
+          {!starsReady && starsSource !== "parsing" && (
+            <div style={{ marginTop: 9, fontSize: 12, color: "#7a7a80", textAlign: "center" }}>
+              Confirm your STARS details to validate.
             </div>
           )}
           {needSections.length > 0 && (
