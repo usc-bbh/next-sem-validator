@@ -1,33 +1,26 @@
-import { extractTextFromPDF } from "./textExtract";
-import { extractTextViaOCR } from "./ocrExtract";
-import { parseStarsFields } from "./fieldParser";
+import { extractTextFromPDF } from "./legacy/textExtract";
+import { parseStarsFields } from "./legacy/fieldParser";
 
-// Main entry point for the STARS parser.
+// Main entry point for the STARS parser, as the app uses it today.
 //
-// Tries text extraction first (works for PDFs downloaded directly from my.usc.edu).
-// Falls back to OCR if no text layer is found (handles scanned copies).
-// Returns null if both fail, so the UI can prompt the student to enter info manually.
+// This still runs the current parser, kept in legacy/. The rebuilt pipeline
+// (parse.js and the stage modules beside it) replaces it at milestone M4,
+// together with the validator fixes, so nothing new reaches students before
+// then. See STARS_PARSER_DESIGN.md §10.
+//
+// Supported input: a STARS report printed to PDF from experience.usc.edu,
+// which always has a text layer. Returns null if no text can be read, so the
+// UI can tell the student.
 //
 // Everything runs in the browser — no data is sent to a server.
 export async function parseStarsReport(file, options = {}) {
-  const { onProgress, onStatus } = options;
+  const { onStatus } = options;
   const status = (msg) => onStatus && onStatus(msg);
 
   const arrayBuffer = await file.arrayBuffer();
 
   status("Reading PDF...");
-  let rawText = await extractTextFromPDF(arrayBuffer);
-
-  if (!rawText) {
-    status("No text layer found, running OCR...");
-    try {
-      rawText = await extractTextViaOCR(arrayBuffer, onProgress);
-    } catch (err) {
-      console.error("OCR failed:", err);
-      status("Could not read this PDF.");
-      return null;
-    }
-  }
+  const rawText = await extractTextFromPDF(arrayBuffer);
 
   if (!rawText || rawText.replace(/\s+/g, "").length < 100) {
     status("Could not extract text from this PDF.");
@@ -40,4 +33,4 @@ export async function parseStarsReport(file, options = {}) {
   return result;
 }
 
-export { parseStarsFields } from "./fieldParser";
+export { parseStarsFields } from "./legacy/fieldParser";

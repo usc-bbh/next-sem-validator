@@ -63,13 +63,8 @@ python3 -m pytest analytics/test/
 
 ```bash
 cd gui
-node --test stars-parser/test/lineRebuilder.test.js
+node --test stars-parser/legacy/test/lineRebuilder.test.js
 ```
-
-`stars-parser/test/parser.test.js` is known to be broken. It reads text from a
-hard-coded `/tmp/stars_text` folder, and it tests a copy of the parser
-functions rather than the real module. Don't treat its result as meaningful.
-It's being replaced as part of the parser rebuild.
 
 ## The parser rebuild
 
@@ -89,7 +84,7 @@ without a new commit, run the workflow manually from the Actions tab.
 | What | Documented in |
 |---|---|
 | Validator input and output, including the `stars_summary` it reads from the parser | [`analytics/README.md`](analytics/README.md) |
-| Parser output | [`gui/stars-parser/README.md`](gui/stars-parser/README.md). Out of date: it still describes `my.usc.edu` PDFs and the OCR fallback. |
+| Parser output | [`gui/stars-parser/STARS_PARSER_DESIGN.md`](gui/stars-parser/STARS_PARSER_DESIGN.md) §8 |
 | Shared fixture pairs (`<name>.txt` parser input, `<name>.json` parser output and validator input) | [`fixtures/stars/README.md`](fixtures/stars/README.md) |
 
 ## STARS reports and privacy

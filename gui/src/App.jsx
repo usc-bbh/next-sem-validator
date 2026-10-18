@@ -257,12 +257,10 @@ export default function App() {
     try {
       const parsed = await parseStarsReport(file, {
         onStatus: (msg) => setStarsStatusMsg(msg),
-        onProgress: (page, total) => setStarsStatusMsg(`OCR: page ${page}/${total}`),
       });
 
       if (!parsed) {
-        // Parser explicitly returned null — both text extraction and OCR failed.
-        // Per Avi's README, this is the signal to prompt manual entry.
+        // The parser returns null when it can't read any text from the PDF.
         setStarsSource("failed");
         setStarsStatusMsg("Couldn't read this PDF automatically. Manual entry needed.");
         return;
@@ -485,8 +483,8 @@ export default function App() {
 
       {starsSource === "failed" && (
         <div style={{ margin: "16px 28px 0", padding: "12px 16px", background: "#fdecea", border: "1px solid #f2b8b3", borderLeft: "4px solid #c1121f", borderRadius: 8, fontSize: 12.5, color: "#4a1210" }}>
-          Couldn't read that STARS PDF automatically (tried direct text extraction and OCR). Per Avi's parser, this means manual entry is needed —
-          that flow isn't built in this GUI yet, so demo data is being used for now. Try a different PDF, or continue with the click above.
+          Couldn't read that STARS PDF. Upload the report printed to PDF from experience.usc.edu. Manual entry
+          isn't built yet, so demo data is being used for now. Try a different PDF, or continue with the click above.
         </div>
       )}
 
