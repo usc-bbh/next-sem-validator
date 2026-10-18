@@ -61,7 +61,10 @@ The "where it's made" column refers to the brief as it stood before it was retir
 ### Related work
 
 - **bbh PR #4** (`tanzil/stars-parser-scope-and-chunking`, open, last updated 8 Sept) already has a chunker (`chunker.js` plus tests), the scope narrowing, and the brief's three-value transfer `source`. It targets bbh's `stars-parser/`, which is being removed. Port the chunker into M0/M2 here, switch the `source` field to the revised taxonomy in section 7, then close PR #4.
-- **Constellation** (`bbh-course-reg-project/constellation/`, nlj19366) is a separate STARS report viewer with its own parser. It is **not** this parser and doesn't share code with it. Its `pdftext.js` also groups lines with a tolerance (`max(2, 0.4 × height)`), which is independent confirmation of the stage 2 fix.
+- **Constellation** ([usc-bbh/constellation](https://github.com/usc-bbh/constellation), Natalie; moved out of bbh-course-reg-project on 30 Sept) is a separate STARS report viewer with its own parser today.
+  - **Line rebuilding:** its `pdftext.js` also groups lines with a tolerance (`max(2, 0.4 × height)`), which independently confirms the stage 2 fix.
+  - **Requirement tree:** it already builds a requirement tree from the same blocks, and Natalie has offered it as the starting point for M5 (section 7), so the shape isn't designed twice.
+  - **Possible future:** if the shapes line up, Constellation could import this parser instead of keeping its own. That would end the duplicate-parser concern. It's Natalie's call, and it doesn't change this parser's scope.
 
 ---
 
@@ -216,12 +219,18 @@ Why this differs from the brief's three values:
 
 ### Requirement blocks (milestone 5, for the degree planner)
 
-Each labelled requirement block becomes:
+**Start from Constellation's requirement tree** (`src/parser.js` in usc-bbh/constellation) rather than designing a new shape. It already reads these blocks into:
 
-- `{ label, status: OK|NO|IP, tallies, subgroups[] }`
-- each subgroup is `{ number, status: + | - | IP+ | IP- | +R | none, needs, selectFrom, notes, courses }`
+- **block:** name, status (OK/NO/IP), sub-requirements, courses, notes, `earned` / `needs` / `inProcess` with their units, and `selectFrom`;
+- **sub-requirement:** status (`+` / `-` / `IP+` / `IP-`), an `OR` alternative, `needs`, and taken / in-progress course counts.
 
-Numbering can skip (`1)` → `3)`) and include `OR)`. This isn't needed by the validator, so it comes last, but stage 4 already lays the groundwork.
+Points to agree with Natalie when adopting it:
+
+- **Keep the raw STARS status codes.** Constellation maps them to `done` / `needs` / `progress`, which merges `IP+` (met if the in-progress courses pass) with `IP-` (not met even then). Emit the raw code, and let each app derive its own display status.
+- **Add the codes Constellation doesn't model yet:** `+R` (required sub-requirement), sub-requirements with no status marker, and skipped numbering (`1)` → `3)`).
+- **Give each block a stable `id`** derived from its stage 4 label. That way Pathwise isn't keying on free-text names that can change between reports (one of the gaps listed in its stub).
+
+This isn't needed by the validator, so it comes last, but stage 4 already lays the groundwork.
 
 ---
 
@@ -282,7 +291,7 @@ Each milestone ends with green tests and is small enough to review in one sittin
 | M2 | **Stages 3–4.** Cleaning and the block label table. | Every block in every fixture is labelled or listed in `warnings`. A test shows the label table for each fixture. |
 | M3 | **Course list, transfers, checks 1–6.** Hand-checked `.json` for the validator's fields. Not wired into the app yet. | Units reconcile on all 11. The validator test suite loads the shared `.json` files. |
 | M4 | **Full output contract, validator fixes, and the app switch, as one release.** **Parser:** GPA as nullable, `entryTerm`, `equivalents`, `waivedCourses`, graduate-report refusal. **Validator:** prerequisite and already-completed checks skip rows with `passed: false`. A transfer row counts toward a prerequisite only through an `equivalents` entry, not by the shape of its code. A `null` GPA skips GPA-threshold checks with a warning instead of failing them. **App:** `App.jsx` imports the new parser. | Golden tests for the full `.json`. Validator tests cover a `W` row, a transfer `ANTH101` with no equivalence, a transfer with one, and `gpa: null`. The Pathwise questions in section 11 are settled. |
-| M5 | **Structured requirement blocks** for the degree planner. | Requirement blocks parsed for all 11 and agreed with Natalie and Francis on shape. |
+| M5 | **Structured requirement blocks** for Pathwise, starting from Constellation's requirement tree (section 7). | Requirement blocks parsed for all 11. The shape is agreed with Natalie and Francis, close enough that Constellation could consume it. |
 
 ### Fixtures
 
@@ -332,7 +341,7 @@ Pathwise's stub also lists gaps this design already closes: `entryTerm`, the pre
 
 ### Other open questions
 
-- **Removing the old copy from bbh.** bbh `main` still has `stars-parser/`, and its README still says RegCheck pulls the parser in through a submodule. The removal commit `fd17f90` was never merged, so it's going in through a new PR. Constellation's README makes the same submodule claim, so let nlj19366 know.
+- **Removing the old copy from bbh.** bbh `main` still has `stars-parser/`, and its README still says RegCheck pulls the parser in through a submodule. The removal commit `fd17f90` was never merged, so it's going in through bbh #7. Constellation's README made the same submodule claim; Natalie is updating it.
 - **Unredacted grades:** do real letter grades sit exactly on the row baseline? We can't tell from redacted samples. The 2pt tolerance handles either case, but the first unredacted report should confirm it.
 - **The 32-unit exam-credit cap** `[inferred]`: no sample's `TRNSFR WORK` exceeds 32 while the AP rows listed do. Confirm with advising before the degree planner relies on it.
 - **Character-width inference** assumes one dominant fixed-width font per document. True on all 12 samples. Check 2 in section 9 catches a report where it isn't.

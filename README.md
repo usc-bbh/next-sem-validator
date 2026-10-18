@@ -36,8 +36,11 @@ This repo is the only home of the STARS parser (`gui/stars-parser/`) and the
 validator (`analytics/`), so fix both here. Neither has a copy in
 [bbh-course-reg-project](https://github.com/usc-bbh/bbh-course-reg-project)
 any more. The parser may move back there if the bbh degree planner starts
-using it. `fixtures/stars/` is still mirrored in bbh. bbh's `constellation/` is
-a separate STARS viewer with its own parser; it isn't this one.
+using it. `fixtures/stars/` is still mirrored in bbh.
+[Constellation](https://github.com/usc-bbh/constellation) is a separate STARS
+viewer with its own parser today. The parser's requirement-tree output (M5) is
+being built from Constellation's shape, so Constellation could later import
+this parser instead.
 
 ## Run the app
 
