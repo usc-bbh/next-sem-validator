@@ -1,0 +1,341 @@
+          STARS Report for XXXXXXXXXXXXXX                                       ID#: XXXXXXXXXX
+                                               Print Report
+                       486 Business Administration
+                           You may directly access the following sections in the STARS report
+Pertinent Data Section
+Legend
+Current Registration
+Other courses in your academic account
+Units Required for Degree
+University and Major GPA
+Minor Requirements
+General Education Requirements
+             Completed degree requirements are indicated using blue text and “OK” at the beginning of the section.
+         Outstanding requirements needed to graduate are indicated with red text and “No” at the beginning of the section.
+                             Courses with a 5-digit code indicate the year and semester.
+                    Codes ending in 1 – Spring, 2 – Summer, 3 – Fall. Examples can be found in the legend.
+PREPARED: 09/23/26 - 14:05
+PROGRAM: 486                                   CATALOG YEAR: 20251
+STARS - DEGREE PROGRESS REPORT
+BACHELOR OF SCIENCE
+BUSINESS ADMINISTRATION
+_________________________________________________________________
+PERTINENT DATA SECTION:
+Term of USC Entrance 20251  Current Class Level Junior
+CURRENT POST:  DEGREE  MAJOR  UNIT  EFFECTIVE TERM
+    486         BS     BUAD   BUAD       20251
+MINOR:  English                                             20252
+Advisor not yet designated by your Department.
+*** PLEASE BRING THIS REPORT WITH YOU WHEN YOU SEE
+YOUR ACADEMIC ADVISOR ***
+_________________________________________________________________
+         AT LEAST ONE REQUIREMENT HAS NOT BEEN SATISFIED
+_________________________________________________________________
+*****************************************************************
+NOTE: The Legend to STARS can be found at the end of this report
+*****************************************************************
+_________________________________________________________________
+**************** TIME TO DEGREE COMPLETION STATUS ***************
+        BASED ON COMPLETED COURSE WORK, YOU HAVE FOUR REMAINING
+        SEMESTERS TO DEGREE COMPLETION.  COMPLETION OF MORE
+        THAN 16 UNITS IN FUTURE SEMESTERS, OR COMPLETION OF
+        COURSE WORK IN SUMMER TERMS, MAY ACCELERATE YOUR TIME
+        TO DEGREE COMPLETION.
+_________________________________________________________________
+NO     A MINIMUM OF 128 UNITS IS REQUIRED FOR DEGREE COMPLETION:
+    EARNED: 81.00 UNITS
+IN-PROCESS: 15.00 UNITS
+--> NEEDS:  32.00 UNITS
+IP
+      20251 BUAD304       4.0 Lp    Organizational Behavior and L
+      20251 ECON351   X   4.0 Lp    Microeconomics for Business
+      20251 ENGL230    G  4.0 Lp    Shakespeare and His Times
+      20251 GESM111    G  4.0 Lp    Seminar in the Arts
+      20251 MPGU120A      2.0 Lp    Beginning Pop/Rock Guitar
+      20253 BUAD280       3.0 Lp    Introduction to Financial Acc
+      20253 BUAD307       4.0 Lp    Marketing Fundamentals
+      20253 ENGL240       4.0 Lp    Literary Arts
+      20253 WRIT150       4.0 Lp    Writing and Critical Reasonin
+      20261 ASCJ200       4.0 Lp    Navigating Media and News in
+      20261 CHEM205  LXG  4.0 Lp    Chemical Forensics: The Scien
+      20261 ENGL261    G  4.0 Lp    English Literature to 1800
+      20261 PHIL246  L G  4.0 Lp    Foundations of Cognitive Scie
+      20263 BUAD281       3.0 RG >IPIntroduction to Managerial Ac
+      20263 BUAD302       4.0 RG >IPCommunication Strategy in Bus
+      20263 ECON352   X   4.0 RG >IPMacroeconomics for Business
+      20263 JS  211    GW 4.0 RG >IPThe Holocaust
+      99993 TRNSFR WORK  32.0 TR    Total Transfer Units
+_________________________________________________________________
+IP     64-UNIT RESIDENCY REQUIREMENT HAS BEEN SATISFIED.
+    EARNED: 49.00 UNITS
+IN-PROCESS: 15.00 UNITS
+_________________________________________________________________
+NO     A MINIMUM OF 32 UPPER DIVISION UNITS IS REQUIRED FOR
+       DEGREE COMPLETION:
+    EARNED: 12.00 UNITS
+IN-PROCESS:  8.00 UNITS
+--> NEEDS:  12.00 UNITS
+_________________________________________________________________
+OK     2.0 CUMULATIVE GPA REQUIRED OF ALL USC BACCALAUREATE UNITS
+       ** NOTE: University honors are based on either the GPA
+       for the combined transferred and resident course work or
+       the GPA for resident course work, whichever is lower.
+       Note that only your USC GPA is calculated on STARS.
+    EARNED:                                           X.XXX GPA
+_________________________________________________________________
+IP     2.0 CUMULATIVE GPA REQUIRED IN ALL UPPER DIVISION COURSE
+       WORK APPLIED TO YOUR MAJOR:
+    EARNED:                                           X.XXX GPA
+      20251 BUAD304       4.0 Lp    Organizational Behavior and L
+      20251 ECON351   X   4.0 Lp    Microeconomics for Business
+      20253 BUAD307       4.0 Lp    Marketing Fundamentals
+      20263 BUAD302       4.0 RG >IPCommunication Strategy in Bus
+      20263 ECON352   X   4.0 RG >IPMacroeconomics for Business
+_________________________________________________________________
+NO     COMPOSITION/WRITING REQUIREMENT -- COURSE WORK MUST BE
+       TAKEN FOR A LETTER GRADE:
+    EARNED:                           1 SUB-GROUP
+--> NEEDS:                            1 SUB-GROUP
+  +  1) FIRST YEAR WRITING REQUIREMENT:
+                               1 COURSE TAKEN
+      20253 WRIT150       4.0 Lp    Writing and Critical Reasonin
+  -  2) UPPER DIVISION WRITING REQUIREMENT (must be taken at
+        USC):
+         NEEDS:                 1 COURSE
+        SELECT FROM: WRIT340
+_________________________________________________________________
+PLEASE NOTE THE FOLLOWING GENERAL EDUCATION LIMITATIONS:
+  1. A SINGLE COURSE MAY COUNT IN ONLY ONE G.E. CATEGORY.
+  2. NO MORE THAN 4 UNITS OF CREDIT (OR ONE COURSE)
+     COUNTING TOWARD GE REQUIREMENTS MAY BE TAKEN P/NP.
+     (NOTE: ONLY GRADES OF "P" AFFECT THIS LIMIT)
+  3. ONLY ONE GESM COURSE MAY BE TAKEN FOR GE CREDIT.
+_________________________________________________________________
+NO     GENERAL EDUCATION CORE LITERACIES REQUIREMENTS -  COMPLETE
+       EIGHT COURSES FROM SIX CATEGORIES AS FOLLOWS:
+       NOTE:   1.  FIRST YEAR FRESHMAN AT USC MUST TAKE ONE GE
+                   SEMINAR (GESM) AS ONE OF THE EIGHT COURSES.
+               2.  TRANSFER STUDENTS AND FRESHMAN ADMITTED FOR
+                   THE SPRING MUST COMPLETE AT LEAST TWO
+                   OF THEIR EIGHT CORE LITERACY COURSES AT USC,
+                   WITH A MINIMUM OF TWO COURSES OFFERED IN
+                   DORNSIFE COLLEGE DEPARTMENTS.
+               3.  NO MORE THAN ONE COURSE TAKEN P/NP (AT USC
+                   OR IN TRANSFER) MAY APPLY TO THE CORE
+                   LITERACIES.
+  +  1) CATEGORY A:  THE ARTS
+                               1 COURSE TAKEN
+      20251 GESM111    G  4.0 Lp    Seminar in the Arts
+  +  2) CATEGORY B:  HUMANISTIC INQUIRY
+                               2 COURSES TAKEN
+      20251 ENGL230    G  4.0 Lp    Shakespeare and His Times
+      20261 ENGL261    G  4.0 Lp    English Literature to 1800
+IP-  3) COMPLETE TWO COURSES FROM CATEGORY C - SOCIAL ANALYSIS:
+                               0 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20263 JS  211    GW 4.0 RG >IPThe Holocaust
+         NEEDS:                 1 COURSE
+        SELECT FROM: CATEGORY GE-C
+  +  4) CATEGORY D:  LIFE SCIENCES
+                               1 COURSE TAKEN
+      20261 PHIL246  L G  4.0 Lp    Foundations of Cognitive Scie
+  +  5) CATEGORY E:  PHYSICAL SCIENCES
+                               1 COURSE TAKEN
+      20261 CHEM205  LXG  4.0 Lp    Chemical Forensics: The Scien
+  +  6) CATEGORY F:  QUANTITATIVE REASONING
+                               1 COURSE TAKEN
+      20242 AP68:COMP     4.0 TR    AP CALCULUS BC
+  +  7) TWO COURSE DORNSIFE CORE LITERACY FOR TRANSFER STUDENTS
+        AND SPRING ADMIT FRESHMAN HAS BEEN SATISFIED.
+                               2 COURSES TAKEN
+      20251 ENGL230    G  4.0 Lp    Shakespeare and His Times
+      20261 CHEM205  LXG  4.0 Lp    Chemical Forensics: The Scien
+  +R 8) FIRST YEAR GE SEMINAR REQUIREMENT HAS BEEN MET.
+                               1 COURSE TAKEN
+      20251 GESM111    G  4.0 Lp    Seminar in the Arts
+_________________________________________________________________
+IP     GENERAL EDUCATION GLOBAL PERSPECTIVES REQUIREMENT MET.
+IP+  1) CATEGORY G - GLOBAL PERSPECTIVES I:
+                               0 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20263 JS  211    GW 4.0 RG >IPThe Holocaust
+  +  2) CATEGORY H - GLOBAL PERSPECTIVES II:
+                               1 COURSE TAKEN
+      20222 AP43:COMP     4.0 TR    AP HISTORY EUROPE
+_________________________________________________________________
+OK     MATH REQUIREMENT:
+  +  1) MATH REQUIREMENT MET.
+      20242 AP68:COMP     4.0 TR    AP CALCULUS BC
+_________________________________________________________________
+IP     ECONOMICS REQUIREMENT:
+IP+  1) ECONOMICS REQUIREMENT MET.
+                               1 COURSE TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20251 ECON351   X   4.0 Lp    Microeconomics for Business
+      20263 ECON352   X   4.0 RG >IPMacroeconomics for Business
+_________________________________________________________________
+IP     ACCOUNTING REQUIREMENT HAS BEEN SATISFIED.
+IP+  1) COMPLETE BUAD280 AND BUAD281:
+                               1 COURSE TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20253 BUAD280       3.0 Lp    Introduction to Financial Acc
+      20263 BUAD281       3.0 RG >IPIntroduction to Managerial Ac
+_________________________________________________________________
+NO     REQUIRED UPPER DIVISION BUSINESS COURSES:
+IP-  1) REQUIRED CORE BUSINESS COURSES:
+                               2 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20251 BUAD304       4.0 Lp    Organizational Behavior and L
+      20253 BUAD307       4.0 Lp    Marketing Fundamentals
+      20263 BUAD302       4.0 RG >IPCommunication Strategy in Bus
+         NEEDS:                 5 COURSES
+        SELECT FROM: BUAD306 OR BUAD308  BUAD310 OR BUAD312
+           BUAD311 OR BUAD313  BUAD425  BUAD497
+  -  2) COMPLETE 12 UNITS OF UPPER DIVISION ELECTIVE COURSES
+        FROM THE FOLLOWING DEPARTMENTS: ACCT, BAEP, BUCO,
+         FBE, DSO, MKT, MOR, OR RISK.
+         NEEDS:  12.00 UNITS
+_________________________________________________________________
+NO     MINOR REQUIREMENTS FOR ENGLISH -- NO MORE THAN ONE
+       CREATIVE WRITING WORKSHOP MAY BE TAKEN (MINOR CATALOG YEAR
+       IS PROCESSED AS 20251):
+    EARNED:  8.00 UNITS               2 SUB-GROUPS    X.XXX GPA
+--> NEEDS:  12.00 UNITS               3 SUB-GROUPS    X.XXX GPA
+  +  1) COMPLETE THE FOLLOWING INTRODUCTORY COURSE:
+                               1 COURSE TAKEN
+      20253 ENGL240       4.0 Lp    Literary Arts
+  +  2) COMPLETE ONE COURSE IN EARLY LITERATURE
+        FROM THE FOLLOWING:
+                               1 COURSE TAKEN
+      20261 ENGL261    G  4.0 Lp    English Literature to 1800
+  -  3) COMPLETE ONE COURSE IN LATER LITERATURE FROM
+        THE FOLLOWING:
+         NEEDS:                 1 COURSE
+        SELECT FROM: ENGL262  ENGL263  ENGL333  ENGL424  ENGL425
+           ENGL426  ENGL442  ENGL462  ENGL466
+  -  4) COMPLETE ONE INTERPRETIVE LENSE COURSE FROM THE
+        FOLLOWING:
+         NEEDS:                 1 COURSE
+        SELECT FROM: ENGL250  ENGL285  ENGL341  ENGL342  ENGL343
+           ENGL344  ENGL373  ENGL374  ENGL444  ENGL445  ENGL448
+           ENGL449  ENGL475  ENGL270  ENGL280  ENGL290  ENGL279
+           ENGL298  ENGL299  ENGL351  ENGL360  ENGL361  ENGL362
+           ENGL363  ENGL364  ENGL371  ENGL372  ENGL375  ENGL376
+           ENGL381  ENGL392  ENGL446  ENGL447
+  -  5) COMPLETE ONE ADDITIONAL UPPER DIVISION ELECTIVE:
+         NEEDS:                 1 COURSE
+        SELECT FROM: ENGL300 TO ENGL499
+_________________________________________________________________
+NO     A MINIMUM OF 16 UNITS MUST BE UNIQUE TO THE ENGLISH
+       MINOR:
+       IS PROCESSED AS 20251):
+--> NEEDS:                            1 SUB-GROUP
+  -  1) AT LEAST FOUR COURSES (16 UNITS) MUST BE UNIQUE TO THE
+        MINOR (NOT REQUIRED TO FULFILL A MAJOR OR ANOTHER
+        MINOR REQUIREMENT):
+        (  8.00 UNITS TAKEN  ) 2 COURSES TAKEN
+      20253 ENGL240       4.0 Lp    Literary Arts
+      20261 ENGL261    G  4.0 Lp    English Literature to 1800
+         NEEDS:   8.00 UNITS    2 COURSES
+_________________________________________________________________
+       CURRENT REGISTRATION:
+IP
+      20263 BUAD281       3.0 RG >IPIntroduction to Managerial Ac
+      20263 BUAD302       4.0 RG >IPCommunication Strategy in Bus
+      20263 ECON352   X   4.0 RG >IPMacroeconomics for Business
+      20263 JS  211    GW 4.0 RG >IPThe Holocaust
+_________________________________________________________________
+OTHER COURSES IN YOUR ACADEMIC ACCOUNT:
+      20212 AP53:COMP     4.0 TR    AP HUMAN GEOGRAPHY
+      20222 AP14:COMP     4.0 TR    AP STUDIO ART: DRAWING
+      20232 AP40:COMP     4.0 TR    AP ENVIRON SCIENCE
+      20241 DIPLOMA+2     2.0 TR    DIPLOMA 2 IB UNITS
+      20241 ENGLISH       6.0 TR    IBTEST: ENGLISH
+      20241 HIS/AMERIC    6.0 TR    IBTEST: HISTORY AMERICAS
+      20241 SPORT         6.0 TR    IBTEST: SPORT EXER SCIENCE
+      20251 MPGU120A      2.0 Lp    Beginning Pop/Rock Guitar
+      20261 ASCJ200       4.0 Lp    Navigating Media and News in
+_________________________________________________________________
+                     ****  LEGEND  ****
+REQUIREMENT STATUS CODES:      COURSE SUFFIXES:
+  NO = REQUIREMENT INCOMPLETE    G = GENERAL EDUCATION COURSE
+  OK = REQUIREMENT COMPLETE      L = COURSE WITH A LAB
+  -  = SUB-REQUIREMENT NOT MET   X = COURSE CREDIT RESTRICTION
+  +  = SUB-REQUIREMENT MET       M = COURSE MEETS DIVERSITY
+                                 P = COURSE MEETS TRADITIONS AND
+                                     HISTORICAL FOUNDATIONS
+                                 W = COURSE MEETS CITIZENSHIP IN
+                                     A GLOBAL ERA
+REGISTRATION TERMS:            COURSE FLAGS:
+20263 = FALL SEMESTER 2026       >D = CREDIT DELETED, BUT
+20271 = SPRING SEMESTER 2027          INCLUDED IN GPA
+20272 = SUMMER SEMESTER 2027    >Z = CREDIT DELETED AND NOT
+                                      INCLUDED IN GPA
+GRADE DEFINITIONS:               >FF= TRANSFER AND FRESHMAN
+  TR = TRANSFER COURSE                FORGIVNESS -- NOT INCLUDED
+  RG = CURRENT REGISTRATION           IN GPA.
+  IN = INCOMPLETE                >R = REPEATABLE COURSE
+  IX = EXPIRED INCOMPLETE        >IP= IN-PROGRESS COURSE
+  MG = MISSING GRADE             >EX= EXCESS CREDIT -- CREDIT
+  NS = GRADE NOT SUBMITTED            DELETED BUT INCLUDED IN GPA
+                                 R = REQUIRED SUB-REQUIREMENT
+                                (R)= REQUIRED COURSE
+                                 >OS= REPETITIOUS -- TAKEN OUT
+                                      OF SEQUENCE.  NO UNIT OR
+                                      GPA CREDIT ALLOWED.
+                                 >P   COURSE TAKEN ON P/NP OPTION
+                 ***** EXCEPTION CODES *****
+RE = REQUIREMENT EXCHANGE        RA = REQUIREMENT ALTERNATIVE
+CW = COURSE WAIVER               UW = UNIT WAIVER
+RW = REQUIREMENT WAIVER
+_________________________________________________________________
+########  INTERNAL USE ONLY -- FOR DEGREE PROGRESS AUDIT ########
+        A: Total number of units REQUIRED for this Degree: 128.00
+        B: Total number of FREE ELECTIVES in this PoSt: 28.00
+IP      C: Total USC/TR units applied to subject requirements:
+          47.00 UNITS EARNED
+IN-P ---> 15.00 UNITS
+        D: Total number of units accepted in Transfer:
+          32.00 UNITS EARNED
+        E: Transfer units applied to subject requirements:
+           8.00 UNITS EARNED
+        SUBJ Unmet: A _____ - B ______ - C  ______= F ______.
+_________________________________________________________________
+       ##### FA INTERNAL AUDITING - FOR INTERNAL USE ONLY #####
+IN-PROCESS: 15.00 UNITS
+IP      FALL 2026 DEGREE APPLICABLE SUMMARY (Subject):
+      20263 BUAD281       3.0 RG >IPIntroduction to Managerial Ac
+      20263 BUAD302       4.0 RG >IPCommunication Strategy in Bus
+      20263 ECON352   X   4.0 RG >IPMacroeconomics for Business
+      20263 JS  211    GW 4.0 RG >IPThe Holocaust
+        SUMMARY OF ELECTIVES APPLIED IN PRIOR TERMS (MAX NUMBER
+        OF FREE ELECTIVES IN THIS PROGRAM = 28.00):
+        ( 32.00 UNITS TAKEN  )
+      20212 AP53:COMP     4.0 TR    AP HUMAN GEOGRAPHY
+      20222 AP14:COMP     4.0 TR    AP STUDIO ART: DRAWING
+      20232 AP40:COMP     4.0 TR    AP ENVIRON SCIENCE
+      20241 DIPLOMA+2     2.0 TR    DIPLOMA 2 IB UNITS
+      20241 ENGLISH       6.0 TR    IBTEST: ENGLISH
+      20241 HIS/AMERIC    6.0 TR    IBTEST: HISTORY AMERICAS
+      20241 SPORT         6.0 TR    IBTEST: SPORT EXER SCIENCE
+        SELECT FROM: *************(THROUGH 262 )
+_________________________________________________________________
+The Degree Progress Advisement report has been prepared to
+assist you in determining your academic progress at the
+University of Southern California.  Although efforts have been
+made to ensure its accuracy, the student is responsible for the
+completion of all graduation requirements.
+If this report does not appear to be accurate, please contact
+your academic advisor, and bring this report with you. The
+Office of Academic Records and Registrar along with your major
+department will certify your successful completion of degree
+requirements.
+Any exceptions (i.e.,course substitutions, waivers, recitals,
+etc.) you have had approved for your major should appear on
+your STARS report. If you believe an error exists on your
+STARS report, please consult with your academic advisor.
+_________________________________________________________________
+************************ END OF ANALYSIS ************************
+Need help?
+Technical Issues: ITS Service Desk (213) 740-5555 | consult@usc.edu
+Privacy Notice | Notice of Non-Discrimination | Digital Accessibility

@@ -1,0 +1,291 @@
+9/25/26, 7:50 PM                                      USC STARS Report
+          STARS Report for XXXXXXXXXX                                           ID#: XXXXXXXXXX
+                                               Print Report
+                       1915 Arti fi cial Intelligence for Business
+                           You may directly access the following sections in the STARS report
+Pertinent Data Section
+Major Requirements
+Legend
+Current Registration
+Other courses in your academic account
+Units Required for Degree
+University and Major GPA
+General Education Requirements
+             Completed degree requirements are indicated using blue text and “OK” at the beginning of the section.
+         Outstanding requirements needed to graduate are indicated with red text and “No” at the beginning of the section.
+                             Courses with a 5-digit code indicate the year and semester.
+                    Codes ending in 1 – Spring, 2 – Summer, 3 – Fall. Examples can be found in the legend.
+PREPARED: 09/14/26 - 10:30
+PROGRAM: 1915                                  CATALOG YEAR: 20263
+STARS - DEGREE PROGRESS REPORT
+BACHELOR OF SCIENCE
+ARTIFICIAL INTELLIGENCE FOR BUSINESS
+_________________________________________________________________
+PERTINENT DATA SECTION:
+Term of USC Entrance 20263  Current Class Level Sophomore
+CURRENT POST:  DEGREE  MAJOR  UNIT  EFFECTIVE TERM
+    1915        BS     BUAI   BUAD       20263
+MINOR:  No minor declared
+Advisor not yet designated by your Department.
+*** PLEASE BRING THIS REPORT WITH YOU WHEN YOU SEE
+YOUR ACADEMIC ADVISOR ***
+_________________________________________________________________
+         AT LEAST ONE REQUIREMENT HAS NOT BEEN SATISFIED
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                 1/6
+9/25/26, 7:50 PM                                      USC STARS Report
+_________________________________________________________________
+*****************************************************************
+NOTE: The Legend to STARS can be found at the end of this report
+*****************************************************************
+_________________________________________________________________
+NO     A MINIMUM OF 128 UNITS IS REQUIRED FOR DEGREE COMPLETION,
+       WITH AT LEAST 64 UNITS COMPLETED AT USC:
+    EARNED: 32.00 UNITS
+IN-PROCESS: 18.00 UNITS
+--> NEEDS:  78.00 UNITS
+      20263 BUAD112       2.0 RG >IPAI for Business Freshman Acad
+      20263 BUAD312    G  4.0 RG >IPStatistics and Data Science f
+      20263 CSCI113   X   4.0 RG >IPProgramming Fundamentals for
+      20263 ECON351   X   4.0 RG >IPMicroeconomics for Business
+      20263 WRIT150       4.0 RG >IPWriting and Critical Reasonin
+      99993 TRNSFR WORK  32.0 TR    Total Transfer Units
+_________________________________________________________________
+NO     A MINIMUM OF 64 UNDERGRADUATE UNITS MUST COMPLETED AT USC:
+IN-PROCESS: 18.00 UNITS
+--> NEEDS:  46.00 UNITS
+_________________________________________________________________
+NO     A MINIMUM OF 32 UPPER DIVISION UNITS IS REQUIRED FOR
+       DEGREE COMPLETION:
+IN-PROCESS:  8.00 UNITS
+--> NEEDS:  24.00 UNITS
+_________________________________________________________________
+NO     2.0 CUMULATIVE GPA REQUIRED OF ALL USC BACCALAUREATE UNITS
+       ** NOTE: University honors are based on either the GPA
+       for the combined transferred and resident course work or
+       the GPA for resident course work, whichever is lower.
+       Note that only your USC GPA is calculated on STARS.
+--> NEEDS:                                            X.XXX GPA
+_________________________________________________________________
+IP     2.0 CUMULATIVE GPA REQUIRED IN ALL UPPER DIVISION COURSE
+       WORK APPLIED TO YOUR MAJOR:
+      20263 BUAD312    G  4.0 RG >IPStatistics and Data Science f
+      20263 ECON351   X   4.0 RG >IPMicroeconomics for Business
+_________________________________________________________________
+NO     COMPOSITION/WRITING REQUIREMENT -- COURSE WORK MUST BE
+       TAKEN FOR A LETTER GRADE:
+    EARNED:                           1 SUB-GROUP
+--> NEEDS:                            1 SUB-GROUP
+IP+  1) FIRST YEAR WRITING REQUIREMENT:
+                               0 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20263 WRIT150       4.0 RG >IPWriting and Critical Reasonin
+  -  2) UPPER DIVISION WRITING REQUIREMENT (must be taken at
+        USC):
+         NEEDS:                 1 COURSE
+        SELECT FROM: WRIT340
+_________________________________________________________________
+PLEASE NOTE THE FOLLOWING GENERAL EDUCATION LIMITATIONS:
+  1. A SINGLE COURSE MAY COUNT IN ONLY ONE G.E. CATEGORY.
+  2. NO MORE THAN 4 UNITS OF CREDIT (OR ONE COURSE)
+     COUNTING TOWARD GE REQUIREMENTS MAY BE TAKEN P/NP.
+     (NOTE: ONLY GRADES OF "P" AFFECT THIS LIMIT)
+  3. ONLY ONE GESM COURSE MAY BE TAKEN FOR GE CREDIT.
+_________________________________________________________________
+NO     GENERAL EDUCATION CORE LITERACIES REQUIREMENTS -  COMPLETE
+       EIGHT COURSES FROM SIX CATEGORIES AS FOLLOWS:
+       NOTE:   1.  FIRST YEAR FRESHMAN AT USC MUST TAKE ONE GE
+                   SEMINAR (GESM) AS ONE OF THE EIGHT COURSES.
+               2.  TRANSFER STUDENTS AND FRESHMAN ADMITTED FOR
+                   THE SPRING MUST COMPLETE AT LEAST TWO
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                 2/6
+9/25/26, 7:50 PM                                      USC STARS Report
+                   OF THEIR EIGHT CORE LITERACY COURSES AT USC,
+                   WITH A MINIMUM OF TWO COURSES OFFERED IN
+                   DORNSIFE COLLEGE DEPARTMENTS.
+               3.  NO MORE THAN ONE COURSE TAKEN P/NP (AT USC
+                   OR IN TRANSFER) MAY APPLY TO THE CORE
+                   LITERACIES.
+  -  1) COMPLETE ONE COURSE FROM CATEGORY A - THE ARTS:
+         NEEDS:                 1 COURSE
+        SELECT FROM: CATEGORY GE-A
+  -  2) COMPLETE TWO COURSES FROM CATEGORY B - HUMANISTIC
+        INQUIRY:
+         NEEDS:                 2 COURSES
+        SELECT FROM: CATEGORY GE-B
+  -  3) COMPLETE TWO COURSES FROM CATEGORY C - SOCIAL ANALYSIS:
+         NEEDS:                 2 COURSES
+        SELECT FROM: CATEGORY GE-C
+  -  4) COMPLETE ONE COURSE FROM CATEGORY D - LIFE SCIENCES:
+         NEEDS:                 1 COURSE
+        SELECT FROM: CATEGORY GE-D
+  +  5) CATEGORY E:  PHYSICAL SCIENCES
+                               1 COURSE TAKEN
+      20232 AP83:COMP     4.0 TR    AP PHYSICS 1
+  +  6) CATEGORY F:  QUANTITATIVE REASONING
+                               1 COURSE TAKEN
+      20232 AP34:COMP     4.0 TR    AP MICROECONOMICS
+  -  7) FIRST YEAR GE SEMINAR REQUIREMENT HAS NOT BEEN
+        SATISFIED.
+         NEEDS:                 1 COURSE
+_________________________________________________________________
+NO     GENERAL EDUCATION GLOBAL PERSPECTIVES REQUIREMENT -
+       COMPLETE ONE COURSE FROM EACH OF THE FOLLOWING TWO
+       CATEGORIES (NOTE: A COURSE MAY APPLY TO BOTH A CORE
+       LITERACY REQUIREMENT AND A GLOBAL PERSPECTIVES
+       REQUIREMENT):
+  -  1) CATEGORY G - GLOBAL PERSPECTIVES I:
+         NEEDS:                 1 COURSE
+        SELECT FROM: CATEGORY GE-G
+  +  2) CATEGORY H - GLOBAL PERSPECTIVES II:
+                               1 COURSE TAKEN
+      20232 AP93:COMP     4.0 TR    AP WORLD HISTORY
+_________________________________________________________________
+OK     MATH REQUIREMENT:
+  +  1) COMPLETE MATH125 (OR HIGHER LEVEL CALCULUS COURSE):
+      20252 AP66:COMP     4.0 TR    AP CALCULUS AB
+_________________________________________________________________
+NO     MAJOR REQUIREMENTS FOR BUSINESS ADMINISTRATION -
+       ACCOUNTING COURSES:
+  -  1) COMPLETE BUAD280 AND BUAD281:
+         NEEDS:                 2 COURSES
+        SELECT FROM: BUAD280  BUAD281
+_________________________________________________________________
+***************************************************
+INTERNATIONAL STUDENTS WORKING TOWARD THE BUSINESS
+DEGREE ARE EXPECTED TO TAKE ALI 262, ARGUMENTATION.
+***************************************************
+_________________________________________________________________
+NO     MAJOR REQUIREMENTS FOR ARTIFICAL INELLIGENCE FOR BUSINESS:
+IP-  1) REQUIRED COURSE WORK:
+                               1 COURSE TAKEN
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                 3/6
+9/25/26, 7:50 PM                                      USC STARS Report
+IN-P --->                      1 COURSE TAKEN
+      20263 BUAD312    G  4.0 RG >IPStatistics and Data Science f
+      20263 ECON351   X   4.0 RG >IPMicroeconomics for Business
+         NEEDS:                10 COURSES
+        SELECT FROM: BUAD302  BUAD304  BUAD306 OR BUAD308
+           BUAD307  BUAD311 OR BUAD313  BUAD497  CSCI360
+           ECON352  EE  141  EIS 370
+IP-  2) A "C" OR BETTER IS REQUIRED IN THE FOLLOWING REQUIRED
+        COURSE WORK:
+                               0 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20263 CSCI113   X   4.0 RG >IPProgramming Fundamentals for
+         NEEDS:                 2 COURSES
+        SELECT FROM: CSCI114  CSCI170
+  -  3) COMPLETE THREE FROM THE FOLLOWING:
+         NEEDS:                 3 COURSES
+        SELECT FROM: CSCI444  CSCI445  CSCI467  CSCI468  CSCI469
+           TAC 259  TAC 359  TAC 449  TAC 459
+IP-  4) INTEGRATED REQUIREMENTS COURSE WORK:
+                               0 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20263 BUAD112       2.0 RG >IPAI for Business Freshman Acad
+         NEEDS:                 3 COURSES
+        SELECT FROM: DSO 429  DSO 488  MOR 458
+_________________________________________________________________
+YOUR PROGRAM REQUIRES A PRACTICUM.  PLEASE CONTACT YOUR
+ACADEMIC ADVISOR FOR ASSISTANCE IN MEETING THIS REQUIREMENT.
+NO
+  -  1) PRACTICUM HAS NOT BEEN COMPLETED.
+_________________________________________________________________
+       CURRENT REGISTRATION:
+IP
+      20263 BUAD112       2.0 RG >IPAI for Business Freshman Acad
+      20263 BUAD312    G  4.0 RG >IPStatistics and Data Science f
+      20263 CSCI113   X   4.0 RG >IPProgramming Fundamentals for
+      20263 ECON351   X   4.0 RG >IPMicroeconomics for Business
+      20263 WRIT150       4.0 RG >IPWriting and Critical Reasonin
+_________________________________________________________________
+OTHER COURSES IN YOUR ACADEMIC ACCOUNT:
+      20232 AP35:COMP     4.0 TR    AP MACROECONOMICS
+      20242 AP31:COMP     4.0 TR    AP COMPUTER SCIENCE A
+      20242 AP43:COMP     4.0 TR    AP HISTORY EUROPE
+      20242 AP84:COMP     4.0 TR    AP PHYSICS 2
+      20252 AP07:COMP     4.0 TR    AP HISTORY AMERICA
+      20252 AP80:COMP     4.0 TR    AP PHYSICS C MECH
+      20252 AP90:COMP     4.0 TR    AP STATISTICS
+      20262 AP68:COMP     4.0 TR    AP CALCULUS BC
+_________________________________________________________________
+                     ****  LEGEND  ****
+REQUIREMENT STATUS CODES:      COURSE SUFFIXES:
+  NO = REQUIREMENT INCOMPLETE    G = GENERAL EDUCATION COURSE
+  OK = REQUIREMENT COMPLETE      L = COURSE WITH A LAB
+  -  = SUB-REQUIREMENT NOT MET   X = COURSE CREDIT RESTRICTION
+  +  = SUB-REQUIREMENT MET       M = COURSE MEETS DIVERSITY
+                                 P = COURSE MEETS TRADITIONS AND
+                                     HISTORICAL FOUNDATIONS
+                                 W = COURSE MEETS CITIZENSHIP IN
+                                     A GLOBAL ERA
+REGISTRATION TERMS:            COURSE FLAGS:
+20263 = FALL SEMESTER 2026       >D = CREDIT DELETED, BUT
+20271 = SPRING SEMESTER 2027          INCLUDED IN GPA
+20272 = SUMMER SEMESTER 2027    >Z = CREDIT DELETED AND NOT
+                                      INCLUDED IN GPA
+GRADE DEFINITIONS:               >FF= TRANSFER AND FRESHMAN
+  TR = TRANSFER COURSE                FORGIVNESS -- NOT INCLUDED
+  RG = CURRENT REGISTRATION           IN GPA.
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                 4/6
+9/25/26, 7:50 PM                                      USC STARS Report
+  IN = INCOMPLETE                >R = REPEATABLE COURSE
+  IX = EXPIRED INCOMPLETE        >IP= IN-PROGRESS COURSE
+  MG = MISSING GRADE             >EX= EXCESS CREDIT -- CREDIT
+  NS = GRADE NOT SUBMITTED            DELETED BUT INCLUDED IN GPA
+                                 R = REQUIRED SUB-REQUIREMENT
+                                (R)= REQUIRED COURSE
+                                 >OS= REPETITIOUS -- TAKEN OUT
+                                      OF SEQUENCE.  NO UNIT OR
+                                      GPA CREDIT ALLOWED.
+                                 >P   COURSE TAKEN ON P/NP OPTION
+                 ***** EXCEPTION CODES *****
+RE = REQUIREMENT EXCHANGE        RA = REQUIREMENT ALTERNATIVE
+CW = COURSE WAIVER               UW = UNIT WAIVER
+RW = REQUIREMENT WAIVER
+_________________________________________________________________
+########  INTERNAL USE ONLY -- FOR DEGREE PROGRESS AUDIT ########
+        A: Total number of units REQUIRED for this Degree: 128.00
+        B: Total number of FREE ELECTIVES in this PoSt: -12.00
+IP      C: Total USC/TR units applied to subject requirements:
+          16.00 UNITS EARNED
+IN-P ---> 18.00 UNITS
+        D: Total number of units accepted in Transfer:
+          32.00 UNITS EARNED
+        E: Transfer units applied to subject requirements:
+          16.00 UNITS EARNED
+        SUBJ Unmet: A _____ - B ______ - C  ______= F ______.
+_________________________________________________________________
+       ##### FA INTERNAL AUDITING - FOR INTERNAL USE ONLY #####
+IN-PROCESS: 18.00 UNITS
+IP      FALL 2026 DEGREE APPLICABLE SUMMARY (Subject):
+      20263 BUAD112       2.0 RG >IPAI for Business Freshman Acad
+      20263 BUAD312    G  4.0 RG >IPStatistics and Data Science f
+      20263 CSCI113   X   4.0 RG >IPProgramming Fundamentals for
+      20263 ECON351   X   4.0 RG >IPMicroeconomics for Business
+      20263 WRIT150       4.0 RG >IPWriting and Critical Reasonin
+        SUMMARY OF ELECTIVES APPLIED IN PRIOR TERMS (MAX NUMBER
+        OF FREE ELECTIVES IN THIS PROGRAM = -12.00):
+        SELECT FROM: *************(THROUGH 262 )
+_________________________________________________________________
+The Degree Progress Advisement report has been prepared to
+assist you in determining your academic progress at the
+University of Southern California.  Although efforts have been
+made to ensure its accuracy, the student is responsible for the
+completion of all graduation requirements.
+If this report does not appear to be accurate, please contact
+your academic advisor, and bring this report with you. The
+Office of Academic Records and Registrar along with your major
+department will certify your successful completion of degree
+requirements.
+Any exceptions (i.e.,course substitutions, waivers, recitals,
+etc.) you have had approved for your major should appear on
+your STARS report. If you believe an error exists on your
+STARS report, please consult with your academic advisor.
+_________________________________________________________________
+************************ END OF ANALYSIS ************************
+Need help?
+Technical Issues: ITS Service Desk (213) 740-5555 | consult@usc.edu
+Privacy Notice | Notice of Non-Discrimination | Digital Accessibility
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                 5/6
+9/25/26, 7:50 PM                                      USC STARS Report
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                 6/6
