@@ -1,0 +1,181 @@
+{
+  "meta": {
+    "prepared": "09/14/26",
+    "programCode": "486",
+    "catalogYear": "20263",
+    "redacted": true,
+    "warnings": []
+  },
+  "degree": "BS",
+  "major": "Business Administration",
+  "classLevel": "Freshman",
+  "entryTerm": "20263",
+  "expectedGraduation": null,
+  "gpa": null,
+  "posts": [
+    {
+      "program": "486",
+      "degree": "BS",
+      "major": "BUAD",
+      "school": "BUAD",
+      "term": "20263"
+    }
+  ],
+  "minors": [],
+  "units": {
+    "required": 128,
+    "earned": 19,
+    "inProgress": 18,
+    "transferTotal": 16
+  },
+  "completedCourses": [
+    {
+      "term": "20242",
+      "code": "CORE 195",
+      "rawCode": "CORE195",
+      "title": "Summer Seminar",
+      "units": 3,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP25:COMP",
+      "rawCode": "AP25:COMP",
+      "title": "AP CHEMISTRY",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP66:COMP",
+      "rawCode": "AP66:COMP",
+      "title": "AP CALCULUS AB",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20262",
+      "code": "AP20:COMP",
+      "rawCode": "AP20:COMP",
+      "title": "AP BIOLOGY",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20262",
+      "code": "AP68:COMP",
+      "rawCode": "AP68:COMP",
+      "title": "AP CALCULUS BC",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    }
+  ],
+  "inProgressCourses": [
+    {
+      "term": "20263",
+      "code": "BUAD 304",
+      "rawCode": "BUAD304",
+      "title": "Organizational Behavior and L",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "ECON 351",
+      "rawCode": "ECON351",
+      "title": "Microeconomics for Business",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "X"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "MUSC 373",
+      "rawCode": "MUSC373",
+      "title": "Writing About Popular Music",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "TAC 115",
+      "rawCode": "TAC 115",
+      "title": "Programming in Python",
+      "units": 2,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "WRIT 150",
+      "rawCode": "WRIT150",
+      "title": "Writing and Critical Reasonin",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    }
+  ],
+  "equivalents": [],
+  "waivedCourses": []
+}

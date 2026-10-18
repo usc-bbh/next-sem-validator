@@ -1,0 +1,565 @@
+{
+  "meta": {
+    "prepared": "09/14/26",
+    "programCode": "365",
+    "catalogYear": "20243",
+    "redacted": true,
+    "warnings": []
+  },
+  "degree": "BS",
+  "major": "Computer Science",
+  "classLevel": "Senior",
+  "entryTerm": "20243",
+  "expectedGraduation": "15 DECEMBER 2027",
+  "gpa": null,
+  "posts": [
+    {
+      "program": "365",
+      "degree": "BS",
+      "major": "CSCI",
+      "school": "ENGR",
+      "term": "20243"
+    }
+  ],
+  "minors": [
+    {
+      "name": "Musical Studies",
+      "effectiveTerm": "20263",
+      "catalogYear": "20243"
+    }
+  ],
+  "units": {
+    "required": 128,
+    "earned": 103,
+    "inProgress": 18,
+    "transferTotal": 32
+  },
+  "completedCourses": [
+    {
+      "term": "20212",
+      "code": "AP32:COMP",
+      "rawCode": "AP32:COMP",
+      "title": "AP COMPUTER SCI PRINCIPLES",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20212",
+      "code": "AP53:COMP",
+      "rawCode": "AP53:COMP",
+      "title": "AP HUMAN GEOGRAPHY",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20222",
+      "code": "AP90:COMP",
+      "rawCode": "AP90:COMP",
+      "title": "AP STATISTICS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20222",
+      "code": "AP31:COMP",
+      "rawCode": "AP31:COMP",
+      "title": "AP COMPUTER SCIENCE A",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20222",
+      "code": "AP57:COMP",
+      "rawCode": "AP57:COMP",
+      "title": "AP U.S. GOVERNMENT",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP25:COMP",
+      "rawCode": "AP25:COMP",
+      "title": "AP CHEMISTRY",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP93:COMP",
+      "rawCode": "AP93:COMP",
+      "title": "AP WORLD HISTORY",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP36:COMP",
+      "rawCode": "AP36:COMP",
+      "title": "AP ENGL LANG AND COMP",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP66:COMP",
+      "rawCode": "AP66:COMP",
+      "title": "AP CALCULUS AB",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP37:COMP",
+      "rawCode": "AP37:COMP",
+      "title": "AP ENGLISH LIT AND COMP",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP48:COMP",
+      "rawCode": "AP48:COMP",
+      "title": "AP FRENCH LANG",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP68:COMP",
+      "rawCode": "AP68:COMP",
+      "title": "AP CALCULUS BC",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "CSCI 103",
+      "rawCode": "CSCI103",
+      "title": "Introduction to Programming",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "L"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "CSCI 170",
+      "rawCode": "CSCI170",
+      "title": "Discrete Methods in Computer",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "ENGR 102",
+      "rawCode": "ENGR102",
+      "title": "Engineering Freshman Academy",
+      "units": 2,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "GESM 111",
+      "rawCode": "GESM111",
+      "title": "Seminar in the Arts",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "MATH 229",
+      "rawCode": "MATH229",
+      "title": "Calculus III for Engineers an",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "CSCI 104",
+      "rawCode": "CSCI104",
+      "title": "Data Structures and Object Or",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "L"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "IR 101",
+      "rawCode": "IR  101",
+      "title": "International Relations",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "X",
+        "G",
+        "W"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "MATH 225",
+      "rawCode": "MATH225",
+      "title": "Linear Algebra and Linear Dif",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "MUEN 310",
+      "rawCode": "MUEN310",
+      "title": "University Concert Choir",
+      "units": 1,
+      "grade": "CR",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "PHED 120A",
+      "rawCode": "PHED120A",
+      "title": "Yoga",
+      "units": 1,
+      "grade": "Pp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "WRIT 150",
+      "rawCode": "WRIT150",
+      "title": "Writing and Critical Reasonin",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "CSCI 201",
+      "rawCode": "CSCI201",
+      "title": "Principles of Software Develo",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "CSCI 270",
+      "rawCode": "CSCI270",
+      "title": "Introduction to Algorithms an",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "EE 109",
+      "rawCode": "EE  109",
+      "title": "Introduction to Embedded Syst",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "L"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "ENGL 270",
+      "rawCode": "ENGL270",
+      "title": "Studying Narrative",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "PHED 144",
+      "rawCode": "PHED144",
+      "title": "Pickleball",
+      "units": 1,
+      "grade": "Pp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "CHEM 105B",
+      "rawCode": "CHEM105B",
+      "title": "General Chemistry",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "L"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "CSCI 356",
+      "rawCode": "CSCI356",
+      "title": "Computer Systems",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "DANC 185A",
+      "rawCode": "DANC185A",
+      "title": "Hip Hop Dance",
+      "units": 2,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "EIS 103",
+      "rawCode": "EIS 103",
+      "title": "Information Literacy: Navigat",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "TAC 435",
+      "rawCode": "TAC 435",
+      "title": "Professional C++",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    }
+  ],
+  "inProgressCourses": [
+    {
+      "term": "20263",
+      "code": "CSCI 310",
+      "rawCode": "CSCI310",
+      "title": "Software Engineering",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "CSCI 350",
+      "rawCode": "CSCI350",
+      "title": "Fundamentals of Operating Sys",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "CSCI 360",
+      "rawCode": "CSCI360",
+      "title": "Artificial Intelligence: Prin",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "MATH 407",
+      "rawCode": "MATH407",
+      "title": "Probability Theory",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "MPVA 301",
+      "rawCode": "MPVA301",
+      "title": "Individual Instruction",
+      "units": 2,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    }
+  ],
+  "equivalents": [],
+  "waivedCourses": []
+}

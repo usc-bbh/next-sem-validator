@@ -467,3 +467,46 @@ def test_validate_next_semester_raises_on_bad_dept_clearance_version(planned_cou
     bad = {**dept_clearance, "_schema_version": "0.1"}
     with pytest.raises(ValueError):
         validate_next_semester(planned_courses, stars_summary, course_catalog, bad)
+
+
+# ---- shared redacted STARS samples -------------------------------------------
+# The parser's expected output for each redacted sample report
+# (fixtures/stars/<name>.json, produced from <name>.txt) is this validator's
+# stars_summary input. These run the validator on all of them, so a change to
+# the parser's output shape breaks a test here too.
+
+REAL_SAMPLES = sorted(
+    p.name for p in SHARED_STARS.glob("*.json") if p.name != "mock_stars_report.json"
+)
+
+
+def test_real_samples_are_present():
+    assert len(REAL_SAMPLES) == 11
+
+
+@pytest.mark.parametrize("name", REAL_SAMPLES)
+def test_validator_runs_on_real_sample(name, planned_courses, course_catalog, dept_clearance):
+    summary = load_shared_stars(name)
+    result = validate_next_semester(planned_courses, summary, course_catalog, dept_clearance)
+    assert {r.course for r in result.course_results} == {p["course"] for p in planned_courses}
+
+
+@pytest.mark.parametrize("name", REAL_SAMPLES)
+def test_already_taken_reads_real_sample_codes(name):
+    summary = load_shared_stars(name)
+    # First-semester samples have no completed USC course, only exam credit.
+    for done in [c for c in summary["completedCourses"] if c["source"] == "usc" and c["passed"]][:1]:
+        assert _check_already_taken(done["code"], summary).status == "fail"
+    completed = {c["code"] for c in summary["completedCourses"]}
+    doing = next(c for c in summary["inProgressCourses"] if c["code"] not in completed)
+    assert _check_already_taken(doing["code"], summary).status == "warning"
+
+
+@pytest.mark.xfail(strict=True, reason="M4: already-taken must skip rows with passed: false")
+def test_withdrawn_course_is_not_already_completed():
+    # ene_fr_withdrawals withdrew from MATH 226 (W, 0 units). Planning it again
+    # isn't retaking a completed course.
+    summary = load_shared_stars("ene_fr_withdrawals.json")
+    assert any(c["code"] == "MATH 226" and c["grade"] == "W" for c in summary["completedCourses"])
+    result = _check_already_taken("MATH 226", summary)
+    assert result is None or result.status != "fail"

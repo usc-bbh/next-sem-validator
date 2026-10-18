@@ -1,0 +1,502 @@
+{
+  "meta": {
+    "prepared": "07/01/26",
+    "programCode": "1915",
+    "catalogYear": "20243",
+    "redacted": true,
+    "warnings": []
+  },
+  "degree": "BS",
+  "major": "Artificial Intelligence for Business",
+  "classLevel": "Senior",
+  "entryTerm": "20243",
+  "expectedGraduation": null,
+  "gpa": null,
+  "posts": [
+    {
+      "program": "1915",
+      "degree": "BS",
+      "major": "BUAI",
+      "school": "BUAD",
+      "term": "20243"
+    }
+  ],
+  "minors": [
+    {
+      "name": "Applied Analytics",
+      "effectiveTerm": "20251",
+      "catalogYear": "20243"
+    }
+  ],
+  "units": {
+    "required": 128,
+    "earned": 96,
+    "inProgress": 24,
+    "transferTotal": 28
+  },
+  "completedCourses": [
+    {
+      "term": "20222",
+      "code": "AP93:COMP",
+      "rawCode": "AP93:COMP",
+      "title": "AP WORLD HISTORY",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20222",
+      "code": "AP32:COMP",
+      "rawCode": "AP32:COMP",
+      "title": "AP COMPUTER SCI PRINCIPLES",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP34:COMP",
+      "rawCode": "AP34:COMP",
+      "title": "AP MICROECONOMICS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP66:COMP",
+      "rawCode": "AP66:COMP",
+      "title": "AP CALCULUS AB",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP35:COMP",
+      "rawCode": "AP35:COMP",
+      "title": "AP MACROECONOMICS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP58:COMP",
+      "rawCode": "AP58:COMP",
+      "title": "AP COMPARATIVE GOVT",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP90:COMP",
+      "rawCode": "AP90:COMP",
+      "title": "AP STATISTICS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "BUAD 112",
+      "rawCode": "BUAD112",
+      "title": "AI for Business Freshman Acad",
+      "units": 2,
+      "grade": "CR",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "BUAD 312",
+      "rawCode": "BUAD312",
+      "title": "Statistics and Data Science f",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "ECON 351",
+      "rawCode": "ECON351",
+      "title": "Microeconomics for Business",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "X"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "ITP 116",
+      "rawCode": "ITP 116",
+      "title": "Accelerated Programming in Py",
+      "units": 2,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "WRIT 150",
+      "rawCode": "WRIT150",
+      "title": "Writing and Critical Reasonin",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "BUAD 104",
+      "rawCode": "BUAD104",
+      "title": "Learning About International",
+      "units": 2,
+      "grade": "CR",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "BUAD 304",
+      "rawCode": "BUAD304",
+      "title": "Organizational Behavior and L",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "CSCI 103",
+      "rawCode": "CSCI103",
+      "title": "Introduction to Programming",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "L"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "GESM 141",
+      "rawCode": "GESM141",
+      "title": "Seminar in the Life Sciences",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "ITP 249",
+      "rawCode": "ITP 249",
+      "title": "Introduction to Data Analytic",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "BUAD 280",
+      "rawCode": "BUAD280",
+      "title": "Introduction to Financial Acc",
+      "units": 3,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "CSCI 170",
+      "rawCode": "CSCI170",
+      "title": "Discrete Methods in Computer",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "EIS 370",
+      "rawCode": "EIS 370",
+      "title": "Ethical Issues in Artificial",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "TAC 259",
+      "rawCode": "TAC 259",
+      "title": "Basics of Artificial Intellig",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "TAC 449",
+      "rawCode": "TAC 449",
+      "title": "Applications of Machine Learn",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "BUAD 104",
+      "rawCode": "BUAD104",
+      "title": "Learning About International",
+      "units": 0,
+      "grade": "CR",
+      "suffixes": [],
+      "flags": [
+        ">D"
+      ],
+      "source": "usc",
+      "passed": false,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "BUAD 281",
+      "rawCode": "BUAD281",
+      "title": "Introduction to Managerial Ac",
+      "units": 3,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "BUAD 306",
+      "rawCode": "BUAD306",
+      "title": "Business Finance",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "BUAD 313",
+      "rawCode": "BUAD313",
+      "title": "Advanced Operations Managemen",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "CSCI 114",
+      "rawCode": "CSCI114",
+      "title": "Programming for Applications",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "X"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    }
+  ],
+  "inProgressCourses": [
+    {
+      "term": "20262",
+      "code": "BUAD 302",
+      "rawCode": "BUAD302",
+      "title": "Communication Strategy in Bus",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "BUAD 307",
+      "rawCode": "BUAD307",
+      "title": "Marketing Fundamentals",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "CSCI 360",
+      "rawCode": "CSCI360",
+      "title": "Artificial Intelligence: Prin",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "DSO 429",
+      "rawCode": "DSO 429",
+      "title": "Digital Transformation of Bus",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "ECON 352",
+      "rawCode": "ECON352",
+      "title": "Macroeconomics for Business",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "X"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "EIS 103",
+      "rawCode": "EIS 103",
+      "title": "Information Literacy: Navigat",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    }
+  ],
+  "equivalents": [],
+  "waivedCourses": [
+    "DSCI 281"
+  ]
+}

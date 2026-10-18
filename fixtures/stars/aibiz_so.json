@@ -1,0 +1,274 @@
+{
+  "meta": {
+    "prepared": "09/14/26",
+    "programCode": "1915",
+    "catalogYear": "20263",
+    "redacted": true,
+    "warnings": []
+  },
+  "degree": "BS",
+  "major": "Artificial Intelligence for Business",
+  "classLevel": "Sophomore",
+  "entryTerm": "20263",
+  "expectedGraduation": null,
+  "gpa": null,
+  "posts": [
+    {
+      "program": "1915",
+      "degree": "BS",
+      "major": "BUAI",
+      "school": "BUAD",
+      "term": "20263"
+    }
+  ],
+  "minors": [],
+  "units": {
+    "required": 128,
+    "earned": 32,
+    "inProgress": 18,
+    "transferTotal": 32
+  },
+  "completedCourses": [
+    {
+      "term": "20232",
+      "code": "AP83:COMP",
+      "rawCode": "AP83:COMP",
+      "title": "AP PHYSICS 1",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP34:COMP",
+      "rawCode": "AP34:COMP",
+      "title": "AP MICROECONOMICS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP93:COMP",
+      "rawCode": "AP93:COMP",
+      "title": "AP WORLD HISTORY",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP35:COMP",
+      "rawCode": "AP35:COMP",
+      "title": "AP MACROECONOMICS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP31:COMP",
+      "rawCode": "AP31:COMP",
+      "title": "AP COMPUTER SCIENCE A",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP43:COMP",
+      "rawCode": "AP43:COMP",
+      "title": "AP HISTORY EUROPE",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP84:COMP",
+      "rawCode": "AP84:COMP",
+      "title": "AP PHYSICS 2",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP66:COMP",
+      "rawCode": "AP66:COMP",
+      "title": "AP CALCULUS AB",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP07:COMP",
+      "rawCode": "AP07:COMP",
+      "title": "AP HISTORY AMERICA",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP80:COMP",
+      "rawCode": "AP80:COMP",
+      "title": "AP PHYSICS C MECH",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP90:COMP",
+      "rawCode": "AP90:COMP",
+      "title": "AP STATISTICS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20262",
+      "code": "AP68:COMP",
+      "rawCode": "AP68:COMP",
+      "title": "AP CALCULUS BC",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    }
+  ],
+  "inProgressCourses": [
+    {
+      "term": "20263",
+      "code": "BUAD 112",
+      "rawCode": "BUAD112",
+      "title": "AI for Business Freshman Acad",
+      "units": 2,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "BUAD 312",
+      "rawCode": "BUAD312",
+      "title": "Statistics and Data Science f",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "CSCI 113",
+      "rawCode": "CSCI113",
+      "title": "Programming Fundamentals for",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "X"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "ECON 351",
+      "rawCode": "ECON351",
+      "title": "Microeconomics for Business",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "X"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "WRIT 150",
+      "rawCode": "WRIT150",
+      "title": "Writing and Critical Reasonin",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    }
+  ],
+  "equivalents": [],
+  "waivedCourses": []
+}

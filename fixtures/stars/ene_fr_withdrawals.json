@@ -1,0 +1,254 @@
+{
+  "meta": {
+    "prepared": "09/14/26",
+    "programCode": "953",
+    "catalogYear": "20263",
+    "redacted": true,
+    "warnings": []
+  },
+  "degree": "BS",
+  "major": "Environmental Engineering",
+  "classLevel": "Freshman",
+  "entryTerm": "20263",
+  "expectedGraduation": null,
+  "gpa": null,
+  "posts": [
+    {
+      "program": "953",
+      "degree": "BS",
+      "major": "ENE",
+      "school": "ENGR",
+      "term": "20263"
+    }
+  ],
+  "minors": [],
+  "units": {
+    "required": 130,
+    "earned": 20,
+    "inProgress": 16,
+    "transferTotal": 20
+  },
+  "completedCourses": [
+    {
+      "term": "20222",
+      "code": "AP57:COMP",
+      "rawCode": "AP57:COMP",
+      "title": "AP U.S. GOVERNMENT",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP07:COMP",
+      "rawCode": "AP07:COMP",
+      "title": "AP HISTORY AMERICA",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP40:COMP",
+      "rawCode": "AP40:COMP",
+      "title": "AP ENVIRON SCIENCE",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP68:COMP",
+      "rawCode": "AP68:COMP",
+      "title": "AP CALCULUS BC",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP93:COMP",
+      "rawCode": "AP93:COMP",
+      "title": "AP WORLD HISTORY",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "CE 110",
+      "rawCode": "CE  110",
+      "title": "Introduction to Environmental",
+      "units": 0,
+      "grade": "W",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": false,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "CHEM 105A",
+      "rawCode": "CHEM105A",
+      "title": "General Chemistry",
+      "units": 0,
+      "grade": "W",
+      "suffixes": [
+        "L",
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": false,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "CTCS 190",
+      "rawCode": "CTCS190",
+      "title": "Introduction to Cinema",
+      "units": 0,
+      "grade": "W",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": false,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "ENGR 102",
+      "rawCode": "ENGR102",
+      "title": "Engineering Freshman Academy",
+      "units": 0,
+      "grade": "W",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": false,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "MATH 226",
+      "rawCode": "MATH226",
+      "title": "Calculus III",
+      "units": 0,
+      "grade": "W",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": false,
+      "origin": "parsed"
+    }
+  ],
+  "inProgressCourses": [
+    {
+      "term": "20263",
+      "code": "CE 110",
+      "rawCode": "CE  110",
+      "title": "Introduction to Environmental",
+      "units": 2,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "CHEM 105A",
+      "rawCode": "CHEM105A",
+      "title": "General Chemistry",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "L",
+        "G"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "ENGR 102",
+      "rawCode": "ENGR102",
+      "title": "Viterbi First-Year Academy",
+      "units": 2,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "MATH 226",
+      "rawCode": "MATH226",
+      "title": "Calculus III",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "WRIT 150",
+      "rawCode": "WRIT150",
+      "title": "Writing and Critical Reasonin",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    }
+  ],
+  "equivalents": [],
+  "waivedCourses": []
+}
