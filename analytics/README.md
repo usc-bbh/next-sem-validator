@@ -37,20 +37,25 @@ as simultaneous commitments, not alternatives to choose between.
 
 ### `stars_summary`
 
-**Not the full STARS parser output** — only a slice of it. This validator only
-reads the fields below; it does not assume any other STARS field is present:
+**Not the full STARS parser output** — only a slice of it. The full shape is
+in `gui/stars-parser/STARS_PARSER_DESIGN.md` §8. This validator only reads the
+fields below; it does not assume any other STARS field is present:
 
 ```json
 {
   "major": "Computer Science",
   "classLevel": "Junior",
-  "gpa": 3.42,
+  "gpa": null,
   "completedCourses": [
-    { "code": "CSCI 104", "grade": "B+" }
+    { "code": "CSCI 104", "grade": "Lp", "passed": true, "source": "usc", "origin": "parsed" },
+    { "code": "CMPR 120", "grade": "TR", "passed": true, "source": "transfer", "origin": "parsed" },
+    { "code": "MATH 226", "grade": "W", "passed": false, "source": "usc", "origin": "parsed" }
   ],
   "inProgressCourses": [
-    { "code": "CSCI 350" }
-  ]
+    { "code": "CSCI 350", "source": "usc" }
+  ],
+  "equivalents": [{ "from": "CMPR 120", "to": "CSCI 113" }],
+  "waivedCourses": ["DSCI 281"]
 }
 ```
 
@@ -58,9 +63,17 @@ reads the fields below; it does not assume any other STARS field is present:
 |---|---|---|
 | `major` | `string` | major-restrictions check (best-effort keyword match) |
 | `classLevel` | `"Freshman" \| "Sophomore" \| "Junior" \| "Senior"` | class-standing check, major-restrictions undergrad/grad check |
-| `gpa` | `number` | prereq check (GPA-threshold parsing) |
+| `gpa` | `number \| null` | prereq check (GPA thresholds). `null` (redacted or missing) makes a GPA threshold a warning, not a fail. |
 | `completedCourses[].code` | `string` | already-taken check, prereq check |
-| `inProgressCourses[].code` | `string` | already-taken check |
+| `completedCourses[].passed` | `boolean`, default `true` | `false` (a `W`, a failing grade, deleted credit) proves nothing: not taken, not a prerequisite |
+| `completedCourses[].source` | `"usc" \| "exam" \| "transfer" \| "transfer_generic"`, default `"usc"` | only `usc` rows prove a course by their code; the others prove one only through `equivalents` |
+| `completedCourses[].origin` | `"parsed" \| "student"`, default `"parsed"` | a prerequisite met only by a `student` row (added or edited on the review screen) is a warning, not a pass |
+| `inProgressCourses[].code` | `string` | already-taken check (only `usc` rows) |
+| `equivalents[]` | `{from, to}` | a passed row with code `from` proves `to` (from `RE - SUB … FOR …` on the report) |
+| `waivedCourses[]` | `string` | a prerequisite met only by a waiver is a warning |
+
+The defaults mean a summary without the newer fields is read the way every
+row was read before they existed: as a passed USC course from the report.
 
 ### `course_catalog`
 

@@ -1,40 +1,199 @@
 {
+  "meta": {
+    "prepared": "01/20/25",
+    "programCode": "1832",
+    "catalogYear": "20223",
+    "redacted": false,
+    "warnings": []
+  },
   "degree": "BS",
   "major": "Computer Science",
-  "concentration": null,
-  "majorCode": "CSCI",
-  "programCode": "1832",
-  "catalogYear": "2023-2024",
   "classLevel": "Junior",
-  "expectedGraduation": "16 May 2027",
+  "entryTerm": "20223",
+  "expectedGraduation": "16 MAY 2027",
   "gpa": 3.42,
-  "upperDivisionGpa": 3.55,
+  "posts": [
+    {
+      "program": "1832",
+      "degree": "BS",
+      "major": "CSCI",
+      "school": "ENGR",
+      "term": "20223"
+    }
+  ],
+  "minors": [],
+  "units": {
+    "required": 128,
+    "earned": 36,
+    "inProgress": 12,
+    "transferTotal": 0
+  },
   "completedCourses": [
-    { "term": "20223", "code": "CSCI 103", "title": "Introduction to Programming", "units": 4.0, "grade": "A-" },
-    { "term": "20231", "code": "CSCI 104", "title": "Data Structures and Object-Oriented Design", "units": 4.0, "grade": "B+" },
-    { "term": "20231", "code": "MATH 125", "title": "Calculus I", "units": 4.0, "grade": "A" },
-    { "term": "20233", "code": "CSCI 170", "title": "Discrete Methods in Computer Science", "units": 4.0, "grade": "B" },
-    { "term": "20233", "code": "MATH 126", "title": "Calculus II", "units": 4.0, "grade": "B-" },
-    { "term": "20241", "code": "CSCI 201", "title": "Principles of Software Development", "units": 4.0, "grade": "A-" },
-    { "term": "20241", "code": "WRIT 150", "title": "Writing and Critical Reasoning", "units": 4.0, "grade": "A" },
-    { "term": "20243", "code": "CSCI 270", "title": "Introduction to Algorithms", "units": 4.0, "grade": "B+" },
-    { "term": "20243", "code": "MATH 225", "title": "Linear Algebra and Linear Differential Equations", "units": 4.0, "grade": "B" }
+    {
+      "term": "20223",
+      "code": "CSCI 103",
+      "rawCode": "CSCI103",
+      "title": "Introduction to Programming",
+      "units": 4,
+      "grade": "A-",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20231",
+      "code": "CSCI 104",
+      "rawCode": "CSCI104",
+      "title": "Data Structures and Object-Oriented Design",
+      "units": 4,
+      "grade": "B+",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20231",
+      "code": "MATH 125",
+      "rawCode": "MATH125",
+      "title": "Calculus I",
+      "units": 4,
+      "grade": "A",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20233",
+      "code": "CSCI 170",
+      "rawCode": "CSCI170",
+      "title": "Discrete Methods in Computer Science",
+      "units": 4,
+      "grade": "B",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20233",
+      "code": "MATH 126",
+      "rawCode": "MATH126",
+      "title": "Calculus II",
+      "units": 4,
+      "grade": "B-",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "CSCI 201",
+      "rawCode": "CSCI201",
+      "title": "Principles of Software Development",
+      "units": 4,
+      "grade": "A-",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "WRIT 150",
+      "rawCode": "WRIT150",
+      "title": "Writing and Critical Reasoning",
+      "units": 4,
+      "grade": "A",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "CSCI 270",
+      "rawCode": "CSCI270",
+      "title": "Introduction to Algorithms",
+      "units": 4,
+      "grade": "B+",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "MATH 225",
+      "rawCode": "MATH225",
+      "title": "Linear Algebra and Linear Differential Equations",
+      "units": 4,
+      "grade": "B",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    }
   ],
   "inProgressCourses": [
-    { "term": "20251", "code": "CSCI 350", "title": "Introduction to Systems Programming", "units": 4.0 },
-    { "term": "20251", "code": "CSCI 356", "title": "Introduction to Computer Systems Engineering", "units": 4.0 },
-    { "term": "20251", "code": "WRIT 340", "title": "Advanced Writing", "units": 4.0 }
+    {
+      "term": "20251",
+      "code": "CSCI 350",
+      "rawCode": "CSCI350",
+      "title": "Introduction to Systems Programming",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "CSCI 356",
+      "rawCode": "CSCI356",
+      "title": "Introduction to Computer Systems Engineering",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "WRIT 340",
+      "rawCode": "WRIT340",
+      "title": "Advanced Writing",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    }
   ],
-  "transferUnits": 0,
-  "minor": null,
-  "isTransfer": false,
-  "studiedAbroad": false,
-  "isStudentAthlete": false,
-  "requirements": [
-    { "label": "128-Unit Minimum", "status": "no" },
-    { "label": "64-Unit Residency", "status": "ok" },
-    { "label": "32-Unit Upper Division", "status": "no" },
-    { "label": "Cumulative GPA 2.0+", "status": "ok" },
-    { "label": "Composition/Writing", "status": "no" }
-  ]
+  "equivalents": [],
+  "waivedCourses": []
 }
