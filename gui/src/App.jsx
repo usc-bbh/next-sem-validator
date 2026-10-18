@@ -38,16 +38,6 @@ const DEMO_STARS = {
   classLevel: "Junior",
 };
 
-// ─────────────────────────────────────────────────────────────
-// Normalization — every boundary runs codes through this.
-// "CSCI103" / "csci 103" / "CSCI-103" → "CSCI 104"-style "PREFIX NNN"
-// ─────────────────────────────────────────────────────────────
-function normalizeCode(code) {
-  const m = String(code).trim().match(/^([A-Za-z]+)[\s-]*(\d+[A-Za-z]*)$/);
-  if (!m) return String(code).trim().toUpperCase();
-  return `${m[1].toUpperCase()} ${m[2].toUpperCase()}`;
-}
-
 const toMin = (t) => {
   if (!t || t === "TBA") return null;
   const [h, m] = t.split(":").map(Number);
@@ -59,123 +49,6 @@ const fmt = (t) => {
   const hh = h % 12 || 12;
   return m === 0 ? `${hh}${ampm}` : `${hh}:${String(m).padStart(2, "0")}${ampm}`;
 };
-
-const allSections = (entry) =>
-  entry ? Object.values(entry.sections).flat().filter((s) => !s.is_cancelled) : [];
-
-// ─────────────────────────────────────────────────────────────
-// MOCK VALIDATOR — mirrors Tanzil's validate_next_semester().
-//
-// Input  : planned_courses — [{course: "CSCI 104", sections: ["29903","30119"]}]
-//          sections are REQUIRED on every entry (per 4:46am thread — you
-//          can't check seats/conflicts/pairing without them, and allowing
-//          course-only input means two code paths to maintain).
-//          stars_report, course_catalog
-// Output : { overall_status, course_results: [{course, status, reasons}], summary }
-//
-// This is a placeholder. Once Pyodide is wired, this whole function is
-// deleted and validate_next_semester() is called directly — the Python
-// stays the single source of truth.
-// ─────────────────────────────────────────────────────────────
-function mockValidate(plannedCourses, starsReport, catalog) {
-  const completed = new Set((starsReport.completedCourses || []).map((c) => normalizeCode(c.code)));
-  const inProgress = new Set((starsReport.inProgressCourses || []).map((c) => normalizeCode(c.code)));
-  const levelOrder = { Freshman: 1, Sophomore: 2, Junior: 3, Senior: 4 };
-  const classLevel = starsReport.classLevel;
-
-  const plans = plannedCourses.map((p) => ({ course: p.course, sections: p.sections || [] }));
-
-  // Fail fast rather than silently validating something the student didn't ask for.
-  const missing = plans.filter((p) => !p.sections.length).map((p) => p.course);
-  if (missing.length) throw new Error(`sections are required for: ${missing.join(", ")}`);
-
-  const resolved = {};
-  plans.forEach(({ course, sections }) => {
-    const pool = allSections(catalog[normalizeCode(course)]);
-    resolved[course] = pool.filter((s) => sections.includes(s.section_id));
-  });
-
-  // ── Time conflicts ──
-  const conflicts = {};
-  const overlap = (a, b) =>
-    a.days.some((d) => b.days.includes(d)) &&
-    toMin(a.start_time) < toMin(b.end_time) &&
-    toMin(b.start_time) < toMin(a.end_time);
-
-  for (let i = 0; i < plans.length; i++) {
-    for (let j = i + 1; j < plans.length; j++) {
-      const A = plans[i], B = plans[j];
-      const sa = resolved[A.course], sb = resolved[B.course];
-      if (!sa.length || !sb.length) continue;
-
-      // Sections are always concrete, so a clash is a clash — fail.
-      sa.forEach((x) => sb.forEach((y) => {
-        if (overlap(x, y)) {
-          const days = x.days.filter((d) => y.days.includes(d)).join("/");
-          (conflicts[A.course] ||= []).push(
-            `${A.course} (${x.section_id}) overlaps ${B.course} (${y.section_id}) on ${days}, ${fmt(x.start_time)}–${fmt(x.end_time)}.`
-          );
-          (conflicts[B.course] ||= []).push(
-            `${B.course} (${y.section_id}) overlaps ${A.course} (${x.section_id}) on ${days}, ${fmt(y.start_time)}–${fmt(y.end_time)}.`
-          );
-        }
-      }));
-    }
-  }
-
-  // ── Per-course checks ──
-  let totalUnits = 0;
-  const course_results = plans.map(({ course, sections }) => {
-    const norm = normalizeCode(course);
-    const entry = catalog[norm];
-    const picked = resolved[course];
-    const reasons = [];
-    let status = "pass";
-    const fail = (m) => { status = "fail"; reasons.push(m); };
-    const warn = (m) => { if (status !== "fail") status = "warning"; reasons.push(m); };
-
-    if (completed.has(norm)) fail(`${norm} is already completed.`);
-    if (inProgress.has(norm)) warn(`${norm} is already in progress this term.`);
-
-    const num = parseInt((course.match(/\d+/) || ["0"])[0], 10);
-    if (num >= 400 && (levelOrder[classLevel] || 0) < 3)
-      warn(`400+ level course while classified as ${classLevel} — confirm eligibility with your advisor.`);
-
-    if (!entry) warn(`${course} was not found in the catalog for this term.`);
-
-    if (entry) {
-      totalUnits += entry.units || 0;
-
-      picked.forEach((s) => {
-        if (s.is_full || s.open_seats === 0)
-          fail(`Section ${s.section_id} is full (${s.registered_seats}/${s.total_seats}).`);
-        if (s.has_d_clearance)
-          warn(`Section ${s.section_id} requires D-clearance from the department.`);
-        if (s.notes) warn(`Registration restriction: ${s.notes}`);
-      });
-
-      const types = new Set(picked.map((s) => s.section_type));
-      if (entry.has_lab && !types.has("labs")) fail(`${course} requires a lab section — none selected.`);
-      if (entry.has_discussion && !types.has("discussions")) fail(`${course} requires a discussion section — none selected.`);
-
-      if (entry.description && /prereq|requisite/i.test(entry.description))
-        warn(`Prerequisite note (unverified): ${entry.description}`);
-    }
-
-    (conflicts[course] || []).forEach(fail);
-    return { course, status, reasons };
-  });
-
-  const warnings = [];
-  if (totalUnits > 18) warnings.push(`${totalUnits} units is above the recommended max of 18.`);
-  if (totalUnits > 0 && totalUnits < 12) warnings.push(`${totalUnits} units is below full-time enrollment (12).`);
-
-  const overall_status = course_results.some((c) => c.status === "fail")
-    ? "invalid"
-    : (warnings.length || course_results.some((c) => c.status === "warning")) ? "warning" : "valid";
-
-  return { overall_status, course_results, summary: { total_units: totalUnits, warnings } };
-}
 
 // ─────────────────────────────────────────────────────────────
 // Calendar
@@ -253,19 +126,18 @@ const STATUS = {
 // ─────────────────────────────────────────────────────────────
 // Pyodide integration layer.
 //
-// On mount, tries to load Pyodide + Tanzil's validator. If it
-// succeeds, all validation runs in Python (single source of truth).
-// If it fails (no network, CDN down, dev environment without
-// Pyodide script tag), falls back to mockValidate() with a visible
-// banner so you always know which path is active.
+// On mount, loads Pyodide + Tanzil's validator. All validation runs in
+// Python, the single source of truth. There is deliberately no JS
+// fallback: if Pyodide fails to load (no network, CDN down, served from
+// file://), the page says the checker couldn't load and the Validate
+// button stays disabled, rather than showing results from a second,
+// unmaintained copy of the rules.
 //
-// To fully enable Pyodide in your environment:
+// To run it locally:
 //   1. Serve the app from a local dev server (not file://)
 //   2. npm run dev / build copies ../analytics/validate_next_semester.py
 //      to public/validator/ (the sync:validator script)
 //   3. Pyodide CDN loads automatically
-//
-// Once Pyodide is confirmed working, delete mockValidate() entirely.
 // ─────────────────────────────────────────────────────────────
 const PYODIDE_CDN = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/";
 const VALIDATOR_PY_URL = "./validator/validate_next_semester.py";
@@ -367,7 +239,7 @@ export default function App() {
   // ── Real STARS upload state ──
   // starsReport starts as the demo fallback; once a student uploads a real
   // PDF, this becomes Avi's actual parsed output. Everything downstream
-  // (Pyodide call, mock fallback, the STARS badge) reads from this state,
+  // (Pyodide call, the STARS badge) reads from this state,
   // not a hardcoded constant.
   const [starsReport, setStarsReport] = useState(DEMO_STARS);
   const [starsSource, setStarsSource] = useState("demo"); // "demo" | "parsing" | "parsed" | "manual" | "failed"
@@ -408,7 +280,7 @@ export default function App() {
   };
 
   // Pyodide state
-  const [pyodideStatus, setPyodideStatus] = useState("loading"); // "loading" | "ready" | "fallback"
+  const [pyodideStatus, setPyodideStatus] = useState("loading"); // "loading" | "ready" | "failed"
   const pyodideRef = useRef(null);
 
   useEffect(() => {
@@ -422,8 +294,8 @@ export default function App() {
       })
       .catch((err) => {
         if (cancelled) return;
-        console.warn("[validator] Pyodide unavailable, using JS mock fallback:", err.message);
-        setPyodideStatus("fallback");
+        console.error("[validator] Couldn't load the checker:", err.message);
+        setPyodideStatus("failed");
       });
     return () => { cancelled = true; };
   }, []);
@@ -500,25 +372,22 @@ export default function App() {
   // Sections are required on every entry, so the GUI enforces it rather than
   // letting an invalid payload reach the validator.
   const needSections = payload.filter((p) => !p.sections.length).map((p) => p.course);
-  const canValidate = expanded.length > 0 && needSections.length === 0 && !validating && !!catalog;
+  const checkerReady = pyodideStatus === "ready"; // set only after pyodideRef is populated
+  const canValidate = expanded.length > 0 && needSections.length === 0 && !validating && !!catalog && checkerReady;
 
   const runValidate = async () => {
+    if (!checkerReady) return;
     setValidating(true);
     try {
-      if (pyodideStatus === "ready" && pyodideRef.current) {
-        // ── Real path: call Tanzil's Python via Pyodide ──
-        const bridge = pyodideRef.current.globals.get("_bridge_validate");
-        const resultJson = bridge(
-          JSON.stringify(payload),
-          JSON.stringify(starsReport),
-          JSON.stringify(catalog),
-          JSON.stringify(MOCK_DEPT_CLEARANCE)
-        );
-        setResult(JSON.parse(resultJson));
-      } else {
-        // ── Fallback: JS mock (delete this once Pyodide is confirmed working) ──
-        setResult(mockValidate(payload, starsReport, catalog));
-      }
+      // Tanzil's Python validator, via Pyodide.
+      const bridge = pyodideRef.current.globals.get("_bridge_validate");
+      const resultJson = bridge(
+        JSON.stringify(payload),
+        JSON.stringify(starsReport),
+        JSON.stringify(catalog),
+        JSON.stringify(MOCK_DEPT_CLEARANCE)
+      );
+      setResult(JSON.parse(resultJson));
     } catch (err) {
       console.error("[validator] Validation error:", err);
       setResult({
@@ -605,8 +474,8 @@ export default function App() {
           </button>
           <div className="mono" style={{ fontSize: 10, display: "flex", alignItems: "center", gap: 5, color: "#fff",
             background: "rgba(255,255,255,0.16)", border: "1px solid rgba(255,255,255,0.35)", borderRadius: 8, padding: "6px 10px" }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: pyodideStatus === "ready" ? "#6ee7a0" : pyodideStatus === "loading" ? "#ffcc00" : "#ffcc00", boxShadow: "0 0 6px currentColor" }} />
-            {pyodideStatus === "ready" ? "Python" : pyodideStatus === "loading" ? "Loading Pyodide…" : "JS mock"}
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: pyodideStatus === "ready" ? "#6ee7a0" : pyodideStatus === "loading" ? "#ffcc00" : "#ff8a80", boxShadow: "0 0 6px currentColor" }} />
+            {pyodideStatus === "ready" ? "Python" : pyodideStatus === "loading" ? "Loading Pyodide…" : "Checker unavailable"}
           </div>
           <div className="mono" style={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }}>
             {courseNames.length.toLocaleString()} courses
@@ -782,6 +651,16 @@ export default function App() {
               boxShadow: canValidate ? "0 4px 14px rgba(153,0,0,0.26)" : "none", letterSpacing: "0.01em" }}>
             {validating ? "Validating…" : "Validate schedule"}
           </button>
+          {pyodideStatus === "failed" && (
+            <div style={{ marginTop: 9, fontSize: 12, color: "#c1121f", textAlign: "center" }}>
+              Couldn't load the checker. Check your connection and refresh the page to try again.
+            </div>
+          )}
+          {pyodideStatus === "loading" && (
+            <div style={{ marginTop: 9, fontSize: 12, color: "#7a7a80", textAlign: "center" }}>
+              Loading the checker…
+            </div>
+          )}
           {needSections.length > 0 && (
             <div style={{ marginTop: 9, fontSize: 12, color: "#7a7a80", textAlign: "center" }}>
               Pick at least one section for {needSections.join(", ")} to validate.
