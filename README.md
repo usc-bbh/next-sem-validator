@@ -24,7 +24,7 @@ and the Python validator runs through Pyodide. No report is sent to a server.
 │   ├── test/                       pytest suite + catalog/planned-course fixtures
 │   └── README.md                   Input/output schema contract
 │
-├── fixtures/stars/      STARS summaries shared by the parser and the validator
+├── fixtures/stars/      Redacted sample reports: parser input (.txt) and expected output (.json)
 └── .github/workflows/   deploy.yml: builds gui/ and publishes it to Pages
 ```
 
@@ -63,20 +63,17 @@ python3 -m pytest analytics/test/
 
 ```bash
 cd gui
-node --test stars-parser/test/lineRebuilder.test.js
+npm test
 ```
-
-`stars-parser/test/parser.test.js` is known to be broken. It reads text from a
-hard-coded `/tmp/stars_text` folder, and it tests a copy of the parser
-functions rather than the real module. Don't treat its result as meaningful.
-It's being replaced as part of the parser rebuild.
 
 ## The parser rebuild
 
 The parser is being rebuilt. The design, the reasons behind it, and the
 milestones are in
 [`gui/stars-parser/STARS_PARSER_DESIGN.md`](gui/stars-parser/STARS_PARSER_DESIGN.md).
-Until milestone M4, the app keeps using the current parser.
+The new parser is built through M3 and tested on 11 redacted reports, but
+until milestone M4 the app keeps using the old one, in
+`gui/stars-parser/legacy/`.
 
 ## Deploy
 
@@ -89,7 +86,7 @@ without a new commit, run the workflow manually from the Actions tab.
 | What | Documented in |
 |---|---|
 | Validator input and output, including the `stars_summary` it reads from the parser | [`analytics/README.md`](analytics/README.md) |
-| Parser output | [`gui/stars-parser/README.md`](gui/stars-parser/README.md). Out of date: it still describes `my.usc.edu` PDFs and the OCR fallback. |
+| Parser output | [`gui/stars-parser/STARS_PARSER_DESIGN.md`](gui/stars-parser/STARS_PARSER_DESIGN.md) §8 |
 | Shared fixture pairs (`<name>.txt` parser input, `<name>.json` parser output and validator input) | [`fixtures/stars/README.md`](fixtures/stars/README.md) |
 
 ## STARS reports and privacy

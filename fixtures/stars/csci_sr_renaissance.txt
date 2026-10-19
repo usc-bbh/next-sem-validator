@@ -1,0 +1,405 @@
+          STARS Report for XXXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXXX          ID#: XXXXXXXXXX
+                                               Print Report
+                       365 Computer Science
+                           You may directly access the following sections in the STARS report
+Pertinent Data Section
+Major Requirements
+Legend
+Current Registration
+Physical Education Units
+Other courses in your academic account
+Units Required for Degree
+University and Major GPA
+Minor Requirements
+General Education Requirements
+             Completed degree requirements are indicated using blue text and “OK” at the beginning of the section.
+         Outstanding requirements needed to graduate are indicated with red text and “No” at the beginning of the section.
+                             Courses with a 5-digit code indicate the year and semester.
+                    Codes ending in 1 – Spring, 2 – Summer, 3 – Fall. Examples can be found in the legend.
+PREPARED: 09/14/26 - 14:08
+PROGRAM: 365                                   CATALOG YEAR: 20243
+STARS - DEGREE PROGRESS REPORT
+BACHELOR OF SCIENCE
+COMPUTER SCIENCE
+_________________________________________________________________
+PERTINENT DATA SECTION:
+Term of USC Entrance 20243  Current Class Level Senior
+USC Expected Graduation Date - 15 DECEMBER 2027
+=================================================================
+                     USC Diploma Information
+Name as it will appear on your USC Diploma:
+          XXXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXXXXX
+Diploma will be mailed to: XXXXXXXXXXXX
+                           XXXXXXXXXXXXXXXXXXXXXXXXXX
+=================================================================
+CURRENT POST:  DEGREE  MAJOR  UNIT  EFFECTIVE TERM
+    365         BS     CSCI   ENGR       20243
+MINOR:  Musical Studies                                     20263
+Advisor not yet designated by your Department.
+*** PLEASE BRING THIS REPORT WITH YOU WHEN YOU SEE
+YOUR ACADEMIC ADVISOR ***
+_________________________________________________________________
+         AT LEAST ONE REQUIREMENT HAS NOT BEEN SATISFIED
+_________________________________________________________________
+** NOTE:  YOU ARE IDENTIFIED AS A RENAISSANCE SCHOLAR. PLEASE **
+**        SEE THE END OF YOUR STARS REPORT FOR MORE DETAILS.  **
+_________________________________________________________________
+*****************************************************************
+NOTE: The Legend to STARS can be found at the end of this report
+*****************************************************************
+_________________________________________________________________
+**************** TIME TO DEGREE COMPLETION STATUS ***************
+        BASED ON COMPLETED COURSE WORK, YOU HAVE THREE
+        REMAINING SEMESTERS TO DEGREE COMPLETION.  COMPLETION
+        OF MORE THAN 16 UNITS IN FUTURE SEMESTERS, OR
+        COMPLETION OF COURSE WORK IN SUMMER TERMS, MAY
+        ACCELERATE YOUR TIME TO DEGREE COMPLETION.
+_________________________________________________________________
+NO     A MINIMUM OF 128 UNITS IS REQUIRED FOR DEGREE COMPLETION:
+    EARNED:103.00 UNITS
+IN-PROCESS: 18.00 UNITS
+--> NEEDS:   7.00 UNITS
+      20243 CSCI103  L    4.0 Lp    Introduction to Programming
+      20243 CSCI170       4.0 Lp    Discrete Methods in Computer
+      20243 ENGR102       2.0 Lp    Engineering Freshman Academy
+      20243 GESM111    G  4.0 Lp    Seminar in the Arts
+      20243 MATH229       4.0 Lp    Calculus III for Engineers an
+      20251 CSCI104  L    4.0 Lp    Data Structures and Object Or
+      20251 IR  101   XGW 4.0 Lp    International Relations
+      20251 MATH225       4.0 Lp    Linear Algebra and Linear Dif
+      20251 MUEN310       1.0 CR    University Concert Choir
+      20251 PHED120A      1.0 Pp    Yoga
+      20251 WRIT150       4.0 Lp    Writing and Critical Reasonin
+      20253 CSCI201       4.0 Lp    Principles of Software Develo
+      20253 CSCI270       4.0 Lp    Introduction to Algorithms an
+      20253 EE  109  L    4.0 Lp    Introduction to Embedded Syst
+      20253 ENGL270    G  4.0 Lp    Studying Narrative
+      20253 PHED144       1.0 Pp    Pickleball
+      20261 CHEM105B L    4.0 Lp    General Chemistry
+      20261 CSCI356       4.0 Lp    Computer Systems
+      20261 DANC185A      2.0 Lp    Hip Hop Dance
+      20261 EIS 103    G  4.0 Lp    Information Literacy: Navigat
+      20261 TAC 435       4.0 Lp    Professional C++
+      20263 CSCI310       4.0 RG >IPSoftware Engineering
+      20263 CSCI350       4.0 RG >IPFundamentals of Operating Sys
+      20263 CSCI360       4.0 RG >IPArtificial Intelligence: Prin
+      20263 MATH407       4.0 RG >IPProbability Theory
+      20263 MPVA301       2.0 RG >IPIndividual Instruction
+      99993 TRNSFR WORK  32.0 TR    Total Transfer Units
+_________________________________________________________________
+OK     64-UNIT RESIDENCY REQUIREMENT HAS BEEN SATISFIED.
+    EARNED: 64.00 UNITS
+_________________________________________________________________
+NO     A MINIMUM OF 32 UPPER DIVISION UNITS IS REQUIRED FOR
+       DEGREE COMPLETION:
+    EARNED:  9.00 UNITS
+IN-PROCESS: 18.00 UNITS
+--> NEEDS:   5.00 UNITS
+_________________________________________________________________
+OK     2.0 CUMULATIVE GPA REQUIRED OF ALL USC BACCALAUREATE UNITS
+       ** NOTE: University honors are based on either the GPA
+       for the combined transferred and resident course work or
+       the GPA for resident course work, whichever is lower.
+       Note that only your USC GPA is calculated on STARS.
+    EARNED:                                           X.XXX GPA
+_________________________________________________________________
+IP     2.0 CUMULATIVE GPA REQUIRED IN ALL UPPER DIVISION COURSE
+       WORK APPLIED TO YOUR MAJOR:
+    EARNED:                                           X.XXX GPA
+      20261 CSCI356       4.0 Lp    Computer Systems
+      20261 TAC 435       4.0 Lp    Professional C++
+      20263 CSCI310       4.0 RG >IPSoftware Engineering
+      20263 CSCI350       4.0 RG >IPFundamentals of Operating Sys
+      20263 CSCI360       4.0 RG >IPArtificial Intelligence: Prin
+      20263 MATH407       4.0 RG >IPProbability Theory
+_________________________________________________________________
+IP     THERE IS A LIMIT OF 40 UPPER DIVISION UNITS IN ANY ONE
+       DEPARTMENT.  IF YOU WISH TO EXCEED THIS LIMIT YOU MUST
+       FIRST OBTAIN APPROVAL FROM YOUR MAJOR DEPARTMENT, WITH THE
+       FINAL ENDORSEMENT OF THE DEAN OVERSEEING THE MAJOR.
+IP+
+           0.00 UNITS EARNED
+IN-P --->  4.00 UNITS
+      20263 MATH407       4.0 RG >IPProbability Theory
+_________________________________________________________________
+NO     COMPOSITION/WRITING REQUIREMENT -- COURSE WORK MUST BE
+       TAKEN FOR A LETTER GRADE:
+    EARNED:                           1 SUB-GROUP
+--> NEEDS:                            1 SUB-GROUP
+  +  1) FIRST YEAR WRITING REQUIREMENT:
+                               1 COURSE TAKEN
+      20251 WRIT150       4.0 Lp    Writing and Critical Reasonin
+  -  2) UPPER DIVISION WRITING REQUIREMENT (must be taken at
+        USC):
+         NEEDS:                 1 COURSE
+        SELECT FROM: WRIT340
+_________________________________________________________________
+NO     GENERAL EDUCATION CORE LITERACIES REQUIREMENTS -  COMPLETE
+       EIGHT COURSES FROM SIX CATEGORIES AS FOLLOWS:
+       NOTE:   1.  FIRST YEAR FRESHMAN AT USC MUST TAKE ONE GE
+                   SEMINAR (GESM) AS ONE OF THE EIGHT COURSES.
+               2.  TRANSFER STUDENTS AND FRESHMAN ADMITTED FOR
+                   THE SPRING MUST COMPLETE AT LEAST TWO
+                   OF THEIR EIGHT CORE LITERACY COURSES AT USC,
+                   WITH A MINIMUM OF TWO COURSES OFFERED IN
+                   DORNSIFE COLLEGE DEPARTMENTS.
+               3.  NO MORE THAN ONE COURSE TAKEN P/NP (AT USC
+                   OR IN TRANSFER) MAY APPLY TO THE CORE
+                   LITERACIES.
+  +  1) CATEGORY A:  THE ARTS
+                               1 COURSE TAKEN
+      20243 GESM111    G  4.0 Lp    Seminar in the Arts
+  -  2) COMPLETE TWO COURSES FROM CATEGORY B - HUMANISTIC
+        INQUIRY:
+                               1 COURSE TAKEN
+      20253 ENGL270    G  4.0 Lp    Studying Narrative
+         NEEDS:                 1 COURSE
+        SELECT FROM: CATEGORY GE-B
+  +  3) CATEGORY C:  SOCIAL ANALYSIS
+                               2 COURSES TAKEN
+      20251 IR  101   XGW 4.0 Lp    International Relations
+      20261 EIS 103    G  4.0 Lp    Information Literacy: Navigat
+  -  4) COMPLETE ONE COURSE FROM CATEGORY D - LIFE SCIENCES:
+         NEEDS:                 1 COURSE
+        SELECT FROM: CATEGORY GE-D
+  +  5) CATEGORY E:  PHYSICAL SCIENCES
+                               1 COURSE TAKEN
+      20232 AP25:COMP     4.0 TR    AP CHEMISTRY
+  +  6) CATEGORY F:  QUANTITATIVE REASONING
+                               1 COURSE TAKEN
+      20222 AP90:COMP     4.0 TR    AP STATISTICS
+  +  7) FIRST YEAR GE SEMINAR REQUIREMENT HAS BEEN MET.
+                               1 COURSE TAKEN
+      20243 GESM111    G  4.0 Lp    Seminar in the Arts
+_________________________________________________________________
+OK     GENERAL EDUCATION GLOBAL PERSPECTIVES REQUIREMENT MET.
+  +  1) CATEGORY G - GLOBAL PERSPECTIVES I:
+                               1 COURSE TAKEN
+      20251 IR  101   XGW 4.0 Lp    International Relations
+  +  2) CATEGORY H - GLOBAL PERSPECTIVES II:
+                               1 COURSE TAKEN
+      20232 AP93:COMP     4.0 TR    AP WORLD HISTORY
+_________________________________________________________________
+IP     COMPUTER SCIENCE MATH REQUIREMENT:
+    EARNED:                           2 SUB-GROUPS
+  +  1) MATH226 REQUIREMENT MET.
+                               1 COURSE TAKEN
+      20243 MATH229       4.0 Lp    Calculus III for Engineers an
+IP+  2) COMPLETE THE FOLLOWING COURSES:
+                               2 COURSES TAKEN
+      20251 MATH225       4.0 Lp    Linear Algebra and Linear Dif
+      20263 MATH407       4.0 RG >IPProbability Theory
+_________________________________________________________________
+OK     BASIC SCIENCE MAJOR REQUIREMENTS FOR COMPUTER SCIENCE --
+       COMPLETE ONE OF THE FOLLOWING SCIENCE OPTIONS:
+    EARNED:                           1 SUB-GROUP
+  +  1) SCIENCE REQUIREMENT FOR COMPUTER SCIENCE MAJORS (CHEM):
+                               2 COURSES TAKEN
+      20232 AP25:COMP     4.0 TR    AP CHEMISTRY
+      20261 CHEM105B L    4.0 Lp    General Chemistry
+_________________________________________________________________
+NO     MAJOR REQUIREMENTS FOR COMPUTER SCIENCE:
+    EARNED:                           2 SUB-GROUPS
+--> NEEDS:                            3 SUB-GROUPS
+  +  1) COMPLETE THE FOLLOWING CORE COURSES (NOTE: A GRADE OF
+        "C" OR BETTER IS REQUIRED):
+                               5 COURSES TAKEN
+      20222 AP31:COMP     4.0 TR    AP COMPUTER SCIENCE A
+      20243 CSCI103  L    4.0 Lp    Introduction to Programming
+      20243 CSCI170       4.0 Lp    Discrete Methods in Computer
+      20251 CSCI104  L    4.0 Lp    Data Structures and Object Or
+      20253 CSCI201       4.0 Lp    Principles of Software Develo
+IP-  2) ADDITIONAL REQUIRED COURSE WORK:
+                               3 COURSES TAKEN
+IN-P --->                      3 COURSES TAKEN
+      20253 CSCI270       4.0 Lp    Introduction to Algorithms an
+      20253 EE  109  L    4.0 Lp    Introduction to Embedded Syst
+      20261 CSCI356       4.0 Lp    Computer Systems
+      20263 CSCI310       4.0 RG >IPSoftware Engineering
+      20263 CSCI350       4.0 RG >IPFundamentals of Operating Sys
+      20263 CSCI360       4.0 RG >IPArtificial Intelligence: Prin
+         NEEDS:                 1 COURSE
+        SELECT FROM: CSCI353
+  -  3) CAPSTONE REQUIREMENT - COMPLETE ONE FROM:
+         NEEDS:                 1 COURSE
+        SELECT FROM: CSCI401  CSCI404
+  -  4) TECHNICAL ELECTIVE REQUIREMENT -- COMPLETE 12 UNITS
+        FROM THE FOLLOWING - OR CHOSEN IN CONSULTATION WITH
+        YOUR ACADEMIC ADVISOR:
+           4.00 UNITS EARNED
+      20261 TAC 435       4.0 Lp    Professional C++
+         NEEDS:   8.00 UNITS
+        SELECT FROM: CSCI401  CSCI404  CSCI420  CSCI423  CSCI426
+           CSCI430  CSCI445  CSCI461  CSCI467  CSCI475  CSCI476
+           CSCI485  CSCI490  CSCI491A  CSCI491B  CSCI499
+           EE  354  EE  451  EE  454  EE  457  EE  459  EE  477
+           EE  490  EE  499  ENGR395A  ENGR395B  ENGR395C
+           MATH458  TAC 368  TAC 380  TAC 439  TAC 485
+  +  5) COMPLETE ENGR102:
+                               1 COURSE TAKEN
+      20243 ENGR102       2.0 Lp    Engineering Freshman Academy
+_________________________________________________________________
+NO     MINOR REQUIREMENTS FOR MUSICAL STUDIES:
+       (MINOR CATALOG YEAR IS PROCESSED AS 20243):
+    EARNED:  1.00 UNIT                0 SUB-GROUPS
+IN-PROCESS:  2.00 UNITS
+--> NEEDS:  15.00 UNITS               3 SUB-GROUPS    X.XXX GPA
+  -  1) REQUIRED COURSES:
+         NEEDS:                 3 COURSES
+        SELECT FROM: MUCO130A  MUCO130B  MUSC115
+IP-  2) COMPLETE SIX UNITS OF INDIVIDUAL INSTRUCTION 301:
+           0.00 UNITS EARNED
+IN-P --->  2.00 UNITS
+      20263 MPVA301       2.0 RG >IPIndividual Instruction
+         NEEDS:   4.00 UNITS
+  -  3) COMPLETE TWO UNITS OF U/D ENSEMBLE ELECTIVES:
+           1.00 UNIT EARNED
+      20251 MUEN310       1.0 CR    University Concert Choir
+         NEEDS:   1.00 UNIT
+        SELECT FROM: MUEN300 TO MUEN499
+_________________________________________________________________
+NO     A MINIMUM OF 16 UNITS MUST BE UNIQUE TO THE MUSICAL
+       STUDIES MINOR:
+--> NEEDS:                            1 SUB-GROUP
+IP-  1) AT LEAST FOUR COURSES (16 UNITS) MUST BE UNIQUE TO THE
+        MINOR (NOT REQUIRED TO FULFILL A MAJOR OR ANOTHER
+        MINOR REQUIREMENT):
+        (  1.00 HOUR TAKEN   ) 1 COURSE TAKEN
+IN-P --->  2.00 UNITS          1 COURSE TAKEN
+      20251 MUEN310       1.0 CR    University Concert Choir
+      20263 MPVA301       2.0 RG >IPIndividual Instruction
+         NEEDS:  13.00 UNITS    2 COURSES
+_________________________________________________________________
+       NO MORE THAN 4 UNITS OF PHYSICAL EDUCATION ACTIVITY
+       COURSES MAY BE APPLIED TO YOUR OVERALL UNIT REQUIREMENT.
+       NO MORE THAN 16 UNITS OF INDIVIDUAL INSTRUCTION IN MUSIC
+       AT THE 101/201/300/301/401 LEVELS MAY BE APPLIED TO YOUR
+       OVERALL UNIT REQUIREMENT.
+  +     NO MORE THAN 4 UNITS OF PHYSICAL EDUCATION COURSEWORK.
+      20251 PHED120A      1.0 Pp    Yoga
+      20253 PHED144       1.0 Pp    Pickleball
+      20263 MPVA301       2.0 RG >IPIndividual Instruction
+_________________________________________________________________
+       CURRENT REGISTRATION:
+IP
+      20263 CSCI310       4.0 RG >IPSoftware Engineering
+      20263 CSCI350       4.0 RG >IPFundamentals of Operating Sys
+      20263 CSCI360       4.0 RG >IPArtificial Intelligence: Prin
+      20263 MATH407       4.0 RG >IPProbability Theory
+      20263 MPVA301       2.0 RG >IPIndividual Instruction
+_________________________________________________________________
+OTHER COURSES IN YOUR ACADEMIC ACCOUNT:
+      20212 AP32:COMP     4.0 TR    AP COMPUTER SCI PRINCIPLES
+      20212 AP53:COMP     4.0 TR    AP HUMAN GEOGRAPHY
+      20222 AP57:COMP     4.0 TR    AP U.S. GOVERNMENT
+      20232 AP36:COMP     4.0 TR    AP ENGL LANG AND COMP
+      20232 AP66:COMP     4.0 TR    AP CALCULUS AB
+      20242 AP37:COMP     4.0 TR    AP ENGLISH LIT AND COMP
+      20242 AP48:COMP     4.0 TR    AP FRENCH LANG
+      20242 AP68:COMP     4.0 TR    AP CALCULUS BC
+      20251 PHED120A      1.0 Pp    Yoga
+      20253 PHED144       1.0 Pp    Pickleball
+      20261 DANC185A      2.0 Lp    Hip Hop Dance
+_________________________________________________________________
+                     ****  LEGEND  ****
+REQUIREMENT STATUS CODES:      COURSE SUFFIXES:
+  NO = REQUIREMENT INCOMPLETE    G = GENERAL EDUCATION COURSE
+  OK = REQUIREMENT COMPLETE      L = COURSE WITH A LAB
+  -  = SUB-REQUIREMENT NOT MET   X = COURSE CREDIT RESTRICTION
+  +  = SUB-REQUIREMENT MET       M = COURSE MEETS DIVERSITY
+                                 P = COURSE MEETS TRADITIONS AND
+                                     HISTORICAL FOUNDATIONS
+                                 W = COURSE MEETS CITIZENSHIP IN
+                                     A GLOBAL ERA
+REGISTRATION TERMS:            COURSE FLAGS:
+20263 = FALL SEMESTER 2026       >D = CREDIT DELETED, BUT
+20271 = SPRING SEMESTER 2027          INCLUDED IN GPA
+20272 = SUMMER SEMESTER 2027    >Z = CREDIT DELETED AND NOT
+                                      INCLUDED IN GPA
+GRADE DEFINITIONS:               >FF= TRANSFER AND FRESHMAN
+  TR = TRANSFER COURSE                FORGIVNESS -- NOT INCLUDED
+  RG = CURRENT REGISTRATION           IN GPA.
+  IN = INCOMPLETE                >R = REPEATABLE COURSE
+  IX = EXPIRED INCOMPLETE        >IP= IN-PROGRESS COURSE
+  MG = MISSING GRADE             >EX= EXCESS CREDIT -- CREDIT
+  NS = GRADE NOT SUBMITTED            DELETED BUT INCLUDED IN GPA
+                                 R = REQUIRED SUB-REQUIREMENT
+                                (R)= REQUIRED COURSE
+                                 >OS= REPETITIOUS -- TAKEN OUT
+                                      OF SEQUENCE.  NO UNIT OR
+                                      GPA CREDIT ALLOWED.
+                                 >P   COURSE TAKEN ON P/NP OPTION
+                 ***** EXCEPTION CODES *****
+RE = REQUIREMENT EXCHANGE        RA = REQUIREMENT ALTERNATIVE
+CW = COURSE WAIVER               UW = UNIT WAIVER
+RW = REQUIREMENT WAIVER
+_________________________________________________________________
+IP     RENAISSANCE HONORS GPA VERIFICATION - A MINIMUM 3.5 IN ALL
+       MAJOR COURSE WORK IS REQUIRED FOR HONORS CERTIFICATION:
+    EARNED:                                           X.XXX GPA
+        YOU HAVE BEEN CERTIFIED FOR THIS PROGRAM COUPLING:
+      CSCI(365)/MUSS(M134)
+      20243 CSCI103  L    4.0 Lp    Introduction to Programming
+      20243 CSCI170       4.0 Lp    Discrete Methods in Computer
+      20243 ENGR102       2.0 Lp    Engineering Freshman Academy
+      20243 MATH229       4.0 Lp    Calculus III for Engineers an
+      20251 CSCI104  L    4.0 Lp    Data Structures and Object Or
+      20251 MATH225       4.0 Lp    Linear Algebra and Linear Dif
+      20253 CSCI201       4.0 Lp    Principles of Software Develo
+      20253 CSCI270       4.0 Lp    Introduction to Algorithms an
+      20253 EE  109  L    4.0 Lp    Introduction to Embedded Syst
+      20261 CHEM105B L    4.0 Lp    General Chemistry
+      20261 CSCI356       4.0 Lp    Computer Systems
+      20261 TAC 435       4.0 Lp    Professional C++
+      20263 CSCI310       4.0 RG >IPSoftware Engineering
+      20263 CSCI350       4.0 RG >IPFundamentals of Operating Sys
+      20263 CSCI360       4.0 RG >IPArtificial Intelligence: Prin
+      20263 MATH407       4.0 RG >IPProbability Theory
+_________________________________________________________________
+########  INTERNAL USE ONLY -- FOR DEGREE PROGRESS AUDIT ########
+        A: Total number of units REQUIRED for this Degree: 128.00
+        B: Total number of FREE ELECTIVES in this PoSt: 2.00
+IP      C: Total USC/TR units applied to subject requirements:
+          82.00 UNITS EARNED
+IN-P ---> 16.00 UNITS
+        D: Total number of units accepted in Transfer:
+          32.00 UNITS EARNED
+        E: Transfer units applied to subject requirements:
+          16.00 UNITS EARNED
+        SUBJ Unmet: A _____ - B ______ - C  ______= F ______.
+_________________________________________________________________
+       ##### FA INTERNAL AUDITING - FOR INTERNAL USE ONLY #####
+IN-PROCESS: 16.00 UNITS
+IP      FALL 2026 DEGREE APPLICABLE SUMMARY (Subject):
+      20263 CSCI310       4.0 RG >IPSoftware Engineering
+      20263 CSCI350       4.0 RG >IPFundamentals of Operating Sys
+      20263 CSCI360       4.0 RG >IPArtificial Intelligence: Prin
+      20263 MATH407       4.0 RG >IPProbability Theory
+        SUMMARY OF ELECTIVES APPLIED IN PRIOR TERMS (MAX NUMBER
+        OF FREE ELECTIVES IN THIS PROGRAM = 2.00):
+        (  4.00 UNITS TAKEN  )
+      20212 AP32:COMP     4.0 TR    AP COMPUTER SCI PRINCIPLES
+        SELECT FROM: *************(THROUGH 262 )
+IP      FALL 2026 EXCESS FREE ELECTIVES (NOT DEGREE
+        APPLICABLE):
+      20263 MPVA301       2.0 RG >IPIndividual Instruction
+_________________________________________________________________
+The Degree Progress Advisement report has been prepared to
+assist you in determining your academic progress at the
+University of Southern California.  Although efforts have been
+made to ensure its accuracy, the student is responsible for the
+completion of all graduation requirements.
+If this report does not appear to be accurate, please contact
+your academic advisor, and bring this report with you. The
+Office of Academic Records and Registrar along with your major
+department will certify your successful completion of degree
+requirements.
+Any exceptions (i.e.,course substitutions, waivers, recitals,
+etc.) you have had approved for your major should appear on
+your STARS report. If you believe an error exists on your
+STARS report, please consult with your academic advisor.
+_________________________________________________________________
+************************ END OF ANALYSIS ************************
+Need help?
+Technical Issues: ITS Service Desk (213) 740-5555 | consult@usc.edu
+Privacy Notice | Notice of Non-Discrimination | Digital Accessibility

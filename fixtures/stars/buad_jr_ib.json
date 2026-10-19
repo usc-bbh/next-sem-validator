@@ -1,0 +1,409 @@
+{
+  "meta": {
+    "prepared": "09/23/26",
+    "programCode": "486",
+    "catalogYear": "20251",
+    "redacted": true,
+    "warnings": []
+  },
+  "degree": "BS",
+  "major": "Business Administration",
+  "classLevel": "Junior",
+  "entryTerm": "20251",
+  "expectedGraduation": null,
+  "gpa": null,
+  "posts": [
+    {
+      "program": "486",
+      "degree": "BS",
+      "major": "BUAD",
+      "school": "BUAD",
+      "term": "20251"
+    }
+  ],
+  "minors": [
+    {
+      "name": "English",
+      "effectiveTerm": "20252",
+      "catalogYear": "20251"
+    }
+  ],
+  "units": {
+    "required": 128,
+    "earned": 81,
+    "inProgress": 15,
+    "transferTotal": 32
+  },
+  "completedCourses": [
+    {
+      "term": "20212",
+      "code": "AP53:COMP",
+      "rawCode": "AP53:COMP",
+      "title": "AP HUMAN GEOGRAPHY",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20222",
+      "code": "AP43:COMP",
+      "rawCode": "AP43:COMP",
+      "title": "AP HISTORY EUROPE",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20222",
+      "code": "AP14:COMP",
+      "rawCode": "AP14:COMP",
+      "title": "AP STUDIO ART: DRAWING",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP40:COMP",
+      "rawCode": "AP40:COMP",
+      "title": "AP ENVIRON SCIENCE",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "DIPLOMA+2",
+      "rawCode": "DIPLOMA+2",
+      "title": "DIPLOMA 2 IB UNITS",
+      "units": 2,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "ENGLISH",
+      "rawCode": "ENGLISH",
+      "title": "IBTEST: ENGLISH",
+      "units": 6,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "HIS/AMERIC",
+      "rawCode": "HIS/AMERIC",
+      "title": "IBTEST: HISTORY AMERICAS",
+      "units": 6,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "SPORT",
+      "rawCode": "SPORT",
+      "title": "IBTEST: SPORT EXER SCIENCE",
+      "units": 6,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP68:COMP",
+      "rawCode": "AP68:COMP",
+      "title": "AP CALCULUS BC",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "BUAD 304",
+      "rawCode": "BUAD304",
+      "title": "Organizational Behavior and L",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "ECON 351",
+      "rawCode": "ECON351",
+      "title": "Microeconomics for Business",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "X"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "ENGL 230",
+      "rawCode": "ENGL230",
+      "title": "Shakespeare and His Times",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "GESM 111",
+      "rawCode": "GESM111",
+      "title": "Seminar in the Arts",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "MPGU 120A",
+      "rawCode": "MPGU120A",
+      "title": "Beginning Pop/Rock Guitar",
+      "units": 2,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "BUAD 280",
+      "rawCode": "BUAD280",
+      "title": "Introduction to Financial Acc",
+      "units": 3,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "BUAD 307",
+      "rawCode": "BUAD307",
+      "title": "Marketing Fundamentals",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "ENGL 240",
+      "rawCode": "ENGL240",
+      "title": "Literary Arts",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "WRIT 150",
+      "rawCode": "WRIT150",
+      "title": "Writing and Critical Reasonin",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "ASCJ 200",
+      "rawCode": "ASCJ200",
+      "title": "Navigating Media and News in",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "CHEM 205",
+      "rawCode": "CHEM205",
+      "title": "Chemical Forensics: The Scien",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "L",
+        "X",
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "ENGL 261",
+      "rawCode": "ENGL261",
+      "title": "English Literature to 1800",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "PHIL 246",
+      "rawCode": "PHIL246",
+      "title": "Foundations of Cognitive Scie",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "L",
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    }
+  ],
+  "inProgressCourses": [
+    {
+      "term": "20263",
+      "code": "BUAD 281",
+      "rawCode": "BUAD281",
+      "title": "Introduction to Managerial Ac",
+      "units": 3,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "BUAD 302",
+      "rawCode": "BUAD302",
+      "title": "Communication Strategy in Bus",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "ECON 352",
+      "rawCode": "ECON352",
+      "title": "Macroeconomics for Business",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "X"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "JS 211",
+      "rawCode": "JS  211",
+      "title": "The Holocaust",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "G",
+        "W"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    }
+  ],
+  "equivalents": [],
+  "waivedCourses": []
+}

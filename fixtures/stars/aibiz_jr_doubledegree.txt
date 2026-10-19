@@ -1,0 +1,351 @@
+7/8/26, 1:11 AM                                      USC STARS Report
+          STARS Report for XXXXXXXXXXXXXX                                       ID#: XXXXXXXXXX
+                                               Print Report
+                       1915 Arti fi cial Intelligence for Business
+                           You may directly access the following sections in the STARS report
+Pertinent Data Section
+Major Requirements
+Legend
+Current Registration
+Other courses in your academic account
+Units Required for Degree
+University and Major GPA
+General Education Requirements
+Skill Level and Pre-Major Requirements
+             Completed degree requirements are indicated using blue text and “OK” at the beginning of the section.
+         Outstanding requirements needed to graduate are indicated with red text and “No” at the beginning of the section.
+                             Courses with a 5-digit code indicate the year and semester.
+                    Codes ending in 1 – Spring, 2 – Summer, 3 – Fall. Examples can be found in the legend.
+PREPARED: 07/01/26 - 14:36
+PROGRAM: 1915                                  CATALOG YEAR: 20253
+STARS - DEGREE PROGRESS REPORT
+BACHELOR OF SCIENCE
+ARTIFICIAL INTELLIGENCE FOR BUSINESS
+_________________________________________________________________
+PERTINENT DATA SECTION:
+Term of USC Entrance 20253  Current Class Level Junior
+CURRENT POST:  DEGREE  MAJOR  UNIT  EFFECTIVE TERM
+    242         BA     IR     LAS        20253
+    1915        BS     BUAI   BUAD       20253
+MINOR:  No minor declared
+Advisor not yet designated by your Department.
+*** PLEASE BRING THIS REPORT WITH YOU WHEN YOU SEE
+YOUR ACADEMIC ADVISOR ***
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                 1/6
+7/8/26, 1:11 AM                                      USC STARS Report
+_________________________________________________________________
+         AT LEAST ONE REQUIREMENT HAS NOT BEEN SATISFIED
+_________________________________________________________________
+*****************************************************************
+NOTE: The Legend to STARS can be found at the end of this report
+*****************************************************************
+_________________________________________________________________
+**************** TIME TO DEGREE COMPLETION STATUS ***************
+        BASED ON COMPLETED COURSE WORK, YOU HAVE FIVE REMAINING
+        SEMESTERS TO DEGREE COMPLETION.  COMPLETION OF MORE
+        THAN 16 UNITS IN FUTURE SEMESTERS, OR COMPLETION OF
+        COURSE WORK IN SUMMER TERMS, MAY ACCELERATE YOUR
+        TIME TO DEGREE COMPLETION.
+_________________________________________________________________
+***** Advisory information related to your Program of Study *****
+        Your academic record indicates that you are pursuing
+        two bachelor`s degrees.  A separate STARS report has
+        been prepared for each degree.  A minimum of 32 units
+        beyond that required for the first earned degree is
+        required for degree completion (e.g., 128 + 32
+        additional units = a minimum of 160 undergraduate units
+        for the second bachelor`s degree).
+_________________________________________________________________
+NO     A MINIMUM OF 128 UNITS IS REQUIRED FOR DEGREE COMPLETION,
+       WITH AT LEAST 64 UNITS COMPLETED AT USC:
+    EARNED: 74.00 UNITS
+IN-PROCESS: 31.00 UNITS
+--> NEEDS:  23.00 UNITS
+      20253 BUAD112       2.0 CR    AI for Business Freshman Acad
+      20253 BUAD312    G  4.0 Lp    Statistics and Data Science f
+      20253 CORE102    GP 4.0 Lp    Culture and Values: Thematic
+      20253 CORE111       4.0 Lp    Writing Seminar I: Thematic O
+      20253 CSCI170       4.0 Lp    Discrete Methods in Computer
+      20261 BUAD304       4.0 Lp    Organizational Behavior and L
+      20261 CORE112       4.0 Lp    Writing Seminar II: Thematic
+      20261 IR  321       4.0 Lp    Civil War, Peace Building and
+      20261 IR  325       4.0 Lp    North-South Relations in the
+      20261 IR  365       4.0 Lp    Politics and Democracy in Lat
+      20261 MATH125    G  4.0 Lp    Calculus I
+      20262 BUAD302       4.0 RG >IPCommunication Strategy in Bus
+      20262 BUAD307       4.0 RG >IPMarketing Fundamentals
+      20262 TAC 259       4.0 RG >IPBasics of Artificial Intellig
+      20263 BUAD280       3.0 RG >IPIntroduction to Financial Acc
+      20263 ECON351   X   4.0 RG >IPMicroeconomics for Business
+      20263 IR  211    G  4.0 RG >IPInternational Relations: Appr
+      20263 IR  331       4.0 RG >IPThe Global Economy 2040
+      20263 SPAN150       4.0 RG >IPSpanish II
+      99993 TRNSFR WORK  32.0 TR    Total Transfer Units
+_________________________________________________________________
+IP     64-UNIT RESIDENCY REQUIREMENT HAS BEEN SATISFIED.
+    EARNED: 42.00 UNITS
+IN-PROCESS: 22.00 UNITS
+_________________________________________________________________
+IP     32-UNIT UPPER DIVISION REQUIREMENT HAS BEEN SATISFIED.
+    EARNED: 20.00 UNITS
+IN-PROCESS: 16.00 UNITS
+_________________________________________________________________
+OK     2.0 CUMULATIVE GPA REQUIRED OF ALL USC BACCALAUREATE UNITS
+       ** NOTE: University honors are based on either the GPA
+       for the combined transferred and resident course work or
+       the GPA for resident course work, whichever is lower.
+       Note that only your USC GPA is calculated on STARS.
+    EARNED:                                           X.XXX GPA
+_________________________________________________________________
+IP     2.0 CUMULATIVE GPA REQUIRED IN ALL UPPER DIVISION COURSE
+       WORK APPLIED TO YOUR MAJOR:
+    EARNED:                                           X.XXX GPA
+      20253 BUAD312    G  4.0 Lp    Statistics and Data Science f
+      20261 BUAD304       4.0 Lp    Organizational Behavior and L
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                 2/6
+7/8/26, 1:11 AM                                      USC STARS Report
+      20262 BUAD302       4.0 RG >IPCommunication Strategy in Bus
+      20262 BUAD307       4.0 RG >IPMarketing Fundamentals
+      20263 ECON351   X   4.0 RG >IPMicroeconomics for Business
+_________________________________________________________________
+OK     COMPOSITION/WRITING REQUIREMENT HAS BEEN SATISFIED.
+    EARNED:                           2 SUB-GROUPS
+  +  1) FIRST YEAR WRITING REQUIREMENT:
+                               1 COURSE TAKEN
+      20253 CORE111       4.0 Lp    Writing Seminar I: Thematic O
+  +  2) COMPLETE CORE112:
+                               1 COURSE TAKEN
+      20261 CORE112       4.0 Lp    Writing Seminar II: Thematic
+_________________________________________________________________
+PLEASE NOTE THE FOLLOWING GENERAL EDUCATION LIMITATIONS
+  1. A SINGLE COURSE MAY COUNT IN ONLY ONE G.E. CATEGORY.
+  2. YOU SHOULD CONSULT WITH YOUR T.O ADVISOR WHEN SELECTING
+     COURSE WORK TO MEET THEME AREA REQUIREMENTS.
+_________________________________________________________________
+NO     THEMATIC OPTION REQUIREMENTS - FOR STUDENTS ENROLLED FALL
+       2015 AND LATER:
+  +  1) COMPOSITION REQUIREMENT - COMPLETE CORE111 AND CORE112:
+                               2 COURSES TAKEN
+      20253 CORE111       4.0 Lp    Writing Seminar I: Thematic O
+      20261 CORE112       4.0 Lp    Writing Seminar II: Thematic
+  -  2) SYMBOLS & CONCEPTUAL SYSTEMS:  CORE101
+         NEEDS:                 1 COURSE
+        SELECT FROM: CORE101
+  +  3) CULTURE AND VALUES:  CORE102
+                               1 COURSE TAKEN
+      20253 CORE102    GP 4.0 Lp    Culture and Values: Thematic
+  -  4) THE PROCESS OF CHANGE IN SCIENCE:  CORE103
+         NEEDS:                 1 COURSE
+        SELECT FROM: CORE103
+  -  5) CHANGE AND THE FUTURE:  CORE104
+         NEEDS:                 1 COURSE
+        SELECT FROM: CORE104
+  +  6) COMPLETE ONE COURSE FROM GE CATEGORY A, THE ARTS:
+                               1 SET TAKEN
+      20232 CINE104       3.0 TR    HISTORY OF FILM FROM 1945 TO
+  +  7) COMPLETE ONE COURSE FROM GE CATEGORY C, SOCIAL
+        ANALYSIS:
+           3.00 UNITS EARNED   1 COURSE TAKEN
+      20233 TR-WMNSTUD    3.0 TR    INTRO TO WOMEN'S STUDIES
+  +  8) COMPLETE ONE COURSE FROM GE CATEGORY E, PHYSICAL
+        SCIENCES:
+                               1 COURSE TAKEN
+      20251 PHYS250A      5.0 TR    FUND OF PHYS 1
+  +  9) COMPLETE ONE COURSE FROM GE CATEGORY F, QUANTITATIVE
+        REASONING:
+                               1 COURSE TAKEN
+      20252 AP35:COMP     4.0 TR    AP MACROECONOMICS
+_________________________________________________________________
+OK     GENERAL EDUCATION GLOBAL PERSPECTIVES REQUIREMENT MET.
+  +  1) CATEGORY G - GLOBAL PERSPECTIVES I:
+                               1 COURSE TAKEN
+      20243 TR-INTLREL    3.0 TR    INTRO TO INTERNATIONAL RELATI
+  +  2) CATEGORY H - GLOBAL PERSPECTIVES II:
+                               1 COURSE TAKEN
+      20232 AP43:COMP     4.0 TR    AP HISTORY EUROPE
+_________________________________________________________________
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                 3/6
+7/8/26, 1:11 AM                                      USC STARS Report
+OK     MATH REQUIREMENT:
+  +  1) COMPLETE MATH125 (OR HIGHER LEVEL CALCULUS COURSE):
+      20261 MATH125    G  4.0 Lp    Calculus I
+_________________________________________________________________
+NO     MAJOR REQUIREMENTS FOR BUSINESS ADMINISTRATION -
+       ACCOUNTING COURSES:
+IP-  1) COMPLETE BUAD280 AND BUAD281:
+                               0 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20263 BUAD280       3.0 RG >IPIntroduction to Financial Acc
+         NEEDS:                 1 COURSE
+        SELECT FROM: BUAD281
+_________________________________________________________________
+***************************************************
+INTERNATIONAL STUDENTS WORKING TOWARD THE BUSINESS
+DEGREE ARE EXPECTED TO TAKE ALI 262, ARGUMENTATION.
+***************************************************
+_________________________________________________________________
+NO     MAJOR REQUIREMENTS FOR ARTIFICAL INELLIGENCE FOR BUSINESS:
+IP-  1) REQUIRED COURSE WORK:
+                               2 COURSES TAKEN
+IN-P --->                      3 COURSES TAKEN
+      20253 BUAD312    G  4.0 Lp    Statistics and Data Science f
+      20261 BUAD304       4.0 Lp    Organizational Behavior and L
+      20262 BUAD302       4.0 RG >IPCommunication Strategy in Bus
+      20262 BUAD307       4.0 RG >IPMarketing Fundamentals
+      20263 ECON351   X   4.0 RG >IPMicroeconomics for Business
+         NEEDS:                 7 COURSES
+        SELECT FROM: BUAD306 OR BUAD308  BUAD311 OR BUAD313
+           BUAD497  CSCI360  ECON352  EE  141  EIS 370
+  +  2) A "C" OR BETTER IS REQUIRED IN THE FOLLOWING REQUIRED
+        COURSE WORK:
+          NOTE: RE - SUB CMPR120 FOR CSCI113
+          NOTE: RE - SUB CMPR131 FOR CSCI114
+                               3 COURSES TAKEN
+      20233 CMPR120       3.0 TR    INTRO TO PROGRAMMING
+      20242 CMPR131       3.0 TR    DATA STRUCTURES
+      20253 CSCI170       4.0 Lp    Discrete Methods in Computer
+IP-  3) COMPLETE THREE FROM THE FOLLOWING:
+          NOTE: RE - SUB CMPR120 FOR CSCI113
+          NOTE: RE - SUB CMPR131 FOR CSCI114
+                               0 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20262 TAC 259       4.0 RG >IPBasics of Artificial Intellig
+         NEEDS:                 2 COURSES
+        SELECT FROM: CSCI444  CSCI445  CSCI468  CSCI469  TAC 359
+           TAC 449  TAC 459
+  -  4) INTEGRATED REQUIREMENTS COURSE WORK:
+                               1 COURSE TAKEN
+      20253 BUAD112       2.0 CR    AI for Business Freshman Acad
+         NEEDS:                 3 COURSES
+        SELECT FROM: DSO 429  DSO 488  MOR 458
+_________________________________________________________________
+       CURRENT REGISTRATION:
+IP
+      20262 BUAD302       4.0 RG >IPCommunication Strategy in Bus
+      20262 BUAD307       4.0 RG >IPMarketing Fundamentals
+      20262 TAC 259       4.0 RG >IPBasics of Artificial Intellig
+      20263 BUAD280       3.0 RG >IPIntroduction to Financial Acc
+      20263 ECON351   X   4.0 RG >IPMicroeconomics for Business
+      20263 IR  211    G  4.0 RG >IPInternational Relations: Appr
+      20263 IR  331       4.0 RG >IPThe Global Economy 2040
+      20263 SPAN150       4.0 RG >IPSpanish II
+_________________________________________________________________
+OTHER COURSES IN YOUR ACADEMIC ACCOUNT:
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                 4/6
+7/8/26, 1:11 AM                                      USC STARS Report
+      20222 AP53:COMP     4.0 TR    AP HUMAN GEOGRAPHY
+      20222 TR-ASL-1      4.0 TR    AMERICAN SIGN LANGUAGE 1
+      20222 TR-BUSINESS   3.0 TR    INTRO TO BUSINESS
+      20231 ANTH101       3.0 TR    PHYSICAL ANTHROPOLOGY
+      20232 ANTH101L      1.0 TR    PHYSICAL ANTHROPOLOY LAB
+      20233 ASL116        3.0 TR    PERSPECTIVES ON DEAFNESS
+      20233 GSWS103       3.0 TR    MEN AND MASCULINITIES
+      20241 CMPR140       3.0 TR    DISCRETE STRUCTURES COMP SCI
+      20241 IDS155        3.0 TR    LOGIC
+      20241 POLT221       3.0 TR    WOMEN IN AMERICAN POLITICS
+      20241 TR-ASL-2      4.0 TR    AMERICAN SIGN LANGUAGE 2
+      20241 TR-C++PROG    3.0 TR    C++ PROGRAMMING
+      20241 TR-COMPGOV    3.0 TR    COMPARATIVE GOVERNMENT
+      20241 TR-WLDCIV-1   3.0 TR    WORLD CIVILIZATION 1
+      20242 AP07:COMP     4.0 TR    AP HISTORY AMERICA
+      20242 AP22:COMP     4.0 TR    AP CAPSTONE SEMINAR
+      20242 AP36:COMP     4.0 TR    AP ENGL LANG AND COMP
+      20242 HIST127       3.0 TR    AMERICAN WOMEN IN HISTORY
+      20243 CMPR154       3.0 TR    COMPUTER ARCHITECTURE AND ORG
+      20243 TR-ASL-3      4.0 TR    AMERICAN SIGN LANGUAGE 3
+      20243 TR-COMP-2     4.0 TR    READING AND COMPOSITION 2
+      20243 TR-POLITHRY   3.0 TR    POLITICAL THEORY
+      20251 COMM100       3.0 TR    INTERPERSONAL COMMUNICATION
+      20252 AP37:COMP     4.0 TR    AP ENGLISH LIT AND COMP
+      20252 AP40:COMP     4.0 TR    AP ENVIRON SCIENCE
+      20252 AP57:COMP     4.0 TR    AP U.S. GOVERNMENT
+      20252 AP90:COMP     4.0 TR    AP STATISTICS
+      20261 IR  321       4.0 Lp    Civil War, Peace Building and
+      20261 IR  325       4.0 Lp    North-South Relations in the
+      20261 IR  365       4.0 Lp    Politics and Democracy in Lat
+      20263 IR  211    G  4.0 RG >IPInternational Relations: Appr
+      20263 IR  331       4.0 RG >IPThe Global Economy 2040
+      20263 SPAN150       4.0 RG >IPSpanish II
+_________________________________________________________________
+                     ****  LEGEND  ****
+REQUIREMENT STATUS CODES:      COURSE SUFFIXES:
+  NO = REQUIREMENT INCOMPLETE    G = GENERAL EDUCATION COURSE
+  OK = REQUIREMENT COMPLETE      L = COURSE WITH A LAB
+  -  = SUB-REQUIREMENT NOT MET   X = COURSE CREDIT RESTRICTION
+  +  = SUB-REQUIREMENT MET       M = COURSE MEETS DIVERSITY
+                                 P = COURSE MEETS TRADITIONS AND
+                                     HISTORICAL FOUNDATIONS
+                                 W = COURSE MEETS CITIZENSHIP IN
+                                     A GLOBAL ERA
+REGISTRATION TERMS:            COURSE FLAGS:
+20263 = FALL SEMESTER 2026       >D = CREDIT DELETED, BUT
+20271 = SPRING SEMESTER 2027          INCLUDED IN GPA
+20272 = SUMMER SEMESTER 2027    >Z = CREDIT DELETED AND NOT
+                                      INCLUDED IN GPA
+GRADE DEFINITIONS:               >FF= TRANSFER AND FRESHMAN
+  TR = TRANSFER COURSE                FORGIVNESS -- NOT INCLUDED
+  RG = CURRENT REGISTRATION           IN GPA.
+  IN = INCOMPLETE                >R = REPEATABLE COURSE
+  IX = EXPIRED INCOMPLETE        >IP= IN-PROGRESS COURSE
+  MG = MISSING GRADE             >EX= EXCESS CREDIT -- CREDIT
+  NS = GRADE NOT SUBMITTED            DELETED BUT INCLUDED IN GPA
+                                 R = REQUIRED SUB-REQUIREMENT
+                                (R)= REQUIRED COURSE
+                                 >OS= REPETITIOUS -- TAKEN OUT
+                                      OF SEQUENCE.  NO UNIT OR
+                                      GPA CREDIT ALLOWED.
+                                 >P   COURSE TAKEN ON P/NP OPTION
+                 ***** EXCEPTION CODES *****
+RE = REQUIREMENT EXCHANGE        RA = REQUIREMENT ALTERNATIVE
+CW = COURSE WAIVER               UW = UNIT WAIVER
+RW = REQUIREMENT WAIVER
+_________________________________________________________________
+########  INTERNAL USE ONLY -- FOR DEGREE PROGRESS AUDIT ########
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                 5/6
+7/8/26, 1:11 AM                                      USC STARS Report
+        A: Total number of units REQUIRED for this Degree: 128.00
+        B: Total number of FREE ELECTIVES in this PoSt: -8.00
+IP      C: Total USC/TR units applied to subject requirements:
+          58.00 UNITS EARNED
+IN-P ---> 19.00 UNITS
+        D: Total number of units accepted in Transfer:
+          32.00 UNITS EARNED
+        E: Transfer units applied to subject requirements:
+          28.00 UNITS EARNED
+        SUBJ Unmet: A ____ - B _____ - C (earned) _____= _____.
+_________________________________________________________________
+       SACN: 148.00/PoST Elect = -8.00/TR Adds = 4.00 TTL
+       Units Remaining to Graduate Class LVL = 74.00 (All IP in
+       current term and future completed course work will apply).
+       EST. total unmet: SUBJ Unmet ____ + PD GRAD ____ = _____.
+_________________________________________________________________
+       ##### FA INTERNAL AUDITING - FOR INTERNAL USE ONLY #####
+IN-PROCESS:  7.00 UNITS
+IP      FALL 2026 DEGREE APPLICABLE SUMMARY (Subject):
+      20263 BUAD280       3.0 RG >IPIntroduction to Financial Acc
+      20263 ECON351   X   4.0 RG >IPMicroeconomics for Business
+IP      FALL 2026 EXCESS FREE ELECTIVES (NOT F/AID ELIGIBLE):
+      20263 IR  211    G  4.0 RG >IPInternational Relations: Appr
+      20263 IR  331       4.0 RG >IPThe Global Economy 2040
+      20263 SPAN150       4.0 RG >IPSpanish II
+_________________________________________________________________
+The Degree Progress Advisement report has been prepared to
+assist you in determining your academic progress at the
+University of Southern California.  Although efforts have been
+made to ensure its accuracy, the student is responsible for the
+completion of all graduation requirements.
+If this report does not appear to be accurate, please contact
+your academic advisor, and bring this report with you. The
+Office of Academic Records and Registrar along with your major
+department will certify your successful completion of degree
+requirements.
+Any exceptions (i.e.,course substitutions, waivers, recitals,
+etc.) you have had approved for your major should appear on
+your STARS report. If you believe an error exists on your
+STARS report, please consult with your academic advisor.
+_________________________________________________________________
+************************ END OF ANALYSIS ************************
+Need help?
+Technical Issues: ITS Service Desk (213) 740-5555 | consult@usc.edu
+Privacy Notice | Notice of Non-Discrimination | Digital Accessibility
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                 6/6

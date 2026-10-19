@@ -1,5 +1,7 @@
-// Takes raw text from either textExtract or ocrExtract and pulls out
-// all the structured fields we need from a STARS report.
+// The current parser's field extraction. Takes text from textExtract.js and
+// pulls out the fields the validator reads. Replaced by the new pipeline at
+// milestone M4 (see ../STARS_PARSER_DESIGN.md); kept until then because the
+// app still imports it.
 
 function safeFloat(str) {
   const n = parseFloat(str);
@@ -90,7 +92,7 @@ function extractCourses(text) {
   const completed = [];
   const inProgress = [];
 
-  // Course line formats seen in STARS OCR output:
+  // Course line formats this was written against:
   //   TERM  CODE      FLAGS  UNITS  GRADE  TITLE
   //   20243 BUAD304   -O     4.0    B-     Organizational Behavior...
   //   20261 BUAD302   4.0    RG     >IPCommunication Strategy...   (in-progress, >IP joined to title)

@@ -1,0 +1,782 @@
+{
+  "meta": {
+    "prepared": "07/01/26",
+    "programCode": "1915",
+    "catalogYear": "20253",
+    "redacted": true,
+    "warnings": []
+  },
+  "degree": "BS",
+  "major": "Artificial Intelligence for Business",
+  "classLevel": "Junior",
+  "entryTerm": "20253",
+  "expectedGraduation": null,
+  "gpa": null,
+  "posts": [
+    {
+      "program": "242",
+      "degree": "BA",
+      "major": "IR",
+      "school": "LAS",
+      "term": "20253"
+    },
+    {
+      "program": "1915",
+      "degree": "BS",
+      "major": "BUAI",
+      "school": "BUAD",
+      "term": "20253"
+    }
+  ],
+  "minors": [],
+  "units": {
+    "required": 128,
+    "earned": 74,
+    "inProgress": 31,
+    "transferTotal": 32
+  },
+  "completedCourses": [
+    {
+      "term": "20222",
+      "code": "AP53:COMP",
+      "rawCode": "AP53:COMP",
+      "title": "AP HUMAN GEOGRAPHY",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20222",
+      "code": "TR-ASL-1",
+      "rawCode": "TR-ASL-1",
+      "title": "AMERICAN SIGN LANGUAGE 1",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20222",
+      "code": "TR-BUSINESS",
+      "rawCode": "TR-BUSINESS",
+      "title": "INTRO TO BUSINESS",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20231",
+      "code": "ANTH 101",
+      "rawCode": "ANTH101",
+      "title": "PHYSICAL ANTHROPOLOGY",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "CINE 104",
+      "rawCode": "CINE104",
+      "title": "HISTORY OF FILM FROM 1945 TO",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "AP43:COMP",
+      "rawCode": "AP43:COMP",
+      "title": "AP HISTORY EUROPE",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20232",
+      "code": "ANTH 101L",
+      "rawCode": "ANTH101L",
+      "title": "PHYSICAL ANTHROPOLOY LAB",
+      "units": 1,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20233",
+      "code": "TR-WMNSTUD",
+      "rawCode": "TR-WMNSTUD",
+      "title": "INTRO TO WOMEN'S STUDIES",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20233",
+      "code": "CMPR 120",
+      "rawCode": "CMPR120",
+      "title": "INTRO TO PROGRAMMING",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20233",
+      "code": "ASL 116",
+      "rawCode": "ASL116",
+      "title": "PERSPECTIVES ON DEAFNESS",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20233",
+      "code": "GSWS 103",
+      "rawCode": "GSWS103",
+      "title": "MEN AND MASCULINITIES",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "CMPR 140",
+      "rawCode": "CMPR140",
+      "title": "DISCRETE STRUCTURES COMP SCI",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "IDS 155",
+      "rawCode": "IDS155",
+      "title": "LOGIC",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "POLT 221",
+      "rawCode": "POLT221",
+      "title": "WOMEN IN AMERICAN POLITICS",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "TR-ASL-2",
+      "rawCode": "TR-ASL-2",
+      "title": "AMERICAN SIGN LANGUAGE 2",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "TR-C++PROG",
+      "rawCode": "TR-C++PROG",
+      "title": "C++ PROGRAMMING",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "TR-COMPGOV",
+      "rawCode": "TR-COMPGOV",
+      "title": "COMPARATIVE GOVERNMENT",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "TR-WLDCIV-1",
+      "rawCode": "TR-WLDCIV-1",
+      "title": "WORLD CIVILIZATION 1",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "CMPR 131",
+      "rawCode": "CMPR131",
+      "title": "DATA STRUCTURES",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP07:COMP",
+      "rawCode": "AP07:COMP",
+      "title": "AP HISTORY AMERICA",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP22:COMP",
+      "rawCode": "AP22:COMP",
+      "title": "AP CAPSTONE SEMINAR",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "AP36:COMP",
+      "rawCode": "AP36:COMP",
+      "title": "AP ENGL LANG AND COMP",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20242",
+      "code": "HIST 127",
+      "rawCode": "HIST127",
+      "title": "AMERICAN WOMEN IN HISTORY",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "TR-INTLREL",
+      "rawCode": "TR-INTLREL",
+      "title": "INTRO TO INTERNATIONAL RELATI",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "CMPR 154",
+      "rawCode": "CMPR154",
+      "title": "COMPUTER ARCHITECTURE AND ORG",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "TR-ASL-3",
+      "rawCode": "TR-ASL-3",
+      "title": "AMERICAN SIGN LANGUAGE 3",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "TR-COMP-2",
+      "rawCode": "TR-COMP-2",
+      "title": "READING AND COMPOSITION 2",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "TR-POLITHRY",
+      "rawCode": "TR-POLITHRY",
+      "title": "POLITICAL THEORY",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "PHYS 250A",
+      "rawCode": "PHYS250A",
+      "title": "FUND OF PHYS 1",
+      "units": 5,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "COMM 100",
+      "rawCode": "COMM100",
+      "title": "INTERPERSONAL COMMUNICATION",
+      "units": 3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP35:COMP",
+      "rawCode": "AP35:COMP",
+      "title": "AP MACROECONOMICS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP37:COMP",
+      "rawCode": "AP37:COMP",
+      "title": "AP ENGLISH LIT AND COMP",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP40:COMP",
+      "rawCode": "AP40:COMP",
+      "title": "AP ENVIRON SCIENCE",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP57:COMP",
+      "rawCode": "AP57:COMP",
+      "title": "AP U.S. GOVERNMENT",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP90:COMP",
+      "rawCode": "AP90:COMP",
+      "title": "AP STATISTICS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "BUAD 112",
+      "rawCode": "BUAD112",
+      "title": "AI for Business Freshman Acad",
+      "units": 2,
+      "grade": "CR",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "BUAD 312",
+      "rawCode": "BUAD312",
+      "title": "Statistics and Data Science f",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "CORE 102",
+      "rawCode": "CORE102",
+      "title": "Culture and Values: Thematic",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "G",
+        "P"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "CORE 111",
+      "rawCode": "CORE111",
+      "title": "Writing Seminar I: Thematic O",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "CSCI 170",
+      "rawCode": "CSCI170",
+      "title": "Discrete Methods in Computer",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "BUAD 304",
+      "rawCode": "BUAD304",
+      "title": "Organizational Behavior and L",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "CORE 112",
+      "rawCode": "CORE112",
+      "title": "Writing Seminar II: Thematic",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "IR 321",
+      "rawCode": "IR  321",
+      "title": "Civil War, Peace Building and",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "IR 325",
+      "rawCode": "IR  325",
+      "title": "North-South Relations in the",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "IR 365",
+      "rawCode": "IR  365",
+      "title": "Politics and Democracy in Lat",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "MATH 125",
+      "rawCode": "MATH125",
+      "title": "Calculus I",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    }
+  ],
+  "inProgressCourses": [
+    {
+      "term": "20262",
+      "code": "BUAD 302",
+      "rawCode": "BUAD302",
+      "title": "Communication Strategy in Bus",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20262",
+      "code": "BUAD 307",
+      "rawCode": "BUAD307",
+      "title": "Marketing Fundamentals",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20262",
+      "code": "TAC 259",
+      "rawCode": "TAC 259",
+      "title": "Basics of Artificial Intellig",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "BUAD 280",
+      "rawCode": "BUAD280",
+      "title": "Introduction to Financial Acc",
+      "units": 3,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "ECON 351",
+      "rawCode": "ECON351",
+      "title": "Microeconomics for Business",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "X"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "IR 211",
+      "rawCode": "IR  211",
+      "title": "International Relations: Appr",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "IR 331",
+      "rawCode": "IR  331",
+      "title": "The Global Economy 2040",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "SPAN 150",
+      "rawCode": "SPAN150",
+      "title": "Spanish II",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    }
+  ],
+  "equivalents": [
+    {
+      "from": "CMPR 120",
+      "to": "CSCI 113"
+    },
+    {
+      "from": "CMPR 131",
+      "to": "CSCI 114"
+    }
+  ],
+  "waivedCourses": []
+}

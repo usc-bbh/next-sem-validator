@@ -1,0 +1,292 @@
+28/09/2026, 18:42                                          USC STARS Report
+           STARS Report forXXXXXXXXXXXXXXXXX                                           ID#: XXXXXXXXXX
+                                                   Print Report
+                          953 Environmental Engineering
+                              You may directly access the following sections in the STARS report
+Pertinent Data Section
+Major Requirements
+Legend
+Current Registration
+Other courses in your academic account
+Units Required for Degree
+University and Major GPA
+General Education Requirements
+               Completed degree requirements are indicated using blue text and “OK” at the beginning of the section.
+          Outstanding requirements needed to graduate are indicated with red text and “No” at the beginning of the section.
+                                 Courses with a 5-digit code indicate the year and semester.
+                      Codes ending in 1 – Spring, 2 – Summer, 3 – Fall. Examples can be found in the legend.
+PREPARED: 09/14/26 - 08:36
+PROGRAM: 953                                   CATALOG YEAR: 20263
+STARS - DEGREE PROGRESS REPORT
+BACHELOR OF SCIENCE
+ENVIRONMENTAL ENGINEERING
+_________________________________________________________________
+PERTINENT DATA SECTION:
+Term of USC Entrance 20263  Current Class Level Freshman
+CURRENT POST:  DEGREE  MAJOR  UNIT  EFFECTIVE TERM
+    953         BS     ENE    ENGR       20263
+MINOR:  No minor declared
+Advisor not yet designated by your Department.
+*** PLEASE BRING THIS REPORT WITH YOU WHEN YOU SEE
+YOUR ACADEMIC ADVISOR ***
+_________________________________________________________________
+         AT LEAST ONE REQUIREMENT HAS NOT BEEN SATISFIED
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                                 1/6
+28/09/2026, 18:42                                          USC STARS Report
+_________________________________________________________________
+*****************************************************************
+NOTE: The Legend to STARS can be found at the end of this report
+*****************************************************************
+_________________________________________________________________
+NO     MINIMUM OF 130 UNITS REQUIRED FOR THE DEGREE:
+    EARNED: 20.00 UNITS
+IN-PROCESS: 16.00 UNITS
+--> NEEDS:  94.00 UNITS
+      20263 CE  110       2.0 RG >IPIntroduction to Environmental
+      20263 CHEM105A L G  4.0 RG >IPGeneral Chemistry
+      20263 ENGR102       2.0 RG >IPViterbi First-Year Academy
+      20263 MATH226    G  4.0 RG >IPCalculus III
+      20263 WRIT150       4.0 RG >IPWriting and Critical Reasonin
+      99993 TRNSFR WORK  20.0 TR    Total Transfer Units
+_________________________________________________________________
+NO     A MINIMUM OF 64 UNDERGRADUATE UNITS MUST COMPLETED AT USC:
+IN-PROCESS: 16.00 UNITS
+--> NEEDS:  48.00 UNITS
+_________________________________________________________________
+NO     A MINIMUM OF 32 UPPER DIVISION UNITS IS REQUIRED FOR
+       DEGREE COMPLETION:
+    EARNED:  0.00 UNITS
+--> NEEDS:  32.00 UNITS
+_________________________________________________________________
+NO     2.0 CUMULATIVE GPA REQUIRED OF ALL USC BACCALAUREATE UNITS
+       ** NOTE: University honors are based on either the GPA
+       for the combined transferred and resident course work or
+       the GPA for resident course work, whichever is lower.
+       Note that only your USC GPA is calculated on STARS.
+--> NEEDS:                                            X.XXX GPA
+_________________________________________________________________
+OK     2.0 CUMULATIVE GPA REQUIRED IN ALL UPPER DIVISION COURSE
+       WORK APPLIED TO YOUR MAJOR:
+_________________________________________________________________
+NO     COMPOSITION/WRITING REQUIREMENT -- COURSE WORK MUST BE
+       TAKEN FOR A LETTER GRADE:
+    EARNED:                           1 SUB-GROUP
+--> NEEDS:                            1 SUB-GROUP
+IP+  1) FIRST YEAR WRITING REQUIREMENT:
+                               0 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20263 WRIT150       4.0 RG >IPWriting and Critical Reasonin
+  -  2) UPPER DIVISION WRITING REQUIREMENT (must be taken at
+        USC):
+         NEEDS:                 1 COURSE
+        SELECT FROM: WRIT340
+_________________________________________________________________
+NO     GENERAL EDUCATION CORE LITERACIES REQUIREMENTS -  COMPLETE
+       EIGHT COURSES FROM SIX CATEGORIES AS FOLLOWS:
+       NOTE:   1.  FIRST YEAR FRESHMAN AT USC MUST TAKE ONE GE
+                   SEMINAR (GESM) AS ONE OF THE EIGHT COURSES.
+               2.  TRANSFER STUDENTS AND FRESHMAN ADMITTED FOR
+                   THE SPRING MUST COMPLETE AT LEAST TWO
+                   OF THEIR EIGHT CORE LITERACY COURSES AT USC,
+                   WITH A MINIMUM OF TWO COURSES OFFERED IN
+                   DORNSIFE COLLEGE DEPARTMENTS.
+               3.  NO MORE THAN ONE COURSE TAKEN P/NP (AT USC
+                   OR IN TRANSFER) MAY APPLY TO THE CORE
+                   LITERACIES.
+  -  1) COMPLETE ONE COURSE FROM CATEGORY A - THE ARTS:
+         NEEDS:                 1 COURSE
+        SELECT FROM: CATEGORY GE-A
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                                 2/6
+28/09/2026, 18:42                                          USC STARS Report
+  -  2) COMPLETE TWO COURSES FROM CATEGORY B - HUMANISTIC
+        INQUIRY:
+         NEEDS:                 2 COURSES
+        SELECT FROM: CATEGORY GE-B
+  -  3) COMPLETE TWO COURSES FROM CATEGORY C - SOCIAL ANALYSIS:
+         NEEDS:                 2 COURSES
+        SELECT FROM: CATEGORY GE-C
+  -  4) COMPLETE ONE COURSE FROM CATEGORY D - LIFE SCIENCES:
+         NEEDS:                 1 COURSE
+        SELECT FROM: CATEGORY GE-D
+IP+  5) CATEGORY E:  PHYSICAL SCIENCES
+                               0 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20263 CHEM105A L G  4.0 RG >IPGeneral Chemistry
+  +  6) CATEGORY F:  QUANTITATIVE REASONING
+                               1 COURSE TAKEN
+      20242 AP68:COMP     4.0 TR    AP CALCULUS BC
+  -  7) FIRST YEAR GE SEMINAR REQUIREMENT HAS NOT BEEN
+        SATISFIED.
+         NEEDS:                 1 COURSE
+_________________________________________________________________
+NO     GENERAL EDUCATION GLOBAL PERSPECTIVES REQUIREMENT -
+       COMPLETE ONE COURSE FROM EACH OF THE FOLLOWING TWO
+       CATEGORIES (NOTE: A COURSE MAY APPLY TO BOTH A CORE
+       LITERACY REQUIREMENT AND A GLOBAL PERSPECTIVES
+       REQUIREMENT):
+  -  1) CATEGORY G - GLOBAL PERSPECTIVES I:
+         NEEDS:                 1 COURSE
+        SELECT FROM: CATEGORY GE-G
+  +  2) CATEGORY H - GLOBAL PERSPECTIVES II:
+                               1 COURSE TAKEN
+      20232 AP07:COMP     4.0 TR    AP HISTORY AMERICA
+_________________________________________________________________
+IP     PRE-MAJOR CALCULUS REQUIREMENTS FOR ENVIRONMENTAL
+       ENGINEERING:
+IP+  1) MATH226 REQUIREMENT MET.
+                               0 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20263 MATH226    G  4.0 RG >IPCalculus III
+_________________________________________________________________
+NO     ADDITIONAL MATH REQUIREMENT FOR ENVIRONMENTAL
+       ENGINEERING:
+  -  1) COMPLETE MATH245:
+         NEEDS:                 1 COURSE
+        SELECT FROM: MATH245
+_________________________________________________________________
+NO     ADDITIONAL PRE-MAJOR REQUIREMENTS FOR ENVIRONMENTAL
+       ENGINEERING:
+IP+  1) CHEMISTRY REQUIREMENT:
+                               0 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20263 CHEM105A L G  4.0 RG >IPGeneral Chemistry
+  -  2) PHYSICS REQUIREMENT -- COMPLETE PHYS151 AND PHYS152:
+         NEEDS:                 2 COURSES
+        SELECT FROM: PHYS151  PHYS152
+_________________________________________________________________
+NO     ENVIRONMENTAL ENGINEERING MAJOR REQUIREMENTS:
+    EARNED:                           1 SUB-GROUP
+--> NEEDS:                            6 SUB-GROUPS
+IP-  1) COMPLETE THE FOLLOWING CIVIL ENGINEERING COURSES:
+                               0 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20263 CE  110       2.0 RG >IPIntroduction to Environmental
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                                 3/6
+28/09/2026, 18:42                                          USC STARS Report
+         NEEDS:                11 COURSES
+        SELECT FROM: CE  108  CE  119  CE  215  CE  309  CE  330
+           CE  363  CE  408  CE  410  CE  451  CE  483  CE  485
+  -  2) COMPLETE THE FOLLOWING COURSES:
+         NEEDS:                 5 COURSES
+        SELECT FROM: ENE 200  ENE 215  ENE 300  ENE 415  ENE 428
+  -  3) COMPLETE THE FOLLOWING COURSES FROM OTHER DEPARTMENTS:
+         NEEDS:                 2 COURSES
+        SELECT FROM: CHE 330  BISC220
+  -  4) COMPLETE ONE DESIGN COURSE FROM THE FOLLOWING:
+         NEEDS:                 1 COURSE
+        SELECT FROM: CE  450  CE  476
+  -  5) COMPLETE ONE FROM THE FOLLOWING:
+         NEEDS:                 1 COURSE
+        SELECT FROM: CE  423  CE  427  ENE 440
+IP+  6) COMPLETE ENGR102:
+                               0 COURSES TAKEN
+IN-P --->                      1 COURSE TAKEN
+      20263 ENGR102       2.0 RG >IPViterbi First-Year Academy
+  -  7) COMPLETE THE FOLLOWING CAPSTONE COURSE:
+         NEEDS:                 1 COURSE
+        SELECT FROM: CE  480
+_________________________________________________________________
+YOUR PROGRAM REQUIRES A PRACTICUM.  PLEASE CONTACT YOUR
+ACADEMIC ADVISOR FOR ASSISTANCE IN MEETING THIS REQUIREMENT.
+NO
+  -  1) PRACTICUM HAS NOT BEEN COMPLETED.
+_________________________________________________________________
+       CURRENT REGISTRATION:
+IP
+      20263 CE  110       2.0 RG >IPIntroduction to Environmental
+      20263 CHEM105A L G  4.0 RG >IPGeneral Chemistry
+      20263 ENGR102       2.0 RG >IPViterbi First-Year Academy
+      20263 MATH226    G  4.0 RG >IPCalculus III
+      20263 WRIT150       4.0 RG >IPWriting and Critical Reasonin
+_________________________________________________________________
+OTHER COURSES IN YOUR ACADEMIC ACCOUNT:
+      20222 AP57:COMP     4.0 TR    AP U.S. GOVERNMENT
+      20232 AP40:COMP     4.0 TR    AP ENVIRON SCIENCE
+      20242 AP93:COMP     4.0 TR    AP WORLD HISTORY
+      20253 CE  110       0.0 W     Introduction to Environmental
+      20253 CHEM105A L G  0.0 W     General Chemistry
+      20253 CTCS190    G  0.0 W     Introduction to Cinema
+      20253 ENGR102       0.0 W     Engineering Freshman Academy
+      20253 MATH226    G  0.0 W     Calculus III
+_________________________________________________________________
+                     ****  LEGEND  ****
+REQUIREMENT STATUS CODES:      COURSE SUFFIXES:
+  NO = REQUIREMENT INCOMPLETE    G = GENERAL EDUCATION COURSE
+  OK = REQUIREMENT COMPLETE      L = COURSE WITH A LAB
+  -  = SUB-REQUIREMENT NOT MET   X = COURSE CREDIT RESTRICTION
+  +  = SUB-REQUIREMENT MET       M = COURSE MEETS DIVERSITY
+                                 P = COURSE MEETS TRADITIONS AND
+                                     HISTORICAL FOUNDATIONS
+                                 W = COURSE MEETS CITIZENSHIP IN
+                                     A GLOBAL ERA
+REGISTRATION TERMS:            COURSE FLAGS:
+20263 = FALL SEMESTER 2026       >D = CREDIT DELETED, BUT
+20271 = SPRING SEMESTER 2027          INCLUDED IN GPA
+20272 = SUMMER SEMESTER 2027    >Z = CREDIT DELETED AND NOT
+                                      INCLUDED IN GPA
+GRADE DEFINITIONS:               >FF= TRANSFER AND FRESHMAN
+  TR = TRANSFER COURSE                FORGIVNESS -- NOT INCLUDED
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                                 4/6
+28/09/2026, 18:42                                          USC STARS Report
+  RG = CURRENT REGISTRATION           IN GPA.
+  IN = INCOMPLETE                >R = REPEATABLE COURSE
+  IX = EXPIRED INCOMPLETE        >IP= IN-PROGRESS COURSE
+  MG = MISSING GRADE             >EX= EXCESS CREDIT -- CREDIT
+  NS = GRADE NOT SUBMITTED            DELETED BUT INCLUDED IN GPA
+                                 R = REQUIRED SUB-REQUIREMENT
+                                (R)= REQUIRED COURSE
+                                 >OS= REPETITIOUS -- TAKEN OUT
+                                      OF SEQUENCE.  NO UNIT OR
+                                      GPA CREDIT ALLOWED.
+                                 >P   COURSE TAKEN ON P/NP OPTION
+                 ***** EXCEPTION CODES *****
+RE = REQUIREMENT EXCHANGE        RA = REQUIREMENT ALTERNATIVE
+CW = COURSE WAIVER               UW = UNIT WAIVER
+RW = REQUIREMENT WAIVER
+_________________________________________________________________
+########  INTERNAL USE ONLY -- FOR DEGREE PROGRESS AUDIT ########
+        A: Total number of units REQUIRED for this Degree: 130.00
+        B: Total number of FREE ELECTIVES in this PoSt: -12.00
+IP      C: Total USC/TR units applied to subject requirements:
+           8.00 UNITS EARNED
+IN-P ---> 16.00 UNITS
+        D: Total number of units accepted in Transfer:
+          20.00 UNITS EARNED
+        E: Transfer units applied to subject requirements:
+           8.00 UNITS EARNED
+        SUBJ Unmet: A _____ - B ______ - C  ______= F ______.
+_________________________________________________________________
+       ##### FA INTERNAL AUDITING - FOR INTERNAL USE ONLY #####
+IN-PROCESS: 16.00 UNITS
+IP      FALL 2026 DEGREE APPLICABLE SUMMARY (Subject):
+      20263 CE  110       2.0 RG >IPIntroduction to Environmental
+      20263 CHEM105A L G  4.0 RG >IPGeneral Chemistry
+      20263 ENGR102       2.0 RG >IPViterbi First-Year Academy
+      20263 MATH226    G  4.0 RG >IPCalculus III
+      20263 WRIT150       4.0 RG >IPWriting and Critical Reasonin
+        SUMMARY OF ELECTIVES APPLIED IN PRIOR TERMS (MAX NUMBER
+        OF FREE ELECTIVES IN THIS PROGRAM = -12.00):
+        SELECT FROM: *************(THROUGH 262 )
+_________________________________________________________________
+The Degree Progress Advisement report has been prepared to
+assist you in determining your academic progress at the
+University of Southern California.  Although efforts have been
+made to ensure its accuracy, the student is responsible for the
+completion of all graduation requirements.
+If this report does not appear to be accurate, please contact
+your academic advisor, and bring this report with you. The
+Office of Academic Records and Registrar along with your major
+department will certify your successful completion of degree
+requirements.
+Any exceptions (i.e.,course substitutions, waivers, recitals,
+etc.) you have had approved for your major should appear on
+your STARS report. If you believe an error exists on your
+STARS report, please consult with your academic advisor.
+_________________________________________________________________
+************************ END OF ANALYSIS ************************
+Need help?
+Technical Issues: ITS Service Desk (213) 740-5555 | consult@usc.edu
+Privacy Notice | Notice of Non-Discrimination | Digital Accessibility
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                                 5/6
+28/09/2026, 18:42                                          USC STARS Report
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                                 6/6

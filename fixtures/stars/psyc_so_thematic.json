@@ -1,0 +1,237 @@
+{
+  "meta": {
+    "prepared": "09/14/26",
+    "programCode": "598",
+    "catalogYear": "20263",
+    "redacted": true,
+    "warnings": []
+  },
+  "degree": "BA",
+  "major": "Psychology",
+  "classLevel": "Sophomore",
+  "entryTerm": "20263",
+  "expectedGraduation": null,
+  "gpa": null,
+  "posts": [
+    {
+      "program": "598",
+      "degree": "BA",
+      "major": "PSYC",
+      "school": "LAS",
+      "term": "20263"
+    }
+  ],
+  "minors": [],
+  "units": {
+    "required": 128,
+    "earned": 35,
+    "inProgress": 18,
+    "transferTotal": 32
+  },
+  "completedCourses": [
+    {
+      "term": "20242",
+      "code": "CORE 195",
+      "rawCode": "CORE195",
+      "title": "Summer Seminar",
+      "units": 3,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP20:COMP",
+      "rawCode": "AP20:COMP",
+      "title": "AP BIOLOGY",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP65:COMP",
+      "rawCode": "AP65:COMP",
+      "title": "AP PRECALCULUS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP83:COMP",
+      "rawCode": "AP83:COMP",
+      "title": "AP PHYSICS 1",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP85:COMP",
+      "rawCode": "AP85:COMP",
+      "title": "AP PSYCHOLOGY",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP15:COMP",
+      "rawCode": "AP15:COMP",
+      "title": "AP STUDIO ART: 2D DESIGN",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20262",
+      "code": "AP22:COMP",
+      "rawCode": "AP22:COMP",
+      "title": "AP CAPSTONE SEMINAR",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20262",
+      "code": "AP35:COMP",
+      "rawCode": "AP35:COMP",
+      "title": "AP MACROECONOMICS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20262",
+      "code": "AP66:COMP",
+      "rawCode": "AP66:COMP",
+      "title": "AP CALCULUS AB",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    }
+  ],
+  "inProgressCourses": [
+    {
+      "term": "20263",
+      "code": "CORE 102",
+      "rawCode": "CORE102",
+      "title": "Culture and Values: Thematic",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "G",
+        "P"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "CORE 111",
+      "rawCode": "CORE111",
+      "title": "Writing Seminar I: Thematic O",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "EALC 102",
+      "rawCode": "EALC102",
+      "title": "Language, Art and Culture: Ca",
+      "units": 2,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "MATH 114",
+      "rawCode": "MATH114",
+      "title": "Foundations of Statistics",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "X",
+        "G"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "PSYC 353",
+      "rawCode": "PSYC353",
+      "title": "Close Relationships",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    }
+  ],
+  "equivalents": [],
+  "waivedCourses": []
+}
