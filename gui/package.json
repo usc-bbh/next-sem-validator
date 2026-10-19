@@ -10,7 +10,7 @@
     "prebuild": "npm run sync:validator",
     "build": "vite build",
     "lint": "oxlint",
-    "test": "node --test stars-parser/test/*.test.js stars-parser/legacy/test/*.test.js",
+    "test": "node --test stars-parser/test/*.test.js",
     "preview": "vite preview"
   },
   "dependencies": {

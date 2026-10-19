@@ -124,11 +124,72 @@ def _dept_clearance_by_prefix(dept_clearance: dict) -> dict:
     return by_prefix
 
 
+# What a STARS row proves. The parser marks each row with `passed`, `source`
+# and `origin` (gui/stars-parser/STARS_PARSER_DESIGN.md §7–9). Rows without
+# them, from older producers or hand-written fixtures, are read as passed USC
+# rows from the report, which is how every row was read before those fields
+# existed.
+PROVEN_BY_REPORT = "report"
+PROVEN_BY_STUDENT = "student"
+PROVEN_BY_WAIVER = "waiver"
+
+
+def _row_counts(row: dict) -> bool:
+    """A W, a failing grade, or deleted credit is on the record but passed nothing."""
+    return row.get("passed", True) is not False
+
+
+def _is_usc_row(row: dict) -> bool:
+    return row.get("source", "usc") == "usc"
+
+
+def _row_origin(row: dict) -> str:
+    return PROVEN_BY_STUDENT if row.get("origin") == "student" else PROVEN_BY_REPORT
+
+
+def _completed_evidence(stars_summary: dict) -> dict[str, str]:
+    """Maps each course code the completed rows prove to how it's proven: by the report, only by
+    a row the student added or edited on the review screen, or only by a course waiver.
+
+    A transfer or exam row never proves a USC course by the shape of its code: CMPR120 and
+    ANTH101 are the sending school's codes. It proves one only through an equivalence the report
+    states ("RE - SUB CMPR120 FOR CSCI113")."""
+    evidence: dict[str, str] = {}
+
+    def prove(code: str, how: str) -> None:
+        code = _normalize_code(code)
+        # The report outranks the student, and both outrank a waiver.
+        rank = {PROVEN_BY_REPORT: 0, PROVEN_BY_STUDENT: 1, PROVEN_BY_WAIVER: 2}
+        if code not in evidence or rank[how] < rank[evidence[code]]:
+            evidence[code] = how
+
+    rows = [r for r in stars_summary.get("completedCourses", []) if _row_counts(r)]
+    for row in rows:
+        if _is_usc_row(row):
+            prove(row["code"], _row_origin(row))
+
+    by_code = {}
+    for row in rows:
+        by_code.setdefault(_normalize_code(row["code"]), []).append(row)
+    for eq in stars_summary.get("equivalents", []):
+        for row in by_code.get(_normalize_code(eq["from"]), []):
+            prove(eq["to"], _row_origin(row))
+
+    for code in stars_summary.get("waivedCourses", []):
+        prove(code, PROVEN_BY_WAIVER)
+    return evidence
+
+
 def _check_already_taken(course: str, stars_summary: dict) -> CourseResult | None:
-    """Fails if already completed, warns if already in progress this term."""
+    """Fails if already completed, warns if already in progress this term. A withdrawn or failed
+    attempt isn't "completed", and a waived course isn't one the student took."""
     norm = _normalize_code(course)
-    completed = {_normalize_code(c["code"]) for c in stars_summary.get("completedCourses", [])}
-    in_progress = {_normalize_code(c["code"]) for c in stars_summary.get("inProgressCourses", [])}
+    completed = {
+        code for code, how in _completed_evidence(stars_summary).items() if how != PROVEN_BY_WAIVER
+    }
+    in_progress = {
+        _normalize_code(c["code"]) for c in stars_summary.get("inProgressCourses", []) if _is_usc_row(c)
+    }
     if norm in completed:
         return CourseResult(course, "fail", [f"{norm} is already completed."])
     if norm in in_progress:
@@ -176,19 +237,24 @@ def _check_prereq(course: str, catalog_entry: dict | None, stars_summary: dict) 
     if not re.search(r"prereq|requisite", description, re.IGNORECASE):
         return None
 
-    completed = {_normalize_code(c["code"]) for c in stars_summary.get("completedCourses", [])}
+    evidence = _completed_evidence(stars_summary)
     gpa = stars_summary.get("gpa")
 
     reasons = []
-    status = "pass"
+    failed = False
+    unconfirmed = False
     matched_any = False
 
     gpa_match = re.search(r"([\d.]+)\s*gpa", description, re.IGNORECASE)
     if gpa_match:
         matched_any = True
         required_gpa = float(gpa_match.group(1))
-        if gpa is None or gpa < required_gpa:
-            status = "fail"
+        if gpa is None:
+            # Redacted (X.XXX) or not on the report. Not knowing isn't failing.
+            unconfirmed = True
+            reasons.append(f"{course} requires a {required_gpa} GPA minimum. Your GPA isn't on your report, so this wasn't checked.")
+        elif gpa < required_gpa:
+            failed = True
             reasons.append(f"{course} requires a {required_gpa} GPA minimum (yours: {gpa}).")
 
     required_codes = {
@@ -197,18 +263,30 @@ def _check_prereq(course: str, catalog_entry: dict | None, stars_summary: dict) 
     required_codes.discard(_normalize_code(course))
     if required_codes:
         matched_any = True
-        missing = sorted(required_codes - completed)
+        missing = sorted(required_codes - evidence.keys())
         if missing:
-            status = "fail"
+            failed = True
             reasons.append(f"{course} is missing prerequisite(s): {', '.join(missing)}.")
+        by_student = sorted(c for c in required_codes if evidence.get(c) == PROVEN_BY_STUDENT)
+        if by_student:
+            unconfirmed = True
+            reasons.append(
+                f"You added {', '.join(by_student)} yourself; we couldn't confirm it from your report, so check it before relying on it."
+            )
+        by_waiver = sorted(c for c in required_codes if evidence.get(c) == PROVEN_BY_WAIVER)
+        if by_waiver:
+            unconfirmed = True
+            reasons.append(
+                f"{', '.join(by_waiver)} is waived on your report. Check with the department that the waiver covers prerequisites."
+            )
 
     if not matched_any:
-        status = "warning"
+        unconfirmed = True
         reasons.append(f"Prerequisite note (unverified): {description.strip()}")
 
     if not reasons:
         return None
-    return CourseResult(course, status, reasons)
+    return CourseResult(course, "fail" if failed else "warning" if unconfirmed else "pass", reasons)
 
 
 def _check_in_catalog(course: str, catalog: dict) -> CourseResult | None:
