@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { parseStarsReport } from "../stars-parser";
 import StarsReview, { GraduateNotice } from "./StarsReview";
+import { C, HEAD, BODY, SHADOW, eyebrow, card, primaryButton, secondaryButton } from "./theme";
 import { EMPTY_REPORT } from "./emptyReport";
 
 // ─────────────────────────────────────────────────────────────
@@ -61,13 +62,13 @@ const DAY_END = 21 * 60;
 const SPAN = DAY_END - DAY_START;
 // Course accent colors — chosen to stay legible on a white background,
 // anchored by USC cardinal for the first course.
-const PALETTE = ["#990000", "#1a7f37", "#1d4ed8", "#9a6a00", "#6f42c1", "#0e7490", "#b3006b"];
+const PALETTE = ["#990000", "#16A34A", "#1d4ed8", "#A16207", "#6f42c1", "#0e7490", "#b3006b"];
 
 // Seat-availability colours for the calendar. Matches the same fullness
 // test the validator uses (is_full OR zero open seats), so a block can't
 // read "open" while the validator fails it for being full.
-const SEAT_OPEN = "#1a7f37";
-const SEAT_FULL = "#c1121f";
+const SEAT_OPEN = C.ok;
+const SEAT_FULL = C.bad;
 const isOpen = (s) => !s.is_full && s.open_seats !== 0;
 
 function Calendar({ blocks }) {
@@ -75,18 +76,18 @@ function Calendar({ blocks }) {
   for (let h = 8; h <= 21; h++) hours.push(h);
 
   return (
-    <div style={{ border: "1px solid #dcdce0", borderRadius: 14, overflow: "hidden", background: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.05), 0 10px 28px rgba(0,0,0,0.06)" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "46px repeat(5, 1fr)", background: "linear-gradient(180deg, #990000, #7d0000)" }}>
-        <div style={{ borderBottom: "1px solid rgba(255,255,255,0.15)" }} />
+    <div style={{ ...card, overflow: "hidden" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "46px repeat(5, 1fr)", background: "#FAFAF9", borderBottom: `1px solid ${C.line}` }}>
+        <div />
         {DAYS.map((d) => (
-          <div key={d} style={{ padding: "11px 0", textAlign: "center", fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#ffcc00", borderBottom: "1px solid rgba(255,255,255,0.15)", borderLeft: "1px solid rgba(255,255,255,0.12)" }}>{d}</div>
+          <div key={d} style={{ ...eyebrow, padding: "12px 0", textAlign: "center", borderLeft: `1px solid ${C.line}` }}>{d}</div>
         ))}
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "46px repeat(5, 1fr)", position: "relative", height: 470 }}>
         {/* hour gutter */}
         <div style={{ position: "relative" }}>
           {hours.map((h) => (
-            <div key={h} style={{ position: "absolute", top: `${((h * 60 - DAY_START) / SPAN) * 100}%`, right: 8, transform: "translateY(-50%)", fontSize: 9.5, color: "#9a9aa0", fontFamily: "'DM Mono', monospace" }}>
+            <div key={h} style={{ position: "absolute", top: `${((h * 60 - DAY_START) / SPAN) * 100}%`, right: 8, transform: "translateY(-50%)", fontSize: 10, color: C.faint, fontFamily: HEAD }}>
               {h % 12 || 12}{h < 12 ? "a" : "p"}
             </div>
           ))}
@@ -120,9 +121,9 @@ function Calendar({ blocks }) {
 // App
 // ─────────────────────────────────────────────────────────────
 const STATUS = {
-  fail: { bg: "#fdecea", border: "#f2b8b3", dot: "#c1121f", label: "Blocker", icon: "!" },
-  warning: { bg: "#fff8e1", border: "#ffd54f", dot: "#a06a00", label: "Heads-up", icon: "!" },
-  pass: { bg: "#eaf7ef", border: "#a7dcb8", dot: "#1a7f37", label: "OK", icon: "✓" },
+  fail: { bg: "#FDF2F2", border: "rgba(193,18,31,0.25)", dot: C.bad, label: "Blocker", icon: "!" },
+  warning: { bg: "#FEFAEC", border: C.goldLine, dot: C.warn, label: "Heads-up", icon: "!" },
+  pass: { bg: "#F0FAF3", border: "rgba(22,163,74,0.3)", dot: C.ok, label: "OK", icon: "✓" },
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -420,10 +421,10 @@ export default function App() {
   // ── Loading / error states ──
   if (catalogLoading) {
     return (
-      <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#f4f4f5" }}>
-        <div style={{ textAlign: "center", color: "#7a7a80" }}>
-          <div style={{ fontSize: 28, marginBottom: 12 }}>⏳</div>
-          <div style={{ fontSize: 15, fontWeight: 600, color: "#1a1a1a" }}>Loading course catalog...</div>
+      <div style={{ fontFamily: BODY, display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: C.page }}>
+        <div style={{ textAlign: "center", color: C.muted }}>
+          <div style={{ ...eyebrow, color: C.cardinal, letterSpacing: 4, marginBottom: 10 }}>RegCheck</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: C.ink, fontFamily: HEAD }}>Loading course catalog…</div>
           <div style={{ fontSize: 12.5, marginTop: 6 }}>4,648 courses from Fall 2026 scrape</div>
         </div>
       </div>
@@ -432,78 +433,94 @@ export default function App() {
 
   if (catalogError) {
     return (
-      <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#f4f4f5" }}>
-        <div style={{ textAlign: "center", color: "#c1121f", maxWidth: 400 }}>
-          <div style={{ fontSize: 28, marginBottom: 12 }}>⚠️</div>
-          <div style={{ fontSize: 15, fontWeight: 600 }}>Failed to load course catalog</div>
-          <div style={{ fontSize: 12.5, marginTop: 6, color: "#7a7a80" }}>{catalogError}</div>
-          <div style={{ fontSize: 12, marginTop: 12, color: "#7a7a80" }}>Make sure <code>public/catalog.json</code> exists.</div>
+      <div style={{ fontFamily: BODY, display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: C.page }}>
+        <div style={{ textAlign: "center", color: C.bad, maxWidth: 400 }}>
+          <div style={{ fontSize: 16, fontWeight: 600, fontFamily: HEAD }}>Failed to load course catalog</div>
+          <div style={{ fontSize: 12.5, marginTop: 6, color: C.muted }}>{catalogError}</div>
+          <div style={{ fontSize: 12, marginTop: 12, color: C.muted }}>Make sure <code>public/catalog.json</code> exists.</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", background: "#f4f4f5", color: "#1a1a1a", minHeight: "100vh" }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600;700&display=swap');
+    <div style={{ fontFamily: BODY, background: C.page, color: C.ink, minHeight: "100vh" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; }
-        .mono { font-family: 'DM Mono', monospace; }
-        .serif { font-family: 'Playfair Display', Georgia, serif; }
+        ::selection { background: rgba(153,0,0,0.2); color: #1C1C1F; }
+        .mono { font-family: 'Space Grotesk', sans-serif; font-variant-numeric: tabular-nums; }
+        .serif { font-family: 'Space Grotesk', sans-serif; }
+        .outline-btn:hover { border-color: #990000 !important; color: #990000 !important; }
+        .layout { display: grid; grid-template-columns: minmax(340px, 430px) 1fr; gap: 28px; align-items: start; }
+        .sticky-col { position: sticky; top: 84px; }
+        @media (max-width: 900px) {
+          .layout { grid-template-columns: 1fr; }
+          .sticky-col { position: static; }
+        }
         button { transition: background .15s ease, border-color .15s ease, color .15s ease, box-shadow .18s ease, transform .1s ease; }
         button:focus-visible { outline: 2px solid #990000; outline-offset: 2px; }
         input:focus { outline: none; border-color: #990000; box-shadow: 0 0 0 3px rgba(153,0,0,0.14); }
-        .chip:hover { background: rgba(255,255,255,0.28) !important; }
         .course-card { transition: border-color .18s ease, box-shadow .18s ease; }
-        .course-card:hover { border-color: #cfcfd4; box-shadow: 0 8px 22px rgba(0,0,0,0.09); }
+        .course-card:hover { border-color: rgba(0,0,0,0.14); box-shadow: 0 22px 44px -24px rgba(28,28,31,0.35); }
         .suggestion:hover { background: rgba(153,0,0,0.06) !important; }
-        .section-row:hover { background: #f7f7f8 !important; border-color: #e2e2e6 !important; }
+        .section-row:hover { background: #FAFAF9 !important; border-color: rgba(0,0,0,0.12) !important; }
         .remove-btn:hover { color: #c1121f !important; background: rgba(193,18,31,0.1) !important; }
-        .validate-btn:not(:disabled):hover { box-shadow: 0 8px 22px rgba(153,0,0,0.32); transform: translateY(-1px); }
-        .validate-btn:not(:disabled):active { transform: translateY(0); box-shadow: 0 3px 10px rgba(153,0,0,0.28); }
-        ::-webkit-scrollbar { width: 10px; height: 10px; }
-        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); background-clip: padding-box; }
-        ::-webkit-scrollbar-track { background: transparent; }
+        .validate-btn:not(:disabled):hover { background: #7d0000 !important; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #F7F7F5; }
+        ::-webkit-scrollbar-thumb { background: rgba(153,0,0,0.3); border-radius: 3px; }
       `}</style>
 
-      <div style={{ borderBottom: "3px solid #ffcc00", background: "linear-gradient(180deg, #990000, #7d0000)", padding: "20px 28px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, boxShadow: "0 2px 10px rgba(0,0,0,0.15)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ width: 42, height: 42, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 21, fontWeight: 700, color: "#990000", background: "#ffcc00", boxShadow: "0 3px 10px rgba(0,0,0,0.25)" }}>{"✓"}</div>
-          <div>
-            <div className="serif" style={{ fontSize: 23, fontWeight: 700, letterSpacing: "-0.01em", color: "#fff", lineHeight: 1.1 }}>RegCheck</div>
-            <a href="https://usc-bbh.github.io/bbh-website/" target="_blank" rel="noopener noreferrer"
-              style={{ fontSize: 12.5, color: "rgba(255,255,255,0.82)", marginTop: 3, display: "block", textDecoration: "none" }}
-              onMouseEnter={(e) => e.currentTarget.style.textDecoration = "underline"}
-              onMouseLeave={(e) => e.currentTarget.style.textDecoration = "none"}>
-              Tools by Students, for Students
-            </a>
-          </div>
+      <nav style={{ position: "sticky", top: 0, zIndex: 40, height: 64, padding: "0 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, background: "rgba(255,255,255,0.92)", backdropFilter: "blur(16px)", borderBottom: `1px solid ${C.line}` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <a href="https://usc-bbh.github.io/bbh-website/" target="_blank" rel="noopener noreferrer" title="BUAI Builder Hub"
+            style={{ fontSize: 16, fontWeight: 700, fontFamily: HEAD, color: C.ink, letterSpacing: 1.5, textDecoration: "none" }}>BBH</a>
+          <span style={{ width: 1, height: 18, background: C.lineStrong }} />
+          <span style={{ fontSize: 15, fontWeight: 600, fontFamily: HEAD, color: C.cardinal, letterSpacing: 0.5 }}>RegCheck</span>
         </div>
-        <div style={{ display: "flex", gap: 9, alignItems: "center" }}>
-          <input ref={fileInputRef} type="file" accept="application/pdf" onChange={handleStarsUpload} style={{ display: "none" }} />
-          <button onClick={() => fileInputRef.current?.click()}
-            className="mono chip"
-            style={{ fontSize: 11.5, color: starsSource === "confirmed" ? "#eafaef" : "#fff",
-              background: "rgba(255,255,255,0.16)", border: "1px solid rgba(255,255,255,0.35)", borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontFamily: "inherit" }}>
-            {starsSource === "parsing" ? (starsStatusMsg || "Parsing…")
-              : starsSource === "confirmed" ? `✓ STARS checked · ${starsReport.classLevel} · ${starsReport.completedCourses.length} completed · upload another`
-              : starsSource === "review" ? "Reviewing your STARS report…"
-              : `STARS · ${starsReport.classLevel} (demo) · ${starsReport.completedCourses.length} completed · click to upload your PDF`}
-          </button>
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <span className="mono" style={{ fontSize: 11, color: C.faint }}>{courseNames.length.toLocaleString()} Fall 2026 courses</span>
+          <span style={{ fontSize: 10.5, letterSpacing: 1, fontFamily: HEAD, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 5, padding: "4px 9px",
+            color: pyodideStatus === "ready" ? C.ok : pyodideStatus === "loading" ? C.gold : C.bad,
+            border: `1px solid ${pyodideStatus === "ready" ? "rgba(22,163,74,0.35)" : pyodideStatus === "loading" ? C.goldLine : "rgba(193,18,31,0.35)"}` }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "currentColor" }} />
+            {pyodideStatus === "ready" ? "CHECKER READY" : pyodideStatus === "loading" ? "LOADING CHECKER…" : "CHECKER UNAVAILABLE"}
+          </span>
+        </div>
+      </nav>
+
+      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "36px 28px 0" }}>
+        <div style={{ ...eyebrow, color: C.cardinal, letterSpacing: 4, marginBottom: 10 }}>A BBH tool · Fall 2026</div>
+        <h1 style={{ fontSize: "clamp(30px, 5vw, 44px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.05, margin: 0 }}>
+          Reg<span style={{ color: C.cardinal }}>Check</span>
+        </h1>
+        <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 640, margin: "10px 0 0" }}>
+          Pick your sections for next semester, upload your STARS report, and check the schedule before you register.
+          Everything runs in your browser: your report is never uploaded anywhere.
+        </p>
+
+        <input ref={fileInputRef} type="file" accept="application/pdf" onChange={handleStarsUpload} style={{ display: "none" }} />
+        <div style={{ ...card, marginTop: 22, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+          <div style={{ flex: 1, minWidth: 240 }}>
+            <div style={{ ...eyebrow, marginBottom: 4 }}>Your STARS report</div>
+            <div style={{ fontSize: 14, color: C.ink }}>
+              {starsSource === "parsing" ? (starsStatusMsg || "Reading your report…")
+                : starsSource === "review" ? "Check what we read from your report…"
+                : starsSource === "confirmed" ? <><span style={{ color: C.ok, fontWeight: 600 }}>✓ Checked</span> · {starsReport.classLevel} · {starsReport.completedCourses.length} completed courses</>
+                : <>Using demo data ({starsReport.classLevel}, {starsReport.completedCourses.length} completed courses). Upload your report, printed to PDF from experience.usc.edu, to check against your own record.</>}
+            </div>
+          </div>
           {starsSource === "confirmed" && (
-            <button onClick={() => { sourceBeforeReview.current = "confirmed"; openReview({ mode: "parsed", initial: starsReport, failure: null }); }} className="mono chip"
-              style={{ fontSize: 11.5, color: "#fff", background: "rgba(255,255,255,0.16)", border: "1px solid rgba(255,255,255,0.35)", borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontFamily: "inherit" }}>
-              Edit
+            <button onClick={() => { sourceBeforeReview.current = "confirmed"; openReview({ mode: "parsed", initial: starsReport, failure: null }); }}
+              className="outline-btn" style={secondaryButton}>
+              Edit details
             </button>
           )}
-          <div className="mono" style={{ fontSize: 10, display: "flex", alignItems: "center", gap: 5, color: "#fff",
-            background: "rgba(255,255,255,0.16)", border: "1px solid rgba(255,255,255,0.35)", borderRadius: 8, padding: "6px 10px" }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: pyodideStatus === "ready" ? "#6ee7a0" : pyodideStatus === "loading" ? "#ffcc00" : "#ff8a80", boxShadow: "0 0 6px currentColor" }} />
-            {pyodideStatus === "ready" ? "Python" : pyodideStatus === "loading" ? "Loading Pyodide…" : "Checker unavailable"}
-          </div>
-          <div className="mono" style={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }}>
-            {courseNames.length.toLocaleString()} courses
-          </div>
+          <button onClick={() => fileInputRef.current?.click()} disabled={starsSource === "parsing"}
+            className={starsSource === "confirmed" ? "outline-btn" : undefined}
+            style={starsSource === "confirmed" ? secondaryButton : primaryButton}>
+            {starsSource === "confirmed" ? "Upload another" : "Upload STARS PDF"}
+          </button>
         </div>
       </div>
 
@@ -515,16 +532,16 @@ export default function App() {
         <GraduateNotice onClose={() => setStarsSource(sourceBeforeReview.current)} />
       )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(340px, 430px) 1fr", gap: 24, padding: 28, alignItems: "start" }}>
+      <div className="layout" style={{ maxWidth: 1320, margin: "0 auto", padding: "28px 28px 0" }}>
 
         {/* LEFT — pick courses + sections */}
         <div>
           <div style={{ position: "relative", marginBottom: 18 }}>
             <input value={query} onChange={(e) => setQuery(e.target.value)}
               placeholder="Add a course — search any of 4,648 Fall 2026 courses…"
-              style={{ width: "100%", background: "#fff", border: "1px solid #d3d3d8", borderRadius: 10, padding: "12px 15px", color: "#1a1a1a", fontSize: 13.5, fontFamily: "inherit", transition: "border-color .15s ease, box-shadow .15s ease" }} />
+              style={{ width: "100%", background: "#fff", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 10, padding: "13px 16px", color: C.ink, fontSize: 14, fontFamily: "inherit", boxShadow: SHADOW, transition: "border-color .15s ease, box-shadow .15s ease" }} />
             {suggestions.length > 0 && (
-              <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "1px solid #d3d3d8", borderRadius: 10, marginTop: 6, zIndex: 20, overflow: "hidden", boxShadow: "0 14px 34px rgba(0,0,0,0.16)" }}>
+              <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 10, marginTop: 6, zIndex: 20, overflow: "hidden", boxShadow: "0 14px 34px rgba(0,0,0,0.16)" }}>
                 {suggestions.map((c) => {
                   const entry = catalog[c];
                   const instructors = entry ? getInstructors(entry) : [];
@@ -533,18 +550,18 @@ export default function App() {
                   const shortDesc = desc.length > 65 ? desc.slice(0, 62) + "..." : desc;
                   return (
                     <button key={c} onClick={() => addCourse(c)} className="suggestion"
-                      style={{ display: "flex", justifyContent: "space-between", width: "100%", textAlign: "left", padding: "10px 14px", border: "none", borderBottom: "1px solid #eeeef0", background: "transparent", color: "#1a1a1a", cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>
+                      style={{ display: "flex", justifyContent: "space-between", width: "100%", textAlign: "left", padding: "10px 14px", border: "none", borderBottom: "1px solid rgba(0,0,0,0.06)", background: "transparent", color: C.ink, cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>
                       <span style={{ minWidth: 0 }}>
-                        <span><b>{c}</b> <span style={{ color: "#7a7a80" }}>{entry?.units ?? "?"} units</span></span>
+                        <span><b>{c}</b> <span style={{ color: C.muted }}>{entry?.units ?? "?"} units</span></span>
                         {(instructors.length > 0 || shortDesc) && (
-                          <span style={{ display: "block", fontSize: 11, color: "#7a7a80", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                            {instructors.length > 0 && <span style={{ color: "#5a5a60" }}>{instructors.join(", ")}</span>}
+                          <span style={{ display: "block", fontSize: 11, color: C.muted, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                            {instructors.length > 0 && <span style={{ color: C.body }}>{instructors.join(", ")}</span>}
                             {instructors.length > 0 && shortDesc && " · "}
                             {shortDesc}
                           </span>
                         )}
                       </span>
-                      <span style={{ color: "#990000", fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>+</span>
+                      <span style={{ color: C.cardinal, fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>+</span>
                     </button>
                   );
                 })}
@@ -553,9 +570,9 @@ export default function App() {
           </div>
 
           {expanded.length === 0 && (
-            <div style={{ color: "#7a7a80", fontSize: 13, padding: "32px 20px", textAlign: "center", border: "1px dashed #cfcfd4", borderRadius: 12, background: "#fafafb" }}>
-              <div style={{ fontSize: 22, marginBottom: 6, opacity: 0.55 }}>🔍</div>
-              No courses yet. Search above to start building.
+            <div style={{ color: C.muted, fontSize: 13.5, padding: "32px 20px", textAlign: "center", border: "1px dashed rgba(0,0,0,0.15)", borderRadius: 14, background: "#FFFFFF" }}>
+              <div style={{ ...eyebrow, marginBottom: 8 }}>No courses yet</div>
+              Search above to start building your schedule.
             </div>
           )}
 
@@ -564,50 +581,50 @@ export default function App() {
             if (!entry) return null;
             const color = colorFor(courseName);
             return (
-              <div key={courseName} className="course-card" style={{ border: "1px solid #e2e2e6", borderRadius: 12, marginBottom: 13, overflow: "hidden", background: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
-                <div style={{ padding: "12px 15px", background: "#f6f6f7", borderBottom: "1px solid #eaeaee", borderLeft: `4px solid ${color}` }}>
+              <div key={courseName} className="course-card" style={{ ...card, marginBottom: 14, overflow: "hidden" }}>
+                <div style={{ padding: "12px 15px", background: "#FAFAF9", borderBottom: "1px solid rgba(0,0,0,0.06)", borderLeft: `4px solid ${color}` }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
                   <div>
-                    <span style={{ fontWeight: 700, fontSize: 14, color: "#1a1a1a" }}>{courseName}</span>
-                    <span style={{ color: "#7a7a80", fontSize: 12, marginLeft: 8 }}>{entry.units} units</span>
+                    <span style={{ fontWeight: 700, fontSize: 15, color: C.ink, fontFamily: HEAD }}>{courseName}</span>
+                    <span style={{ color: C.muted, fontSize: 12, marginLeft: 8 }}>{entry.units} units</span>
                   </div>
                   <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
-                    {entry.has_d_clearance && <Tag c="#a06a00">D-clear</Tag>}
+                    {entry.has_d_clearance && <Tag c={C.warn}>D-clear</Tag>}
                     {entry.has_restrictions && <Tag c="#6f42c1">Restricted</Tag>}
-                    {entry.has_lab && <Tag c="#1a7f37">Lab req</Tag>}
-                    {entry.has_discussion && <Tag c="#1a7f37">Disc req</Tag>}
-                    <button onClick={() => removeCourse(courseName)} className="remove-btn" style={{ background: "none", border: "none", color: "#9a9aa0", cursor: "pointer", fontSize: 16, padding: "1px 5px", borderRadius: 6, lineHeight: 1 }}>×</button>
+                    {entry.has_lab && <Tag c={C.ok}>Lab req</Tag>}
+                    {entry.has_discussion && <Tag c={C.ok}>Disc req</Tag>}
+                    <button onClick={() => removeCourse(courseName)} className="remove-btn" style={{ background: "none", border: "none", color: C.faint, cursor: "pointer", fontSize: 16, padding: "1px 5px", borderRadius: 6, lineHeight: 1 }}>×</button>
                   </div>
                   </div>
                   {entry.description && (
-                    <div style={{ fontSize: 11.5, color: "#6b6b72", marginTop: 6, lineHeight: 1.45 }}>{entry.description}</div>
+                    <div style={{ fontSize: 11.5, color: C.body, marginTop: 6, lineHeight: 1.45 }}>{entry.description}</div>
                   )}
                 </div>
                 <div style={{ padding: "6px 9px 9px" }}>
                   {Object.entries(entry.sections).map(([group, secs]) => (
                     <div key={group}>
-                      <div style={{ fontSize: 9.5, textTransform: "uppercase", letterSpacing: "0.08em", color: "#9a9aa0", padding: "8px 5px 4px", fontWeight: 700 }}>{group}</div>
+                      <div style={{ ...eyebrow, fontSize: 9.5, padding: "9px 5px 4px" }}>{group}</div>
                       {secs.map((s) => {
                         const on = !!picked[s.section_id];
                         return (
                           <button key={s.section_id} onClick={() => toggleSection(courseName, s)}
                             className={on ? undefined : "section-row"}
                             style={{ width: "100%", textAlign: "left", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8,
-                              background: on ? `${color}14` : "transparent", border: `1px solid ${on ? color + "80" : "#ededf0"}`,
-                              borderRadius: 9, padding: "8px 10px", margin: "3px 0", color: "#1a1a1a", fontFamily: "inherit" }}>
+                              background: on ? `${color}14` : "transparent", border: `1px solid ${on ? color + "80" : "rgba(0,0,0,0.06)"}`,
+                              borderRadius: 9, padding: "8px 10px", margin: "3px 0", color: C.ink, fontFamily: "inherit" }}>
                             <span style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                              <span className="mono" style={{ fontSize: 11, color: on ? color : "#9a9aa0", width: 44, flexShrink: 0, fontWeight: 500 }}>{s.section_id}</span>
-                              <span className="mono" style={{ fontSize: 11.5, color: "#6b6b72", whiteSpace: "nowrap" }}>
+                              <span className="mono" style={{ fontSize: 11, color: on ? color : C.faint, width: 44, flexShrink: 0, fontWeight: 500 }}>{s.section_id}</span>
+                              <span className="mono" style={{ fontSize: 11.5, color: C.body, whiteSpace: "nowrap" }}>
                                 {s.days.join("/")} {fmt(s.start_time)}–{fmt(s.end_time)}
                               </span>
                               {s.instructor && s.instructor !== "TBD" && (
-                                <span style={{ fontSize: 11, color: "#5a5a60", whiteSpace: "nowrap" }}>{s.instructor}</span>
+                                <span style={{ fontSize: 11, color: C.body, whiteSpace: "nowrap" }}>{s.instructor}</span>
                               )}
                             </span>
                             <span style={{ display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
-                              {s.has_d_clearance && <span style={{ fontSize: 9.5, color: "#a06a00", fontWeight: 700, border: "1px solid #ffd54f", background: "#fff8e1", borderRadius: 4, padding: "1px 4px" }}>D</span>}
-                              <span style={{ fontSize: 11, fontWeight: 600, color: s.is_full ? "#c1121f" : "#1a7f37" }}>{s.is_full ? "Full" : `${s.open_seats} open`}</span>
-                              <span style={{ fontSize: 14, color: on ? color : "#c2c2c8", lineHeight: 1 }}>{on ? "✓" : "+"}</span>
+                              {s.has_d_clearance && <span style={{ fontSize: 9.5, color: C.gold, fontWeight: 700, fontFamily: HEAD, border: `1px solid ${C.goldLine}`, borderRadius: 4, padding: "1px 4px" }}>D</span>}
+                              <span style={{ fontSize: 11, fontWeight: 600, color: s.is_full ? C.bad : C.ok }}>{s.is_full ? "Full" : `${s.open_seats} open`}</span>
+                              <span style={{ fontSize: 14, color: on ? color : "rgba(0,0,0,0.25)", lineHeight: 1 }}>{on ? "✓" : "+"}</span>
                             </span>
                           </button>
                         );
@@ -621,28 +638,25 @@ export default function App() {
         </div>
 
         {/* RIGHT — calendar + validate + results */}
-        <div style={{ position: "sticky", top: 20 }}>
+        <div className="sticky-col">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <span className="serif" style={{ fontSize: 18, fontWeight: 700, color: "#990000" }}>Your week</span>
-            <span className="mono" style={{ fontSize: 12, color: totalUnits > 18 ? "#c1121f" : "#5a5a60", background: "#fff", border: "1px solid #e2e2e6", borderRadius: 20, padding: "4px 11px" }}>{totalUnits} units · {pickedList.length} sections</span>
+            <span style={{ fontSize: 20, fontWeight: 700, color: C.ink, fontFamily: HEAD }}>Your week</span>
+            <span className="mono" style={{ fontSize: 12, color: totalUnits > 18 ? C.bad : C.body, background: "#fff", border: `1px solid ${C.line}`, borderRadius: 999, padding: "4px 12px" }}>{totalUnits} {totalUnits === 1 ? "unit" : "units"} · {pickedList.length} {pickedList.length === 1 ? "section" : "sections"}</span>
           </div>
 
           {result && (
             <div style={{ marginBottom: 16 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14, padding: "13px 15px", borderRadius: 12,
-                background: result.overall_status === "valid" ? "#eaf7ef" : result.overall_status === "warning" ? "#fff8e1" : "#fdecea",
-                border: `1px solid ${result.overall_status === "valid" ? "#a7dcb8" : result.overall_status === "warning" ? "#ffd54f" : "#f2b8b3"}`,
-                boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+              <div style={{ ...card, display: "flex", alignItems: "center", gap: 12, marginBottom: 14, padding: "14px 16px",
+                borderLeft: `4px solid ${result.overall_status === "valid" ? C.ok : result.overall_status === "warning" ? C.warn : C.bad}` }}>
                 <span style={{ width: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "#fff", flexShrink: 0,
-                  background: result.overall_status === "valid" ? "#1a7f37" : result.overall_status === "warning" ? "#a06a00" : "#c1121f",
-                  boxShadow: `0 2px 8px ${result.overall_status === "valid" ? "rgba(26,127,55,0.4)" : result.overall_status === "warning" ? "rgba(160,106,0,0.4)" : "rgba(193,18,31,0.4)"}` }}>
+                  background: result.overall_status === "valid" ? C.ok : result.overall_status === "warning" ? C.warn : C.bad }}>
                   {result.overall_status === "valid" ? "✓" : "!"}
                 </span>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: 14.5, color: "#1a1a1a" }}>
+                  <div style={{ fontWeight: 700, fontSize: 15, color: C.ink, fontFamily: HEAD }}>
                     {result.overall_status === "valid" ? "Schedule looks good" : result.overall_status === "warning" ? "Worth reviewing" : "Schedule has problems"}
                   </div>
-                  <div className="mono" style={{ fontSize: 11.5, color: "#5a5a60", marginTop: 2 }}>
+                  <div className="mono" style={{ fontSize: 11.5, color: C.body, marginTop: 2 }}>
                     {result.summary.total_units} units{result.summary.warnings.map((w, i) => <span key={i}> · {w}</span>)}
                   </div>
                 </div>
@@ -654,11 +668,11 @@ export default function App() {
                   <div key={i} style={{ background: s.bg, border: `1px solid ${s.border}`, borderRadius: 10, padding: "11px 13px", marginBottom: 8 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
                       <span style={{ width: 18, height: 18, borderRadius: "50%", background: s.dot, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "#fff", flexShrink: 0 }}>{s.icon}</span>
-                      <span style={{ fontWeight: 700, fontSize: 13.5, color: "#1a1a1a" }}>{cr.course}</span>
-                      <span style={{ fontSize: 10.5, fontWeight: 700, color: s.dot, marginLeft: "auto", textTransform: "uppercase", letterSpacing: "0.04em" }}>{s.label}</span>
+                      <span style={{ fontWeight: 700, fontSize: 14, color: C.ink, fontFamily: HEAD }}>{cr.course}</span>
+                      <span style={{ fontSize: 10.5, fontWeight: 600, fontFamily: HEAD, color: s.dot, marginLeft: "auto", textTransform: "uppercase", letterSpacing: 1.5 }}>{s.label}</span>
                     </div>
                     {cr.reasons.map((r, j) => (
-                      <div key={j} style={{ fontSize: 12.5, color: "#44444a", lineHeight: 1.5, paddingLeft: 27, marginTop: 4 }}>{r}</div>
+                      <div key={j} style={{ fontSize: 12.5, color: C.body, lineHeight: 1.5, paddingLeft: 27, marginTop: 4 }}>{r}</div>
                     ))}
                   </div>
                 );
@@ -669,35 +683,39 @@ export default function App() {
           <Calendar blocks={blocks} />
 
           <button onClick={runValidate} disabled={!canValidate} className="validate-btn"
-            style={{ width: "100%", marginTop: 16, padding: "13px", borderRadius: 10, border: "none",
+            style={{ ...primaryButton, width: "100%", marginTop: 16, padding: "14px", fontSize: 13.5, letterSpacing: 1, textTransform: "uppercase",
               cursor: canValidate ? "pointer" : "not-allowed",
-              background: canValidate ? "linear-gradient(135deg, #b3131a, #990000)" : "#e6e6e9",
-              color: canValidate ? "#fff" : "#a0a0a6", fontWeight: 700, fontSize: 14, fontFamily: "inherit",
-              boxShadow: canValidate ? "0 4px 14px rgba(153,0,0,0.26)" : "none", letterSpacing: "0.01em" }}>
+              background: canValidate ? C.cardinal : "#E7E7E4", color: canValidate ? "#fff" : "#A1A1AA" }}>
             {validating ? "Validating…" : "Validate schedule"}
           </button>
           {pyodideStatus === "failed" && (
-            <div style={{ marginTop: 9, fontSize: 12, color: "#c1121f", textAlign: "center" }}>
+            <div style={{ marginTop: 9, fontSize: 12, color: C.bad, textAlign: "center" }}>
               Couldn't load the checker. Check your connection and refresh the page to try again.
             </div>
           )}
           {pyodideStatus === "loading" && (
-            <div style={{ marginTop: 9, fontSize: 12, color: "#7a7a80", textAlign: "center" }}>
+            <div style={{ marginTop: 9, fontSize: 12, color: C.muted, textAlign: "center" }}>
               Loading the checker…
             </div>
           )}
           {!starsReady && starsSource !== "parsing" && (
-            <div style={{ marginTop: 9, fontSize: 12, color: "#7a7a80", textAlign: "center" }}>
+            <div style={{ marginTop: 9, fontSize: 12, color: C.muted, textAlign: "center" }}>
               Confirm your STARS details to validate.
             </div>
           )}
           {needSections.length > 0 && (
-            <div style={{ marginTop: 9, fontSize: 12, color: "#7a7a80", textAlign: "center" }}>
+            <div style={{ marginTop: 9, fontSize: 12, color: C.muted, textAlign: "center" }}>
               Pick at least one section for {needSections.join(", ")} to validate.
             </div>
           )}
         </div>
       </div>
+
+      <footer style={{ borderTop: `1px solid ${C.line}`, marginTop: 48, padding: "32px 24px", textAlign: "center", fontSize: 12, color: C.faint, lineHeight: 1.8 }}>
+        RegCheck is a <a href="https://usc-bbh.github.io/bbh-website/" target="_blank" rel="noopener noreferrer" style={{ color: C.muted, textDecoration: "none", fontWeight: 600 }}>BUAI Builder Hub ↗</a> tool · Tools by Students, for Students
+        <br />
+        Not an official USC system. Always confirm in WebReg and with your advisor.
+      </footer>
     </div>
   );
 }
