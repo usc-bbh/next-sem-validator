@@ -218,6 +218,89 @@ def test_prereq_falls_back_to_warning_when_unparseable():
     assert result.status == "warning"
 
 
+def test_prereq_warns_instead_of_failing_when_gpa_is_unknown():
+    # Every redacted report has gpa: null. Not knowing the GPA isn't failing it.
+    entry = {"description": "prerequisite: 3.5 gpa"}
+    result = _check_prereq("ANTH 491", entry, {"gpa": None, "completedCourses": []})
+    assert result.status == "warning"
+    assert "wasn't checked" in result.reasons[0]
+
+
+def test_prereq_not_met_by_a_withdrawn_course():
+    entry = {"description": "Prereq: MATH 226"}
+    stars = {"completedCourses": [{"code": "MATH 226", "grade": "W", "passed": False, "source": "usc"}]}
+    assert _check_prereq("MATH 245", entry, stars).status == "fail"
+
+
+def test_prereq_not_met_by_a_transfer_code_that_looks_like_a_usc_code():
+    # ANTH101 on a transfer row is the sending school's code, not USC's ANTH 101.
+    entry = {"description": "Prereq: ANTH 101"}
+    stars = {"completedCourses": [{"code": "ANTH 101", "grade": "TR", "passed": True, "source": "transfer"}]}
+    assert _check_prereq("ANTH 301", entry, stars).status == "fail"
+
+
+def test_prereq_met_by_a_transfer_through_a_stated_equivalence():
+    entry = {"description": "Prereq: CSCI 113"}
+    stars = {
+        "completedCourses": [{"code": "CMPR 120", "grade": "TR", "passed": True, "source": "transfer"}],
+        "equivalents": [{"from": "CMPR 120", "to": "CSCI 113"}],
+    }
+    assert _check_prereq("CSCI 210", entry, stars) is None
+
+
+def test_prereq_equivalence_needs_the_transfer_row_to_count():
+    entry = {"description": "Prereq: CSCI 113"}
+    stars = {
+        "completedCourses": [{"code": "CMPR 120", "grade": "TR", "passed": False, "source": "transfer"}],
+        "equivalents": [{"from": "CMPR 120", "to": "CSCI 113"}],
+    }
+    assert _check_prereq("CSCI 210", entry, stars).status == "fail"
+
+
+def test_prereq_met_only_by_a_student_entered_row_is_a_warning():
+    entry = {"description": "Prereq: CSCI 104"}
+    stars = {"completedCourses": [{"code": "CSCI 104", "passed": True, "source": "usc", "origin": "student"}]}
+    result = _check_prereq("CSCI 201", entry, stars)
+    assert result.status == "warning"
+    assert "added CSCI 104 yourself" in result.reasons[0]
+
+
+def test_prereq_met_by_the_report_and_the_student_is_a_pass():
+    entry = {"description": "Prereq: CSCI 104"}
+    stars = {
+        "completedCourses": [
+            {"code": "CSCI 104", "passed": True, "source": "usc", "origin": "student"},
+            {"code": "CSCI 104", "passed": True, "source": "usc", "origin": "parsed"},
+        ]
+    }
+    assert _check_prereq("CSCI 201", entry, stars) is None
+
+
+def test_prereq_met_only_by_a_waiver_is_a_warning():
+    entry = {"description": "Prereq: DSCI 281"}
+    stars = {"completedCourses": [], "waivedCourses": ["DSCI 281"]}
+    assert _check_prereq("DSCI 351", entry, stars).status == "warning"
+
+
+def test_already_taken_ignores_withdrawn_and_transfer_rows():
+    stars = {
+        "completedCourses": [
+            {"code": "MATH 226", "grade": "W", "passed": False, "source": "usc"},
+            {"code": "ANTH 101", "grade": "TR", "passed": True, "source": "transfer"},
+        ]
+    }
+    assert _check_already_taken("MATH 226", stars) is None
+    assert _check_already_taken("ANTH 101", stars) is None
+
+
+def test_already_taken_counts_an_equivalence():
+    stars = {
+        "completedCourses": [{"code": "CMPR 120", "grade": "TR", "passed": True, "source": "transfer"}],
+        "equivalents": [{"from": "CMPR 120", "to": "CSCI 113"}],
+    }
+    assert _check_already_taken("CSCI 113", stars).status == "fail"
+
+
 def test_prereq_none_when_no_prereq_keyword():
     entry = {"description": "Intro to widgets."}
     assert _check_prereq("CSCI 999", entry, {"completedCourses": []}) is None
@@ -502,7 +585,6 @@ def test_already_taken_reads_real_sample_codes(name):
     assert _check_already_taken(doing["code"], summary).status == "warning"
 
 
-@pytest.mark.xfail(strict=True, reason="M4: already-taken must skip rows with passed: false")
 def test_withdrawn_course_is_not_already_completed():
     # ene_fr_withdrawals withdrew from MATH 226 (W, 0 units). Planning it again
     # isn't retaking a completed course.
@@ -510,3 +592,12 @@ def test_withdrawn_course_is_not_already_completed():
     assert any(c["code"] == "MATH 226" and c["grade"] == "W" for c in summary["completedCourses"])
     result = _check_already_taken("MATH 226", summary)
     assert result is None or result.status != "fail"
+
+
+def test_real_sample_transfer_counts_only_through_its_equivalence():
+    # aibiz_jr_doubledegree took CMPR120 and CMPR131 at a community college;
+    # the report substitutes them for CSCI 113 and CSCI 114. ANTH101 there has
+    # no equivalence, so it proves nothing about USC's ANTH 101.
+    summary = load_shared_stars("aibiz_jr_doubledegree.json")
+    assert _check_prereq("CSCI 201", {"description": "Prereq: CSCI 113"}, summary) is None
+    assert _check_prereq("ANTH 301", {"description": "Prereq: ANTH 101"}, summary).status == "fail"
