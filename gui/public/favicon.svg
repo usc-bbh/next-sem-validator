@@ -1,7 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-  <!-- Matches the in-app header mark: USC gold tile, cardinal check. -->
-  <rect width="48" height="48" rx="11" fill="#ffcc00"/>
-  <path d="M13 24.5 L20.5 32 L35 17"
-        fill="none" stroke="#990000" stroke-width="6"
+  <!-- BBH design guide: cardinal gradient tile (--bbh-cardinal-grad), white
+       check over a gold line (--bbh-gold), i.e. a checked line item. -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A30000"/>
+      <stop offset="1" stop-color="#7A0000"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#g)"/>
+  <path d="M13 22 L20.5 29.5 L35 15"
+        fill="none" stroke="#fff" stroke-width="5.5"
         stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="13" y="35" width="22" height="3.5" rx="1.75" fill="#D4AF37"/>
 </svg>
