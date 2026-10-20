@@ -238,6 +238,7 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState(null);
   const [validating, setValidating] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
 
   // ── STARS upload state ──
   // starsReport starts as the demo fallback. An uploaded report goes through
@@ -350,7 +351,10 @@ export default function App() {
 
   const colorFor = (courseName) => PALETTE[expanded.indexOf(courseName) % PALETTE.length];
 
-  const addCourse = (c) => { setExpanded((e) => [...e, c]); setQuery(""); setResult(null); };
+  const addCourse = (c) => {
+    if (expanded.includes(c)) return; // prevent duplicates
+    setExpanded((e) => [...e, c]); setQuery(""); setResult(null);
+  };
   const removeCourse = (c) => {
     setExpanded((e) => e.filter((x) => x !== c));
     setPicked((p) => Object.fromEntries(Object.entries(p).filter(([, s]) => s.course_name !== c)));
@@ -360,8 +364,19 @@ export default function App() {
     setResult(null);
     setPicked((p) => {
       const n = { ...p };
-      if (n[section.section_id]) delete n[section.section_id];
-      else n[section.section_id] = { ...section, course_name: courseName };
+      if (n[section.section_id]) {
+        // Deselecting
+        delete n[section.section_id];
+      } else {
+        // Selecting — deselect any other section of the same type for this
+        // course first (e.g. swap lectures, don't stack two lectures).
+        for (const [id, s] of Object.entries(n)) {
+          if (s.course_name === courseName && s.section_type === section.section_type) {
+            delete n[id];
+          }
+        }
+        n[section.section_id] = { ...section, course_name: courseName };
+      }
       return n;
     });
   };
@@ -425,7 +440,7 @@ export default function App() {
         <div style={{ textAlign: "center", color: C.muted }}>
           <div style={{ ...eyebrow, color: C.cardinal, letterSpacing: 4, marginBottom: 10 }}>RegCheck</div>
           <div style={{ fontSize: 16, fontWeight: 600, color: C.ink, fontFamily: HEAD }}>Loading course catalog…</div>
-          <div style={{ fontSize: 12.5, marginTop: 6 }}>4,648 courses from Fall 2026 scrape</div>
+          <div style={{ fontSize: 12.5, marginTop: 6 }}>4,549 courses · Spring 2027</div>
         </div>
       </div>
     );
@@ -479,7 +494,12 @@ export default function App() {
           <span style={{ fontSize: 15, fontWeight: 600, fontFamily: HEAD, color: C.cardinal, letterSpacing: 0.5 }}>RegCheck</span>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <span className="mono" style={{ fontSize: 11, color: C.faint }}>{courseNames.length.toLocaleString()} Fall 2026 courses</span>
+          <span className="mono" style={{ fontSize: 11, color: C.faint }}>{courseNames.length.toLocaleString()} Spring 2027 courses</span>
+          <button onClick={() => setShowAbout((v) => !v)}
+            style={{ fontSize: 10.5, letterSpacing: 1, fontFamily: HEAD, fontWeight: 600, borderRadius: 5, padding: "4px 9px",
+              color: C.muted, border: `1px solid ${C.line}`, background: "transparent", cursor: "pointer" }}>
+            About
+          </button>
           <span style={{ fontSize: 10.5, letterSpacing: 1, fontFamily: HEAD, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 5, padding: "4px 9px",
             color: pyodideStatus === "ready" ? C.ok : pyodideStatus === "loading" ? C.gold : C.bad,
             border: `1px solid ${pyodideStatus === "ready" ? "rgba(22,163,74,0.35)" : pyodideStatus === "loading" ? C.goldLine : "rgba(193,18,31,0.35)"}` }}>
@@ -489,8 +509,41 @@ export default function App() {
         </div>
       </nav>
 
+      {showAbout && (
+        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "16px 28px 0" }}>
+          <div style={{ ...card, padding: "20px 24px", position: "relative" }}>
+            <button onClick={() => setShowAbout(false)} style={{ position: "absolute", top: 12, right: 16, background: "none", border: "none", color: C.faint, cursor: "pointer", fontSize: 18, lineHeight: 1 }}>×</button>
+            <div style={{ ...eyebrow, color: C.cardinal, marginBottom: 12 }}>What RegCheck does</div>
+            <ul style={{ fontSize: 13, color: C.body, lineHeight: 1.8, margin: 0, paddingLeft: 18 }}>
+              <li>Checks <b>time conflicts</b> between your picked sections</li>
+              <li>Flags sections that are <b>full</b> (no open seats)</li>
+              <li>Warns about <b>D-clearance</b> requirements</li>
+              <li>Checks <b>prerequisite</b> completion against your STARS report</li>
+              <li>Warns if your unit count is unusually <b>low (&lt;12)</b> or <b>high (&gt;18)</b></li>
+            </ul>
+            <div style={{ ...eyebrow, color: C.cardinal, marginBottom: 8, marginTop: 16 }}>What RegCheck does NOT do</div>
+            <ul style={{ fontSize: 13, color: C.body, lineHeight: 1.8, margin: 0, paddingLeft: 18 }}>
+              <li>Does <b>not</b> replace your academic advisor — always confirm with them</li>
+              <li>Does <b>not</b> check graduation requirements or degree progress</li>
+              <li>Does <b>not</b> guarantee seat availability at registration time</li>
+              <li>Does <b>not</b> handle holds, registration appointments, or WebReg issues</li>
+              <li>Does <b>not</b> verify co-requisite requirements for all courses</li>
+            </ul>
+            <div style={{ marginTop: 16, padding: "12px 16px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8 }}>
+              <div style={{ fontSize: 12.5, color: C.body, lineHeight: 1.6 }}>
+                <b>Need D-clearance?</b> Check your department's process at{" "}
+                <a href="https://arr.usc.edu/services/registration/d-clearance/" target="_blank" rel="noopener noreferrer" style={{ color: C.cardinal, fontWeight: 600 }}>USC Registrar: D-Clearance ↗</a>
+              </div>
+            </div>
+            <div style={{ marginTop: 10, fontSize: 12.5, color: C.muted, lineHeight: 1.6 }}>
+              For advising, visit <a href="https://arr.usc.edu/services/advisement/" target="_blank" rel="noopener noreferrer" style={{ color: C.cardinal }}>USC Academic Advising ↗</a>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={{ maxWidth: 1320, margin: "0 auto", padding: "36px 28px 0" }}>
-        <div style={{ ...eyebrow, color: C.cardinal, letterSpacing: 4, marginBottom: 10 }}>A BBH tool · Fall 2026</div>
+        <div style={{ ...eyebrow, color: C.cardinal, letterSpacing: 4, marginBottom: 10 }}>A BBH tool · Spring 2027</div>
         <h1 style={{ fontSize: "clamp(30px, 5vw, 44px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.05, margin: 0 }}>
           Reg<span style={{ color: C.cardinal }}>Check</span>
         </h1>
@@ -538,7 +591,7 @@ export default function App() {
         <div>
           <div style={{ position: "relative", marginBottom: 18 }}>
             <input value={query} onChange={(e) => setQuery(e.target.value)}
-              placeholder="Add a course — search any of 4,648 Fall 2026 courses…"
+              placeholder="Add a course — search any of 4,549 Spring 2027 courses…"
               style={{ width: "100%", background: "#fff", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 10, padding: "13px 16px", color: C.ink, fontSize: 14, fontFamily: "inherit", boxShadow: SHADOW, transition: "border-color .15s ease, box-shadow .15s ease" }} />
             {suggestions.length > 0 && (
               <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 10, marginTop: 6, zIndex: 20, overflow: "hidden", boxShadow: "0 14px 34px rgba(0,0,0,0.16)" }}>
@@ -682,6 +735,12 @@ export default function App() {
 
           <Calendar blocks={blocks} />
 
+          {expanded.length > 0 && totalUnits > 0 && totalUnits < 12 && (
+            <div style={{ marginTop: 12, padding: "10px 14px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8, fontSize: 12.5, color: C.body, lineHeight: 1.5 }}>
+              <span style={{ color: C.warn, fontWeight: 700 }}>Low unit count:</span> {totalUnits} units is below the typical full-time minimum of 12. Most students take 12–18 units. Check with your advisor if this is intentional.
+            </div>
+          )}
+
           <button onClick={runValidate} disabled={!canValidate} className="validate-btn"
             style={{ ...primaryButton, width: "100%", marginTop: 16, padding: "14px", fontSize: 13.5, letterSpacing: 1, textTransform: "uppercase",
               cursor: canValidate ? "pointer" : "not-allowed",
@@ -723,3 +782,4 @@ export default function App() {
 function Tag({ children, c }) {
   return <span style={{ fontSize: 9.5, color: c, border: `1px solid ${c}4d`, background: `${c}1f`, borderRadius: 6, padding: "2px 7px", fontWeight: 600, letterSpacing: "0.01em", whiteSpace: "nowrap" }}>{children}</span>;
 }
+
