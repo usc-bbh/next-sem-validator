@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { parseStarsReport } from "../stars-parser";
-import StarsReview, { GraduateNotice } from "./StarsReview";
+import StarsReview, { GraduateNotice, StarsSideBySide } from "./StarsReview";
+import Tour from "./Tour";
 import { C, HEAD, BODY, SHADOW, eyebrow, card, primaryButton, secondaryButton } from "./theme";
 import { EMPTY_REPORT } from "./emptyReport";
 
@@ -39,6 +40,15 @@ const DEMO_STARS = {
   completedCourses: [{ code: "CSCI103", grade: "A" }, { code: "MATH225", grade: "B+" }, { code: "WRIT150", grade: "A-" }],
   inProgressCourses: [],
   classLevel: "Junior",
+};
+
+// One-time notices and the tour remember they've been seen in this browser.
+// Storage can be blocked (private windows); they then just show again.
+const seen = (key) => {
+  try { return localStorage.getItem(`regcheck.${key}`) === "1"; } catch { return false; }
+};
+const markSeen = (key) => {
+  try { localStorage.setItem(`regcheck.${key}`, "1"); } catch { /* blocked: shows again next visit */ }
 };
 
 const toMin = (t) => {
@@ -241,22 +251,37 @@ export default function App() {
   const [showAbout, setShowAbout] = useState(false);
 
   // ── STARS upload state ──
-  // starsReport starts as the demo fallback. An uploaded report goes through
-  // the review screen (StarsReview) first, and only the version the student
-  // confirms reaches the validator (STARS_PARSER_DESIGN.md §9).
+  // starsReport starts as the demo fallback. A parsed report is used as read
+  // ("parsed") and the student is pointed at the review screen rather than
+  // dropped into it; saving there makes it "confirmed". A failed parse opens
+  // the review screen, since there's nothing to use (STARS_PARSER_DESIGN.md §9).
   const [starsReport, setStarsReport] = useState(DEMO_STARS);
-  const [starsSource, setStarsSource] = useState("demo"); // "demo" | "parsing" | "review" | "confirmed" | "graduate"
+  const [starsSource, setStarsSource] = useState("demo"); // "demo" | "parsing" | "parsed" | "review" | "confirmed" | "graduate"
   const [starsStatusMsg, setStarsStatusMsg] = useState("");
-  const [review, setReview] = useState(null); // { mode: "parsed" | "failed", initial, failure }
+  const [review, setReview] = useState(null); // { mode: "parsed" | "failed", initial, failure, pdfUrl, view: "dialog" | "side" }
   // Where Cancel on the review screen returns to: the demo, or the report
-  // the student confirmed before.
+  // the student had before.
   const sourceBeforeReview = useRef("demo");
   const fileInputRef = useRef(null);
+  // The PDF behind the report in use, for the side-by-side view. A review
+  // carries its own, adopted on save. Never leaves the browser.
+  const [pdfUrl, setPdfUrl] = useState(null);
+  // Whether the student has opened their details since this upload.
+  const [looked, setLooked] = useState(false);
+  const [showUploadNotice, setShowUploadNotice] = useState(false);
+  const [validateWarning, setValidateWarning] = useState(false);
+  const [showTour, setShowTour] = useState(() => !seen("tourDone"));
+
+  useEffect(() => () => pdfUrl && URL.revokeObjectURL(pdfUrl), [pdfUrl]);
 
   const openReview = (next) => {
-    setReview(next);
+    if (starsSource !== "review") sourceBeforeReview.current = starsSource;
+    setReview({ view: "dialog", ...next });
     setStarsSource("review");
+    setLooked(true);
+    setValidateWarning(false);
   };
+  const openCurrentReport = (view) => openReview({ mode: "parsed", initial: starsReport, failure: null, pdfUrl, view });
 
   const handleStarsUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -267,7 +292,10 @@ export default function App() {
     setStarsSource("parsing");
     setStarsStatusMsg("Reading file…");
     setResult(null);
+    setLooked(false);
+    setValidateWarning(false);
 
+    const fileUrl = URL.createObjectURL(file);
     let failure = null;
     const parsed = await parseStarsReport(file, {
       onStatus: (msg) => setStarsStatusMsg(msg),
@@ -275,17 +303,32 @@ export default function App() {
     });
 
     if (parsed) {
-      openReview({ mode: "parsed", initial: parsed, failure: null });
+      setStarsReport(parsed);
+      setPdfUrl(fileUrl);
+      setStarsSource("parsed");
+      if (!seen("uploadNotice")) setShowUploadNotice(true);
     } else if (failure?.check === "graduate") {
+      URL.revokeObjectURL(fileUrl);
       setStarsSource("graduate");
     } else {
       // A failed parse opens the same screen, empty, with the reason.
-      openReview({ mode: "failed", initial: EMPTY_REPORT, failure });
+      openReview({ mode: "failed", initial: EMPTY_REPORT, failure, pdfUrl: fileUrl });
     }
+  };
+
+  const dismissUploadNotice = () => {
+    markSeen("uploadNotice");
+    setShowUploadNotice(false);
+  };
+
+  const closeTour = () => {
+    markSeen("tourDone");
+    setShowTour(false);
   };
 
   const confirmReview = (confirmed) => {
     setStarsReport(confirmed);
+    setPdfUrl(review.pdfUrl);
     setStarsSource("confirmed");
     setReview(null);
     setResult(null);
@@ -406,11 +449,23 @@ export default function App() {
   const checkerReady = pyodideStatus === "ready"; // set only after pyodideRef is populated
   // An uploaded report must be confirmed on the review screen first, so no
   // one validates against a course list they never saw.
-  const starsReady = starsSource === "demo" || starsSource === "confirmed";
+  const starsReady = ["demo", "parsed", "confirmed"].includes(starsSource);
+  const hasReport = starsSource === "parsed" || starsSource === "confirmed";
   const canValidate = expanded.length > 0 && needSections.length === 0 && !validating && !!catalog && checkerReady && starsReady;
+
+  // The first time someone validates a report they never opened, say so once.
+  const onValidateClick = () => {
+    if (starsSource === "parsed" && !looked && !seen("validateWarning")) {
+      markSeen("validateWarning");
+      setValidateWarning(true);
+      return;
+    }
+    runValidate();
+  };
 
   const runValidate = async () => {
     if (!checkerReady) return;
+    setValidateWarning(false);
     setValidating(true);
     try {
       // Tanzil's Python validator, via Pyodide.
@@ -472,6 +527,7 @@ export default function App() {
           .layout { grid-template-columns: 1fr; }
           .sticky-col { position: static; }
         }
+        @media (max-width: 600px) { .nav-count { display: none; } }
         button { transition: background .15s ease, border-color .15s ease, color .15s ease, box-shadow .18s ease, transform .1s ease; }
         button:focus-visible { outline: 2px solid #990000; outline-offset: 2px; }
         input:focus { outline: none; border-color: #990000; box-shadow: 0 0 0 3px rgba(153,0,0,0.14); }
@@ -505,7 +561,12 @@ export default function App() {
           <span style={{ fontSize: 15, fontWeight: 600, fontFamily: HEAD, color: C.cardinal, letterSpacing: 0.5 }}>RegCheck</span>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <span className="mono" style={{ fontSize: 11, color: C.faint }}>{courseNames.length.toLocaleString()} Spring 2027 courses</span>
+          <span className="mono nav-count" style={{ fontSize: 11, color: C.faint }}>{courseNames.length.toLocaleString()} Spring 2027 courses</span>
+          <button onClick={() => setShowTour(true)}
+            style={{ fontSize: 10.5, letterSpacing: 1, fontFamily: HEAD, fontWeight: 600, borderRadius: 5, padding: "4px 9px",
+              color: C.muted, border: `1px solid ${C.line}`, background: "transparent", cursor: "pointer" }}>
+            Tour
+          </button>
           <button onClick={() => setShowAbout((v) => !v)}
             style={{ fontSize: 10.5, letterSpacing: 1, fontFamily: HEAD, fontWeight: 600, borderRadius: 5, padding: "4px 9px",
               color: C.muted, border: `1px solid ${C.line}`, background: "transparent", cursor: "pointer" }}>
@@ -564,34 +625,64 @@ export default function App() {
         </p>
 
         <input ref={fileInputRef} type="file" accept="application/pdf" onChange={handleStarsUpload} style={{ display: "none" }} />
-        <div style={{ ...card, marginTop: 22, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+        <div data-tour="stars" style={{ ...card, marginTop: 22, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
           <div style={{ flex: 1, minWidth: 240 }}>
             <div style={{ ...eyebrow, marginBottom: 4 }}>Your STARS report</div>
             <div style={{ fontSize: 14, color: C.ink }}>
               {starsSource === "parsing" ? (starsStatusMsg || "Reading your report…")
                 : starsSource === "review" ? "Check what we read from your report…"
+                : starsSource === "parsed" ? <>
+                    <span style={{ color: C.ok, fontWeight: 600 }}>✓ Read</span> · {starsReport.classLevel ?? "No class level"} · {starsReport.completedCourses.length} completed courses.{" "}
+                    <button onClick={() => openCurrentReport("dialog")} style={linkButton}>Click here to edit details</button>
+                  </>
                 : starsSource === "confirmed" ? <><span style={{ color: C.ok, fontWeight: 600 }}>✓ Checked</span> · {starsReport.classLevel} · {starsReport.completedCourses.length} completed courses</>
                 : <>Using demo data ({starsReport.classLevel}, {starsReport.completedCourses.length} completed courses). Upload your report, printed to PDF from experience.usc.edu, to check against your own record.</>}
             </div>
           </div>
+          {pdfUrl && (starsSource === "parsed" || starsSource === "confirmed") && (
+            <button onClick={() => openCurrentReport("side")} className="outline-btn" style={secondaryButton}>
+              View next to PDF
+            </button>
+          )}
           {starsSource === "confirmed" && (
-            <button onClick={() => { sourceBeforeReview.current = "confirmed"; openReview({ mode: "parsed", initial: starsReport, failure: null }); }}
-              className="outline-btn" style={secondaryButton}>
+            <button onClick={() => openCurrentReport("dialog")} className="outline-btn" style={secondaryButton}>
               Edit details
             </button>
           )}
           <button onClick={() => fileInputRef.current?.click()} disabled={starsSource === "parsing"}
-            className={starsSource === "confirmed" ? "outline-btn" : undefined}
-            style={starsSource === "confirmed" ? secondaryButton : primaryButton}>
-            {starsSource === "confirmed" ? "Upload another" : "Upload STARS PDF"}
+            className={hasReport ? "outline-btn" : undefined}
+            style={hasReport ? secondaryButton : primaryButton}>
+            {hasReport ? "Upload another" : "Upload STARS PDF"}
           </button>
         </div>
+
+        {showUploadNotice && starsSource === "parsed" && (
+          <div role="status" style={{ marginTop: 10, padding: "12px 16px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 10, fontSize: 13, color: C.body, lineHeight: 1.6, display: "flex", gap: 14, alignItems: "flex-start" }}>
+            <div style={{ flex: 1 }}>
+              <div style={{ color: C.warn, fontWeight: 700, marginBottom: 2 }}>Before you rely on this</div>
+              <ul style={{ margin: 0, paddingLeft: 18 }}>
+                <li>We read your courses straight from the PDF, and the reader can get things wrong. <button onClick={() => openCurrentReport("dialog")} style={linkButton}>Check your details</button>{pdfUrl && <> or <button onClick={() => openCurrentReport("side")} style={linkButton}>view them next to your PDF</button></>}.</li>
+                <li>Your report stays in this browser. It's never uploaded or saved anywhere.</li>
+                {(starsReport.meta?.redacted || starsReport.gpa === null) && (
+                  <li>{starsReport.meta?.redacted ? "Your report is redacted, so grades show as hidden and your GPA isn't on it." : "Your GPA isn't on your report."} Add it in your details if you want GPA minimums checked.</li>
+                )}
+              </ul>
+            </div>
+            <button onClick={dismissUploadNotice} className="outline-btn" style={{ ...secondaryButton, padding: "6px 12px", flexShrink: 0 }}>Got it</button>
+          </div>
+        )}
       </div>
 
-      {review && (
+      {review?.view === "dialog" && (
         <StarsReview key={review.mode + (review.failure?.check ?? "")} initial={review.initial} mode={review.mode}
-          failure={review.failure} onConfirm={confirmReview} onCancel={cancelReview} />
+          failure={review.failure} onConfirm={confirmReview} onCancel={cancelReview}
+          onSideBySide={review.pdfUrl ? (draft) => setReview({ ...review, initial: draft, view: "side" }) : undefined} />
       )}
+      {review?.view === "side" && (
+        <StarsSideBySide initial={review.initial} mode={review.mode} failure={review.failure} pdfUrl={review.pdfUrl}
+          onConfirm={confirmReview} onCancel={cancelReview} />
+      )}
+      {showTour && !review && starsSource !== "graduate" && <Tour onClose={closeTour} />}
       {starsSource === "graduate" && (
         <GraduateNotice onClose={() => setStarsSource(sourceBeforeReview.current)} />
       )}
@@ -600,7 +691,7 @@ export default function App() {
 
         {/* LEFT — pick courses + sections */}
         <div>
-          <div style={{ position: "relative", marginBottom: 18 }}>
+          <div data-tour="search" style={{ position: "relative", marginBottom: 18 }}>
             <input value={query} onChange={(e) => setQuery(e.target.value)}
               placeholder="Add a course — search any of 4,549 Spring 2027 courses…"
               style={{ width: "100%", background: "#fff", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 10, padding: "13px 16px", color: C.ink, fontSize: 14, fontFamily: "inherit", boxShadow: SHADOW, transition: "border-color .15s ease, box-shadow .15s ease" }} />
@@ -633,6 +724,7 @@ export default function App() {
             )}
           </div>
 
+          <div data-tour="courses">
           {expanded.length === 0 && (
             <div style={{ color: C.muted, fontSize: 13.5, padding: "32px 20px", textAlign: "center", border: "1px dashed rgba(0,0,0,0.15)", borderRadius: 14, background: "#FFFFFF" }}>
               <div style={{ ...eyebrow, marginBottom: 8 }}>No courses yet</div>
@@ -699,6 +791,7 @@ export default function App() {
               </div>
             );
           })}
+          </div>
         </div>
 
         {/* RIGHT — calendar + validate + results */}
@@ -707,6 +800,12 @@ export default function App() {
             <span style={{ fontSize: 20, fontWeight: 700, color: C.ink, fontFamily: HEAD }}>Your week</span>
             <span className="mono" style={{ fontSize: 12, color: totalUnits > 18 ? C.bad : C.body, background: "#fff", border: `1px solid ${C.line}`, borderRadius: 999, padding: "4px 12px" }}>{totalUnits} {totalUnits === 1 ? "unit" : "units"} · {pickedList.length} {pickedList.length === 1 ? "section" : "sections"}</span>
           </div>
+
+          {expanded.length > 0 && totalUnits > 0 && totalUnits < 12 && (
+            <div style={{ marginBottom: 12, padding: "10px 14px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8, fontSize: 12.5, color: C.body, lineHeight: 1.5 }}>
+              <span style={{ color: C.warn, fontWeight: 700 }}>Low unit count:</span> {totalUnits} units is below the typical full-time minimum of 12. Most students take 12–18 units. Check with your advisor if this is intentional.
+            </div>
+          )}
 
           {result && (
             <div style={{ marginBottom: 16 }}>
@@ -744,15 +843,23 @@ export default function App() {
             </div>
           )}
 
-          <Calendar blocks={blocks} />
+          <div data-tour="week">
+            <Calendar blocks={blocks} />
+          </div>
 
-          {expanded.length > 0 && totalUnits > 0 && totalUnits < 12 && (
-            <div style={{ marginTop: 12, padding: "10px 14px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8, fontSize: 12.5, color: C.body, lineHeight: 1.5 }}>
-              <span style={{ color: C.warn, fontWeight: 700 }}>Low unit count:</span> {totalUnits} units is below the typical full-time minimum of 12. Most students take 12–18 units. Check with your advisor if this is intentional.
+
+          {validateWarning && (
+            <div role="alert" style={{ marginTop: 16, padding: "12px 14px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 10, fontSize: 13, color: C.body, lineHeight: 1.55 }}>
+              <div style={{ color: C.warn, fontWeight: 700, marginBottom: 2 }}>You haven't checked your STARS details</div>
+              The checker uses what we read from your PDF. If we misread a course, a prerequisite could pass or fail wrongly.
+              <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+                <button onClick={() => openCurrentReport(pdfUrl ? "side" : "dialog")} style={{ ...primaryButton, padding: "8px 14px" }}>Check details</button>
+                <button onClick={runValidate} disabled={!canValidate} className="outline-btn" style={{ ...secondaryButton, padding: "8px 14px" }}>Validate anyway</button>
+              </div>
             </div>
           )}
 
-          <button onClick={runValidate} disabled={!canValidate} className="validate-btn"
+          <button data-tour="validate" onClick={onValidateClick} disabled={!canValidate} className="validate-btn"
             style={{ ...primaryButton, width: "100%", marginTop: 16, padding: "14px", fontSize: 13.5, letterSpacing: 1, textTransform: "uppercase",
               cursor: canValidate ? "pointer" : "not-allowed",
               background: canValidate ? C.cardinal : "#E7E7E4", color: canValidate ? "#fff" : "#A1A1AA" }}>
@@ -789,6 +896,8 @@ export default function App() {
     </div>
   );
 }
+
+const linkButton = { background: "none", border: "none", padding: 0, color: C.cardinal, fontWeight: 600, fontSize: "inherit", fontFamily: "inherit", textDecoration: "underline", textUnderlineOffset: 2, cursor: "pointer" };
 
 function Tag({ children, c }) {
   return <span style={{ fontSize: 9.5, color: c, border: `1px solid ${c}4d`, background: `${c}1f`, borderRadius: 6, padding: "2px 7px", fontWeight: 600, letterSpacing: "0.01em", whiteSpace: "nowrap" }}>{children}</span>;
