@@ -644,16 +644,16 @@ export default function App() {
               {starsSource === "parsing" ? (starsStatusMsg || "Reading your report…")
                 : starsSource === "review" ? "Check what we read from your report…"
                 : hasReport ? <>
-                    <span style={{ color: C.ok, fontWeight: 600 }}>{starsSource === "confirmed" ? "✓ Checked" : "✓ Read"}</span> · {starsReport.classLevel ?? "No class level"} · {starsReport.completedCourses.length} completed courses.{" "}
-                    <button onClick={openCurrentReport} style={linkButton}>Click here to view details</button>
+                    <span style={{ color: C.ok, fontWeight: 600 }}>{starsSource === "confirmed" ? "✓ Checked" : "✓ Read"}</span> · {starsReport.classLevel ?? "No class level"} · {starsReport.completedCourses.length} completed courses
                   </>
                 : <>Upload your report, printed to PDF from experience.usc.edu. It stays on your device and is never sent to a server.</>}
             </div>
           </div>
+          {hasReport && <button onClick={openCurrentReport} style={primaryButton}>View details</button>}
           <button onClick={() => fileInputRef.current?.click()} disabled={starsSource === "parsing"}
             className={hasReport ? "outline-btn" : undefined}
             style={hasReport ? secondaryButton : primaryButton}>
-            {hasReport ? "Upload another" : "Upload STARS PDF"}
+            {hasReport ? "Replace STARS PDF" : "Upload STARS PDF"}
           </button>
         </div>
 
