@@ -615,12 +615,11 @@ export default function App() {
             </ul>
             <div style={{ marginTop: 16, padding: "12px 16px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8 }}>
               <div style={{ fontSize: 12.5, color: C.body, lineHeight: 1.6 }}>
-                <b>Need D-clearance?</b> Check your department's process at{" "}
-                <a href="https://arr.usc.edu/services/registration/d-clearance/" target="_blank" rel="noopener noreferrer" style={{ color: C.cardinal, fontWeight: 600 }}>USC Registrar: D-Clearance ↗</a>
+                <b>Need D-clearance?</b> Reach out to your department.
               </div>
             </div>
             <div style={{ marginTop: 10, fontSize: 12.5, color: C.muted, lineHeight: 1.6 }}>
-              For advising, visit <a href="https://arr.usc.edu/services/advisement/" target="_blank" rel="noopener noreferrer" style={{ color: C.cardinal }}>USC Academic Advising ↗</a>
+              For advising, reach out to your academic advisor.
             </div>
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 18, paddingTop: 16, borderTop: `1px solid ${C.line}` }}>
               <button onClick={closeAbout} className="outline-btn" style={secondaryButton}>Close</button>
