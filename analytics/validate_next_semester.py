@@ -227,10 +227,51 @@ def _check_d_clearance(course: str, catalog_entry: dict | None, dept_clearance_b
     return CourseResult(course, "warning", reasons)
 
 
+# "3.0 GPA", "cumulative 3.0 GPA", "2.5 overall GPA", "GPA of at least 3.0", "minimum GPA: 3.0".
+_GPA_PATTERNS = (
+    re.compile(r"\b([0-4]\.\d{1,3})\s+(?:[a-z]+\s+){0,2}gpa\b", re.IGNORECASE),
+    re.compile(r"\bgpa\s*(?::|of)?\s*(?:at\s+least\s+)?([0-4]\.\d{1,3})\b", re.IGNORECASE),
+)
+
+
+def _gpa_minimum(description: str) -> float | None:
+    for pattern in _GPA_PATTERNS:
+        m = pattern.search(description)
+        if m:
+            return float(m.group(1))
+    return None
+
+
+def _check_gpa(course: str, catalog_entry: dict | None, stars_summary: dict) -> CourseResult | None:
+    """Checks a GPA minimum stated anywhere in the description. Most never say "prerequisite"
+    ("Non-majors ... must have at least a 2.5 GPA"), so this can't live inside _check_prereq."""
+    if not catalog_entry:
+        return None
+    description = catalog_entry.get("description") or ""
+    required_gpa = _gpa_minimum(description)
+    if required_gpa is None:
+        return None
+
+    gpa = stars_summary.get("gpa")
+    if gpa is None:
+        # Redacted (X.XXX) or not on the report. Not knowing isn't failing.
+        return CourseResult(course, "warning", [
+            f"{course} requires a {required_gpa} GPA minimum. Your GPA isn't on your report, so this wasn't checked."
+        ])
+    if gpa >= required_gpa:
+        return CourseResult(course, "pass", [f"{course} requires a {required_gpa} GPA minimum (yours: {gpa})."])
+    if re.search(r"\bnon-?majors?\b", description, re.IGNORECASE):
+        # The minimum binds only students outside the major, which the report's major can't settle.
+        return CourseResult(course, "warning", [
+            f"{course} requires non-majors to have a {required_gpa} GPA minimum (yours: {gpa}). This doesn't apply if you're in the major."
+        ])
+    return CourseResult(course, "fail", [f"{course} requires a {required_gpa} GPA minimum (yours: {gpa})."])
+
+
 def _check_prereq(course: str, catalog_entry: dict | None, stars_summary: dict) -> CourseResult | None:
-    """Best-effort: extracts a GPA threshold and/or course codes from the description and verifies
-    them against the STARS summary. Falls back to an unverified warning when nothing recognizable
-    is found (e.g. "consent of instructor", unit-count-based requirements)."""
+    """Best-effort: extracts course codes from the description and verifies them against the
+    STARS summary. Falls back to an unverified warning when nothing recognizable is found (e.g.
+    "consent of instructor", unit-count-based requirements). GPA minimums are _check_gpa's."""
     if not catalog_entry:
         return None
     description = catalog_entry.get("description") or ""
@@ -238,24 +279,12 @@ def _check_prereq(course: str, catalog_entry: dict | None, stars_summary: dict) 
         return None
 
     evidence = _completed_evidence(stars_summary)
-    gpa = stars_summary.get("gpa")
 
     reasons = []
     failed = False
     unconfirmed = False
-    matched_any = False
-
-    gpa_match = re.search(r"([\d.]+)\s*gpa", description, re.IGNORECASE)
-    if gpa_match:
-        matched_any = True
-        required_gpa = float(gpa_match.group(1))
-        if gpa is None:
-            # Redacted (X.XXX) or not on the report. Not knowing isn't failing.
-            unconfirmed = True
-            reasons.append(f"{course} requires a {required_gpa} GPA minimum. Your GPA isn't on your report, so this wasn't checked.")
-        elif gpa < required_gpa:
-            failed = True
-            reasons.append(f"{course} requires a {required_gpa} GPA minimum (yours: {gpa}).")
+    # A GPA minimum is recognised, just checked elsewhere, so it isn't an unverified note.
+    matched_any = _gpa_minimum(description) is not None
 
     required_codes = {
         f"{dept.upper()} {num.upper()}" for dept, num in re.findall(r"\b([A-Z]{2,4})\s?(\d{3}[A-Za-z]?)\b", description)
@@ -489,6 +518,7 @@ def validate_next_semester(
             _check_standing(course, stars_summary),
             _check_d_clearance(course, catalog_entry, dept_clearance_by_prefix),
             _check_prereq(course, catalog_entry, stars_summary),
+            _check_gpa(course, catalog_entry, stars_summary),
             _check_in_catalog(course, catalog),
             _check_seat_availability(course, catalog_entry, selected_section_ids),
             _check_lab_discussion_pairing(course, catalog_entry, selected_section_ids),

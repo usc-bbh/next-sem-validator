@@ -12,6 +12,7 @@ from validate_next_semester import (
     _check_in_catalog,
     _check_lab_discussion_pairing,
     _check_major_restrictions,
+    _check_gpa,
     _check_prereq,
     _check_seat_availability,
     _check_standing,
@@ -187,18 +188,6 @@ def test_d_clearance_schema_version_matches_expected(dept_clearance):
 
 # ---- prereqs -----------------------------------------------------------------
 
-def test_prereq_fails_when_gpa_below_threshold():
-    entry = {"description": "prerequisite: 3.5 gpa"}
-    result = _check_prereq("ANTH 491", entry, {"gpa": 3.0, "completedCourses": []})
-    assert result.status == "fail"
-
-
-def test_prereq_passes_when_gpa_meets_threshold():
-    entry = {"description": "prerequisite: 3.0 gpa"}
-    result = _check_prereq("ANTH 491", entry, {"gpa": 3.4, "completedCourses": []})
-    assert result is None
-
-
 def test_prereq_fails_when_required_course_not_completed():
     entry = {"description": "Prereq: CSCI 104"}
     result = _check_prereq("CSCI 201", entry, {"completedCourses": []})
@@ -218,12 +207,65 @@ def test_prereq_falls_back_to_warning_when_unparseable():
     assert result.status == "warning"
 
 
-def test_prereq_warns_instead_of_failing_when_gpa_is_unknown():
+# ---- GPA minimums -------------------------------------------------------------
+
+def test_gpa_fails_when_below_threshold():
+    entry = {"description": "prerequisite: 3.5 gpa"}
+    result = _check_gpa("ANTH 491", entry, {"gpa": 3.0})
+    assert result.status == "fail"
+
+
+def test_gpa_passes_and_says_so_when_threshold_met():
+    entry = {"description": "prerequisite: 3.0 gpa"}
+    result = _check_gpa("ANTH 491", entry, {"gpa": 3.4})
+    assert result.status == "pass"
+    assert "yours: 3.4" in result.reasons[0]
+
+
+def test_gpa_warns_instead_of_failing_when_gpa_is_unknown():
     # Every redacted report has gpa: null. Not knowing the GPA isn't failing it.
     entry = {"description": "prerequisite: 3.5 gpa"}
-    result = _check_prereq("ANTH 491", entry, {"gpa": None, "completedCourses": []})
+    result = _check_gpa("ANTH 491", entry, {"gpa": None})
     assert result.status == "warning"
     assert "wasn't checked" in result.reasons[0]
+
+
+def test_gpa_checked_when_description_never_says_prerequisite():
+    # The catalog's own wording (MATH 596): no "prereq", so the old check never ran.
+    entry = {"description": "May not be taken until the student has completed at least one semester "
+                            "of enrollment in the graduate program with a cumulative 3.0 GPA."}
+    assert _check_gpa("MATH 596", entry, {"gpa": 2.8}).status == "fail"
+
+
+def test_gpa_minimum_for_non_majors_only_warns():
+    # PR 209: the minimum binds non-majors, and the report can't say which the student is.
+    entry = {"description": "Non-majors who are interested in enrolling must have at least a 2.5 GPA."}
+    assert _check_gpa("PR 209", entry, {"gpa": 2.1}).status == "warning"
+    assert _check_gpa("PR 209", entry, {"gpa": 3.0}).status == "pass"
+
+
+@pytest.mark.parametrize("text", ["a GPA of 3.0", "minimum GPA: 3.0", "a 3.0 overall GPA", "GPA of at least 3.0"])
+def test_gpa_minimum_read_from_common_phrasings(text):
+    assert _check_gpa("X 100", {"description": f"Requires {text}."}, {"gpa": 2.9}).status == "fail"
+
+
+def test_gpa_ignores_a_stray_period_before_gpa():
+    # The old pattern ([\d.]+) matched the "." alone and crashed float().
+    entry = {"description": "Open to all majors. GPA requirements vary by section."}
+    assert _check_gpa("X 100", entry, {"gpa": 3.0}) is None
+
+
+def test_prereq_does_not_call_a_gpa_minimum_unverified():
+    entry = {"description": "prerequisite: 3.5 gpa"}
+    assert _check_prereq("ANTH 491", entry, {"gpa": 3.0, "completedCourses": []}) is None
+
+
+def test_gpa_minimum_reaches_the_validator_result():
+    catalog = {"PR 209": {"units": 4, "description": "Non-majors must have at least a 2.5 GPA.",
+                          "sections": {"Lecture": [{"section_id": "1", "days": [], "start_time": "TBA", "end_time": "TBA"}]}}}
+    stars = {"gpa": 3.2, "completedCourses": [], "inProgressCourses": [], "classLevel": "Junior"}
+    result = validate_next_semester([{"course": "PR 209", "sections": ["1"]}], stars, catalog, {"_schema_version": EXPECTED_DEPT_CLEARANCE_SCHEMA_VERSION, "departments": []})
+    assert any("2.5 GPA" in r for r in result.course_results[0].reasons)
 
 
 def test_prereq_not_met_by_a_withdrawn_course():
