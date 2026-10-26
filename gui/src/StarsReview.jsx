@@ -238,6 +238,15 @@ function StarsEditor({ editor, mode, failure }) {
         <Notice key={i} tone={C.warn} bg="#FEFAEC">{w.message}</Notice>
       ))}
 
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ ...eyebrow, margin: "0 0 8px" }}>In progress · {draft.inProgressCourses.length}</div>
+        <Collapsible title={ipTerms.length === 1 ? termLabel(ipTerms[0]) : "This semester"} open={open.has("inProgress")} onToggle={() => toggle("inProgress")}
+          count={draft.inProgressCourses.length} units={sumUnits(draft.inProgressCourses)}>
+          <CourseRows list="inProgressCourses" items={draft.inProgressCourses.map((row, index) => ({ row, index }))} report={draft} inProgress showTerm={ipTerms.length > 1}
+            onEdit={editRow} onRemove={removeRow} onMove={moveRow} moveLabel="Move to completed" />
+        </Collapsible>
+      </div>
+
       <AddCourse onAdd={(row) => { addRow(row); setOpen((s) => new Set(s).add(row.passed === null ? "inProgress" : "term:")); }} />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 14 }}>
@@ -259,7 +268,6 @@ function StarsEditor({ editor, mode, failure }) {
       </div>
 
       <UnitTotals report={draft} />
-
 
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", margin: "4px 0 8px" }}>
         <div style={eyebrow}>Completed courses · {draft.completedCourses.length}</div>
@@ -284,12 +292,6 @@ function StarsEditor({ editor, mode, failure }) {
         </React.Fragment>
       ))}
 
-      <div style={{ ...eyebrow, margin: "18px 0 8px" }}>In progress · {draft.inProgressCourses.length}</div>
-      <Collapsible title={ipTerms.length === 1 ? termLabel(ipTerms[0]) : "This semester"} open={open.has("inProgress")} onToggle={() => toggle("inProgress")}
-        count={draft.inProgressCourses.length} units={sumUnits(draft.inProgressCourses)}>
-        <CourseRows list="inProgressCourses" items={draft.inProgressCourses.map((row, index) => ({ row, index }))} report={draft} inProgress showTerm={ipTerms.length > 1}
-          onEdit={editRow} onRemove={removeRow} onMove={moveRow} moveLabel="Move to completed" />
-      </Collapsible>
       <div style={{ fontSize: 12, color: C.muted, marginTop: 12, lineHeight: 1.5 }}>
         Courses you add or change are marked as yours. The checker won't treat them as proof of a prerequisite on their own;
         it'll warn you to double-check instead.
@@ -434,7 +436,7 @@ function CourseRows({ list, items, report, inProgress, showTerm, onEdit, onRemov
             style={{ ...inputStyle, width: 168, padding: "4px 6px", fontSize: 12 }} />
         )}
         <span className="mono" style={{ width: 62, textAlign: "right", color: C.body, fontSize: 12, whiteSpace: "nowrap" }}>{row.units} {row.units === 1 ? "unit" : "units"}</span>
-        <button onClick={() => onMove(list, index)} title={moveLabel} aria-label={`${moveLabel}: ${row.code}`} style={iconButton}>{inProgress ? "↑" : "↓"}</button>
+        <button onClick={() => onMove(list, index)} title={moveLabel} aria-label={`${moveLabel}: ${row.code}`} style={iconButton}>{inProgress ? "↓" : "↑"}</button>
         <button onClick={() => onRemove(list, index)} title="Remove" aria-label={`Remove ${row.code}`} style={{ ...iconButton, color: C.bad }}>×</button>
       </div>
     );
