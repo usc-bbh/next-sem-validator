@@ -244,7 +244,7 @@ function StarsEditor({ editor, mode, failure }) {
         <Field label="Major">
           <input value={draft.major ?? ""} onChange={(e) => update({ major: e.target.value })} style={inputStyle} />
         </Field>
-        <Field label="Class level">
+        <Field label="Class level (by units)">
           <select value={draft.classLevel ?? ""} onChange={(e) => update({ classLevel: e.target.value || null })} style={inputStyle}>
             <option value="">Choose…</option>
             {CLASS_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
