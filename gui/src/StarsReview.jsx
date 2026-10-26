@@ -204,7 +204,7 @@ function ReviewHeading({ mode, compact }) {
       </div>
       {!compact && (
         <div style={{ fontSize: 13, color: C.body, marginTop: 6 }}>
-          This stays in your browser. Nothing you upload or type here is sent anywhere.
+          Your report stays on your device. Nothing here is sent to a server or saved.
         </div>
       )}
     </>

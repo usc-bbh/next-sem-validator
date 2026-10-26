@@ -15,7 +15,7 @@ const TOUR_STEPS = [
   {
     target: "stars",
     title: "Start with your STARS report",
-    body: "Print your STARS report to PDF from experience.usc.edu and upload it here. It's read in your browser and never uploaded. Once it's read, the course search and your weekly calendar appear.",
+    body: "Print your STARS report to PDF from experience.usc.edu and upload it here. It stays on your device and is never sent to a server. Once it's read, the course search and your weekly calendar appear.",
   },
   {
     target: "search",

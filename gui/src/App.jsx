@@ -633,7 +633,7 @@ export default function App() {
         </h1>
         <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 640, margin: "10px 0 0" }}>
           Upload your STARS report, then pick your sections for next semester and check the schedule before you register.
-          Everything runs in your browser: your report is never uploaded anywhere.
+          Everything runs on your device: your report is never sent to a server or stored.
         </p>
 
         <input ref={fileInputRef} type="file" accept="application/pdf" onChange={handleStarsUpload} style={{ display: "none" }} />
@@ -647,7 +647,7 @@ export default function App() {
                     <span style={{ color: C.ok, fontWeight: 600 }}>{starsSource === "confirmed" ? "✓ Checked" : "✓ Read"}</span> · {starsReport.classLevel ?? "No class level"} · {starsReport.completedCourses.length} completed courses.{" "}
                     <button onClick={openCurrentReport} style={linkButton}>Click here to view details</button>
                   </>
-                : <>Upload your report, printed to PDF from experience.usc.edu. It's read in your browser and never uploaded.</>}
+                : <>Upload your report, printed to PDF from experience.usc.edu. It stays on your device and is never sent to a server.</>}
             </div>
           </div>
           <button onClick={() => fileInputRef.current?.click()} disabled={starsSource === "parsing"}
@@ -663,7 +663,7 @@ export default function App() {
               <div style={{ color: C.warn, fontWeight: 700, marginBottom: 2 }}>Before you rely on this</div>
               <ul style={{ margin: 0, paddingLeft: 18 }}>
                 <li>We read your courses straight from the PDF, and the reader can get things wrong. <button onClick={openCurrentReport} style={linkButton}>Check your details</button>.</li>
-                <li>Your report stays in this browser. It's never uploaded or saved anywhere.</li>
+                <li>Your report stays on your device. It's never sent to a server or saved.</li>
                 {(starsReport.meta?.redacted || starsReport.gpa === null) && (
                   <li>{starsReport.meta?.redacted ? "Your report is redacted, so grades show as hidden and your GPA isn't on it." : "Your GPA isn't on your report."} Add it in your details if you want GPA minimums checked.</li>
                 )}
