@@ -248,7 +248,8 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState(null);
   const [validating, setValidating] = useState(false);
-  const [showAbout, setShowAbout] = useState(false);
+  // First visit opens About, which leads into the tour.
+  const [showAbout, setShowAbout] = useState(() => !seen("tourDone"));
 
   // ── STARS upload state ──
   // starsReport starts as the demo fallback. A parsed report is used as read
@@ -270,7 +271,7 @@ export default function App() {
   const [looked, setLooked] = useState(false);
   const [showUploadNotice, setShowUploadNotice] = useState(false);
   const [validateWarning, setValidateWarning] = useState(false);
-  const [showTour, setShowTour] = useState(() => !seen("tourDone"));
+  const [showTour, setShowTour] = useState(false);
 
   useEffect(() => () => pdfUrl && URL.revokeObjectURL(pdfUrl), [pdfUrl]);
 
@@ -319,6 +320,16 @@ export default function App() {
   const dismissUploadNotice = () => {
     markSeen("uploadNotice");
     setShowUploadNotice(false);
+  };
+
+  const closeAbout = () => {
+    markSeen("tourDone");
+    setShowAbout(false);
+  };
+
+  const startTour = () => {
+    setShowAbout(false);
+    setShowTour(true);
   };
 
   const closeTour = () => {
@@ -562,12 +573,7 @@ export default function App() {
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <span className="mono nav-count" style={{ fontSize: 11, color: C.faint }}>{courseNames.length.toLocaleString()} Spring 2027 courses</span>
-          <button onClick={() => setShowTour(true)}
-            style={{ fontSize: 10.5, letterSpacing: 1, fontFamily: HEAD, fontWeight: 600, borderRadius: 5, padding: "4px 9px",
-              color: C.muted, border: `1px solid ${C.line}`, background: "transparent", cursor: "pointer" }}>
-            Tour
-          </button>
-          <button onClick={() => setShowAbout((v) => !v)}
+          <button onClick={() => setShowAbout(true)}
             style={{ fontSize: 10.5, letterSpacing: 1, fontFamily: HEAD, fontWeight: 600, borderRadius: 5, padding: "4px 9px",
               color: C.muted, border: `1px solid ${C.line}`, background: "transparent", cursor: "pointer" }}>
             About
@@ -582,15 +588,21 @@ export default function App() {
       </nav>
 
       {showAbout && (
-        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "16px 28px 0" }}>
-          <div style={{ ...card, padding: "20px 24px", position: "relative" }}>
-            <button onClick={() => setShowAbout(false)} style={{ position: "absolute", top: 12, right: 16, background: "none", border: "none", color: C.faint, cursor: "pointer", fontSize: 18, lineHeight: 1 }}>×</button>
+        <div role="dialog" aria-modal="true" aria-labelledby="about-title" onClick={(e) => e.target === e.currentTarget && closeAbout()}
+          onKeyDown={(e) => e.key === "Escape" && closeAbout()}
+          style={{ position: "fixed", inset: 0, background: "rgba(20,20,24,0.45)", zIndex: 55, display: "flex", justifyContent: "center", alignItems: "flex-start", padding: "48px 16px", overflowY: "auto" }}>
+          <div style={{ ...card, width: "100%", maxWidth: 580, padding: "22px 24px", position: "relative", boxShadow: "0 30px 70px -20px rgba(28,28,31,0.45)" }}>
+            <button onClick={closeAbout} aria-label="Close" style={{ position: "absolute", top: 12, right: 14, background: "none", border: "none", color: C.faint, cursor: "pointer", fontSize: 22, lineHeight: 1, width: 32, height: 32 }}>×</button>
+            <div id="about-title" style={{ fontSize: 22, fontWeight: 700, fontFamily: HEAD, color: C.ink, marginBottom: 14 }}>
+              Welcome to Reg<span style={{ color: C.cardinal }}>Check</span>
+            </div>
             <div style={{ ...eyebrow, color: C.cardinal, marginBottom: 12 }}>What RegCheck does</div>
             <ul style={{ fontSize: 13, color: C.body, lineHeight: 1.8, margin: 0, paddingLeft: 18 }}>
               <li>Checks <b>time conflicts</b> between your picked sections</li>
               <li>Flags sections that are <b>full</b> (no open seats)</li>
               <li>Warns about <b>D-clearance</b> requirements</li>
               <li>Checks <b>prerequisite</b> completion against your STARS report</li>
+              <li>Checks <b>GPA minimums</b> when your GPA is on your report or you enter it</li>
               <li>Warns if your unit count is unusually <b>low (&lt;12)</b> or <b>high (&gt;18)</b></li>
             </ul>
             <div style={{ ...eyebrow, color: C.cardinal, marginBottom: 8, marginTop: 16 }}>What RegCheck does NOT do</div>
@@ -609,6 +621,10 @@ export default function App() {
             </div>
             <div style={{ marginTop: 10, fontSize: 12.5, color: C.muted, lineHeight: 1.6 }}>
               For advising, visit <a href="https://arr.usc.edu/services/advisement/" target="_blank" rel="noopener noreferrer" style={{ color: C.cardinal }}>USC Academic Advising ↗</a>
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 18, paddingTop: 16, borderTop: `1px solid ${C.line}` }}>
+              <button onClick={closeAbout} className="outline-btn" style={secondaryButton}>Close</button>
+              <button onClick={startTour} autoFocus style={primaryButton}>Take the tour</button>
             </div>
           </div>
         </div>
