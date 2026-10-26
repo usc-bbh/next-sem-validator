@@ -649,7 +649,7 @@ export default function App() {
                 : <>Upload your report, printed to PDF from experience.usc.edu. It stays on your device and is never sent to a server.</>}
             </div>
           </div>
-          {hasReport && <button onClick={openCurrentReport} style={primaryButton}>View details</button>}
+          {hasReport && <button onClick={openCurrentReport} className="outline-btn" style={secondaryButton}>View details</button>}
           <button onClick={() => fileInputRef.current?.click()} disabled={starsSource === "parsing"}
             className={hasReport ? "outline-btn" : undefined}
             style={hasReport ? secondaryButton : primaryButton}>
