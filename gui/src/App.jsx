@@ -682,7 +682,7 @@ export default function App() {
       {review?.view === "side" && (
         <StarsSideBySide initial={review.initial} mode={review.mode} failure={review.failure} pdfUrl={review.pdfUrl}
           onConfirm={confirmReview} onCancel={cancelReview}
-          onPopOut={(draft) => setReview({ ...review, initial: draft, view: "dialog" })} />
+          onExpand={(draft) => setReview({ ...review, initial: draft, view: "dialog" })} />
       )}
       {showTour && !review && starsSource !== "graduate" && <Tour from={tourFrom} onClose={closeTour} />}
       {starsSource === "graduate" && (
