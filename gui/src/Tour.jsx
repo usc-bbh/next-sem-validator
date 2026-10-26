@@ -11,7 +11,7 @@ const TOUR_STEPS = [
   {
     target: "stars",
     title: "Start with your STARS report",
-    body: "Print your STARS report to PDF from experience.usc.edu and upload it here. It's read in your browser and never uploaded. No report yet? The demo data works for a trial run.",
+    body: "Print your STARS report to PDF from experience.usc.edu and upload it here. It's read in your browser and never uploaded.",
   },
   {
     target: "search",

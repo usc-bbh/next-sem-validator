@@ -33,15 +33,6 @@ function useCatalog() {
   return { catalog, catalogError: error, catalogLoading: !catalog && !error };
 }
 
-// Demo fallback only — used before a real STARS PDF is uploaded. The
-// validator reads rows without passed/source/origin as passed USC courses,
-// so this minimal shape still works.
-const DEMO_STARS = {
-  completedCourses: [{ code: "CSCI103", grade: "A" }, { code: "MATH225", grade: "B+" }, { code: "WRIT150", grade: "A-" }],
-  inProgressCourses: [],
-  classLevel: "Junior",
-};
-
 // One-time notices and the tour remember they've been seen in this browser.
 // Storage can be blocked (private windows); they then just show again.
 const seen = (key) => {
@@ -252,17 +243,17 @@ export default function App() {
   const [showAbout, setShowAbout] = useState(() => !seen("tourDone"));
 
   // ── STARS upload state ──
-  // starsReport starts as the demo fallback. A parsed report is used as read
+  // There's no report until the student uploads one. A parsed report is used as read
   // ("parsed") and the student is pointed at the review screen rather than
   // dropped into it; saving there makes it "confirmed". A failed parse opens
   // the review screen, since there's nothing to use (STARS_PARSER_DESIGN.md §9).
-  const [starsReport, setStarsReport] = useState(DEMO_STARS);
-  const [starsSource, setStarsSource] = useState("demo"); // "demo" | "parsing" | "parsed" | "review" | "confirmed" | "graduate"
+  const [starsReport, setStarsReport] = useState(null);
+  const [starsSource, setStarsSource] = useState("none"); // "none" | "parsing" | "parsed" | "review" | "confirmed" | "graduate"
   const [starsStatusMsg, setStarsStatusMsg] = useState("");
   const [review, setReview] = useState(null); // { mode: "parsed" | "failed", initial, failure, pdfUrl, view: "dialog" | "side" }
-  // Where Cancel on the review screen returns to: the demo, or the report
+  // Where Cancel on the review screen returns to: no report, or the report
   // the student had before.
-  const sourceBeforeReview = useRef("demo");
+  const sourceBeforeReview = useRef("none");
   const fileInputRef = useRef(null);
   // The PDF behind the report in use, for the side-by-side view. A review
   // carries its own, adopted on save. Never leaves the browser.
@@ -458,10 +449,10 @@ export default function App() {
   // letting an invalid payload reach the validator.
   const needSections = payload.filter((p) => !p.sections.length).map((p) => p.course);
   const checkerReady = pyodideStatus === "ready"; // set only after pyodideRef is populated
-  // An uploaded report must be confirmed on the review screen first, so no
-  // one validates against a course list they never saw.
-  const starsReady = ["demo", "parsed", "confirmed"].includes(starsSource);
+  // Validation needs a report: prerequisites and already-taken courses are
+  // checked against it.
   const hasReport = starsSource === "parsed" || starsSource === "confirmed";
+  const starsReady = hasReport;
   const canValidate = expanded.length > 0 && needSections.length === 0 && !validating && !!catalog && checkerReady && starsReady;
 
   // The first time someone validates a report they never opened, say so once.
@@ -622,7 +613,6 @@ export default function App() {
       )}
 
       <div style={{ maxWidth: 1320, margin: "0 auto", padding: "36px 28px 0" }}>
-        <div style={{ ...eyebrow, color: C.cardinal, letterSpacing: 4, marginBottom: 10 }}>A BBH tool · Spring 2027</div>
         <h1 style={{ fontSize: "clamp(30px, 5vw, 44px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.05, margin: 0 }}>
           Reg<span style={{ color: C.cardinal }}>Check</span>
         </h1>
@@ -643,7 +633,7 @@ export default function App() {
                     <button onClick={() => openCurrentReport("dialog")} style={linkButton}>Click here to edit details</button>
                   </>
                 : starsSource === "confirmed" ? <><span style={{ color: C.ok, fontWeight: 600 }}>✓ Checked</span> · {starsReport.classLevel} · {starsReport.completedCourses.length} completed courses</>
-                : <>Using demo data ({starsReport.classLevel}, {starsReport.completedCourses.length} completed courses). Upload your report, printed to PDF from experience.usc.edu, to check against your own record.</>}
+                : <>Upload your report, printed to PDF from experience.usc.edu. It's read in your browser and never uploaded.</>}
             </div>
           </div>
           {pdfUrl && (starsSource === "parsed" || starsSource === "confirmed") && (
@@ -700,7 +690,7 @@ export default function App() {
         <div>
           <div data-tour="search" style={{ position: "relative", marginBottom: 18 }}>
             <input value={query} onChange={(e) => setQuery(e.target.value)}
-              placeholder="Add a course — search any of 4,549 Spring 2027 courses…"
+              placeholder="Add a course…"
               style={{ width: "100%", background: "#fff", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 10, padding: "13px 16px", color: C.ink, fontSize: 14, fontFamily: "inherit", boxShadow: SHADOW, transition: "border-color .15s ease, box-shadow .15s ease" }} />
             {suggestions.length > 0 && (
               <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 10, marginTop: 6, zIndex: 20, overflow: "hidden", boxShadow: "0 14px 34px rgba(0,0,0,0.16)" }}>
@@ -884,7 +874,7 @@ export default function App() {
           )}
           {!starsReady && starsSource !== "parsing" && (
             <div style={{ marginTop: 9, fontSize: 12, color: C.muted, textAlign: "center" }}>
-              Confirm your STARS details to validate.
+              {starsSource === "review" ? "Confirm your STARS details to validate." : "Upload your STARS report to validate."}
             </div>
           )}
           {needSections.length > 0 && (
