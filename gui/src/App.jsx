@@ -263,6 +263,10 @@ export default function App() {
   const [showUploadNotice, setShowUploadNotice] = useState(false);
   const [validateWarning, setValidateWarning] = useState(false);
   const [showTour, setShowTour] = useState(false);
+  // Before a report there's only the upload step to show. Someone who
+  // finishes that gets the rest of the tour once their report loads.
+  const [tourFrom, setTourFrom] = useState(null);
+  const [resumeTour, setResumeTour] = useState(false);
 
   useEffect(() => () => pdfUrl && URL.revokeObjectURL(pdfUrl), [pdfUrl]);
 
@@ -320,13 +324,23 @@ export default function App() {
 
   const startTour = () => {
     setShowAbout(false);
+    setTourFrom(null);
     setShowTour(true);
   };
 
-  const closeTour = () => {
+  const closeTour = (finished) => {
     markSeen("tourDone");
     setShowTour(false);
+    setResumeTour(finished && !starsReport);
   };
+
+  useEffect(() => {
+    if (resumeTour && starsReport && !review) {
+      setResumeTour(false);
+      setTourFrom("search");
+      setShowTour(true);
+    }
+  }, [resumeTour, starsReport, review]);
 
   const confirmReview = (confirmed) => {
     setStarsReport(confirmed);
@@ -617,7 +631,7 @@ export default function App() {
           Reg<span style={{ color: C.cardinal }}>Check</span>
         </h1>
         <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 640, margin: "10px 0 0" }}>
-          Pick your sections for next semester, upload your STARS report, and check the schedule before you register.
+          Upload your STARS report, then pick your sections for next semester and check the schedule before you register.
           Everything runs in your browser: your report is never uploaded anywhere.
         </p>
 
@@ -679,211 +693,214 @@ export default function App() {
         <StarsSideBySide initial={review.initial} mode={review.mode} failure={review.failure} pdfUrl={review.pdfUrl}
           onConfirm={confirmReview} onCancel={cancelReview} />
       )}
-      {showTour && !review && starsSource !== "graduate" && <Tour onClose={closeTour} />}
+      {showTour && !review && starsSource !== "graduate" && <Tour from={tourFrom} onClose={closeTour} />}
       {starsSource === "graduate" && (
         <GraduateNotice onClose={() => setStarsSource(sourceBeforeReview.current)} />
       )}
 
-      <div className="layout" style={{ maxWidth: 1320, margin: "0 auto", padding: "28px 28px 0" }}>
+      {/* Courses and the calendar come after the report: upload is step one. */}
+      {starsReport && (
+        <div className="layout" style={{ maxWidth: 1320, margin: "0 auto", padding: "28px 28px 0" }}>
 
-        {/* LEFT — pick courses + sections */}
-        <div>
-          <div data-tour="search" style={{ position: "relative", marginBottom: 18 }}>
-            <input value={query} onChange={(e) => setQuery(e.target.value)}
-              placeholder="Add a course…"
-              style={{ width: "100%", background: "#fff", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 10, padding: "13px 16px", color: C.ink, fontSize: 14, fontFamily: "inherit", boxShadow: SHADOW, transition: "border-color .15s ease, box-shadow .15s ease" }} />
-            {suggestions.length > 0 && (
-              <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 10, marginTop: 6, zIndex: 20, overflow: "hidden", boxShadow: "0 14px 34px rgba(0,0,0,0.16)" }}>
-                {suggestions.map((c) => {
-                  const entry = catalog[c];
-                  const instructors = entry ? getInstructors(entry) : [];
-                  const desc = entry?.description || "";
-                  // Show first ~60 chars of description
-                  const shortDesc = desc.length > 65 ? desc.slice(0, 62) + "..." : desc;
+          {/* LEFT — pick courses + sections */}
+          <div>
+            <div data-tour="search" style={{ position: "relative", marginBottom: 18 }}>
+              <input value={query} onChange={(e) => setQuery(e.target.value)}
+                placeholder="Add a course…"
+                style={{ width: "100%", background: "#fff", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 10, padding: "13px 16px", color: C.ink, fontSize: 14, fontFamily: "inherit", boxShadow: SHADOW, transition: "border-color .15s ease, box-shadow .15s ease" }} />
+              {suggestions.length > 0 && (
+                <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 10, marginTop: 6, zIndex: 20, overflow: "hidden", boxShadow: "0 14px 34px rgba(0,0,0,0.16)" }}>
+                  {suggestions.map((c) => {
+                    const entry = catalog[c];
+                    const instructors = entry ? getInstructors(entry) : [];
+                    const desc = entry?.description || "";
+                    // Show first ~60 chars of description
+                    const shortDesc = desc.length > 65 ? desc.slice(0, 62) + "..." : desc;
+                    return (
+                      <button key={c} onClick={() => addCourse(c)} className="suggestion"
+                        style={{ display: "flex", justifyContent: "space-between", width: "100%", textAlign: "left", padding: "10px 14px", border: "none", borderBottom: "1px solid rgba(0,0,0,0.06)", background: "transparent", color: C.ink, cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>
+                        <span style={{ minWidth: 0 }}>
+                          <span><b>{c}</b> <span style={{ color: C.muted }}>{entry?.units ?? "?"} units</span></span>
+                          {(instructors.length > 0 || shortDesc) && (
+                            <span style={{ display: "block", fontSize: 11, color: C.muted, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              {instructors.length > 0 && <span style={{ color: C.body }}>{instructors.join(", ")}</span>}
+                              {instructors.length > 0 && shortDesc && " · "}
+                              {shortDesc}
+                            </span>
+                          )}
+                        </span>
+                        <span style={{ color: C.cardinal, fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>+</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            <div data-tour="courses">
+            {expanded.length === 0 && (
+              <div style={{ color: C.muted, fontSize: 13.5, padding: "32px 20px", textAlign: "center", border: "1px dashed rgba(0,0,0,0.15)", borderRadius: 14, background: "#FFFFFF" }}>
+                <div style={{ ...eyebrow, marginBottom: 8 }}>No courses yet</div>
+                Search above to start building your schedule.
+              </div>
+            )}
+
+            {expanded.map((courseName) => {
+              const entry = catalog[courseName];
+              if (!entry) return null;
+              const color = colorFor(courseName);
+              return (
+                <div key={courseName} className="course-card" style={{ ...card, marginBottom: 14, overflow: "hidden" }}>
+                  <div style={{ padding: "12px 15px", background: "#FAFAF9", borderBottom: "1px solid rgba(0,0,0,0.06)", borderLeft: `4px solid ${color}` }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                    <div>
+                      <span style={{ fontWeight: 700, fontSize: 15, color: C.ink, fontFamily: HEAD }}>{courseName}</span>
+                      <span style={{ color: C.muted, fontSize: 12, marginLeft: 8 }}>{entry.units} units</span>
+                    </div>
+                    <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
+                      {entry.has_d_clearance && <Tag c={C.warn}>D-clear</Tag>}
+                      {entry.has_restrictions && <Tag c="#6f42c1">Restricted</Tag>}
+                      {entry.has_lab && <Tag c={C.ok}>Lab req</Tag>}
+                      {entry.has_discussion && <Tag c={C.ok}>Disc req</Tag>}
+                      <button onClick={() => removeCourse(courseName)} className="remove-btn" style={{ background: "none", border: "none", color: C.faint, cursor: "pointer", fontSize: 16, padding: "1px 5px", borderRadius: 6, lineHeight: 1 }}>×</button>
+                    </div>
+                    </div>
+                    {entry.description && (
+                      <div style={{ fontSize: 11.5, color: C.body, marginTop: 6, lineHeight: 1.45 }}>{entry.description}</div>
+                    )}
+                  </div>
+                  <div style={{ padding: "6px 9px 9px" }}>
+                    {Object.entries(entry.sections).map(([group, secs]) => (
+                      <div key={group}>
+                        <div style={{ ...eyebrow, fontSize: 9.5, padding: "9px 5px 4px" }}>{group}</div>
+                        {secs.map((s) => {
+                          const on = !!picked[s.section_id];
+                          return (
+                            <button key={s.section_id} onClick={() => toggleSection(courseName, s)}
+                              className={on ? undefined : "section-row"}
+                              style={{ width: "100%", textAlign: "left", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8,
+                                background: on ? `${color}14` : "transparent", border: `1px solid ${on ? color + "80" : "rgba(0,0,0,0.06)"}`,
+                                borderRadius: 9, padding: "8px 10px", margin: "3px 0", color: C.ink, fontFamily: "inherit" }}>
+                              <span style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                                <span className="mono" style={{ fontSize: 11, color: on ? color : C.faint, width: 44, flexShrink: 0, fontWeight: 500 }}>{s.section_id}</span>
+                                <span className="mono" style={{ fontSize: 11.5, color: C.body, whiteSpace: "nowrap" }}>
+                                  {s.days.join("/")} {fmt(s.start_time)}–{fmt(s.end_time)}
+                                </span>
+                                {s.instructor && s.instructor !== "TBD" && (
+                                  <span style={{ fontSize: 11, color: C.body, whiteSpace: "nowrap" }}>{s.instructor}</span>
+                                )}
+                              </span>
+                              <span style={{ display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
+                                {s.has_d_clearance && <span style={{ fontSize: 9.5, color: C.gold, fontWeight: 700, fontFamily: HEAD, border: `1px solid ${C.goldLine}`, borderRadius: 4, padding: "1px 4px" }}>D</span>}
+                                <span style={{ fontSize: 11, fontWeight: 600, color: s.is_full ? C.bad : C.ok }}>{s.is_full ? "Full" : `${s.open_seats} open`}</span>
+                                <span style={{ fontSize: 14, color: on ? color : "rgba(0,0,0,0.25)", lineHeight: 1 }}>{on ? "✓" : "+"}</span>
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+            </div>
+          </div>
+
+          {/* RIGHT — calendar + validate + results */}
+          <div className="sticky-col">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+              <span style={{ fontSize: 20, fontWeight: 700, color: C.ink, fontFamily: HEAD }}>Your week</span>
+              <span className="mono" style={{ fontSize: 12, color: totalUnits > 18 ? C.bad : C.body, background: "#fff", border: `1px solid ${C.line}`, borderRadius: 999, padding: "4px 12px" }}>{totalUnits} {totalUnits === 1 ? "unit" : "units"} · {pickedList.length} {pickedList.length === 1 ? "section" : "sections"}</span>
+            </div>
+
+            {expanded.length > 0 && totalUnits > 0 && totalUnits < 12 && (
+              <div style={{ marginBottom: 12, padding: "10px 14px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8, fontSize: 12.5, color: C.body, lineHeight: 1.5 }}>
+                <span style={{ color: C.warn, fontWeight: 700 }}>Low unit count:</span> {totalUnits} units is below the typical full-time minimum of 12. Most students take 12–18 units. Check with your advisor if this is intentional.
+              </div>
+            )}
+
+            {result && (
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ ...card, display: "flex", alignItems: "center", gap: 12, marginBottom: 14, padding: "14px 16px",
+                  borderLeft: `4px solid ${result.overall_status === "valid" ? C.ok : result.overall_status === "warning" ? C.warn : C.bad}` }}>
+                  <span style={{ width: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "#fff", flexShrink: 0,
+                    background: result.overall_status === "valid" ? C.ok : result.overall_status === "warning" ? C.warn : C.bad }}>
+                    {result.overall_status === "valid" ? "✓" : "!"}
+                  </span>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 15, color: C.ink, fontFamily: HEAD }}>
+                      {result.overall_status === "valid" ? "Schedule looks good" : result.overall_status === "warning" ? "Worth reviewing" : "Schedule has problems"}
+                    </div>
+                    <div className="mono" style={{ fontSize: 11.5, color: C.body, marginTop: 2 }}>
+                      {result.summary.total_units} units{result.summary.warnings.map((w, i) => <span key={i}> · {w}</span>)}
+                    </div>
+                  </div>
+                </div>
+
+                {result.course_results.map((cr, i) => {
+                  const s = STATUS[cr.status];
                   return (
-                    <button key={c} onClick={() => addCourse(c)} className="suggestion"
-                      style={{ display: "flex", justifyContent: "space-between", width: "100%", textAlign: "left", padding: "10px 14px", border: "none", borderBottom: "1px solid rgba(0,0,0,0.06)", background: "transparent", color: C.ink, cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>
-                      <span style={{ minWidth: 0 }}>
-                        <span><b>{c}</b> <span style={{ color: C.muted }}>{entry?.units ?? "?"} units</span></span>
-                        {(instructors.length > 0 || shortDesc) && (
-                          <span style={{ display: "block", fontSize: 11, color: C.muted, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                            {instructors.length > 0 && <span style={{ color: C.body }}>{instructors.join(", ")}</span>}
-                            {instructors.length > 0 && shortDesc && " · "}
-                            {shortDesc}
-                          </span>
-                        )}
-                      </span>
-                      <span style={{ color: C.cardinal, fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>+</span>
-                    </button>
+                    <div key={i} style={{ background: s.bg, border: `1px solid ${s.border}`, borderRadius: 10, padding: "11px 13px", marginBottom: 8 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                        <span style={{ width: 18, height: 18, borderRadius: "50%", background: s.dot, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "#fff", flexShrink: 0 }}>{s.icon}</span>
+                        <span style={{ fontWeight: 700, fontSize: 14, color: C.ink, fontFamily: HEAD }}>{cr.course}</span>
+                        <span style={{ fontSize: 10.5, fontWeight: 600, fontFamily: HEAD, color: s.dot, marginLeft: "auto", textTransform: "uppercase", letterSpacing: 1.5 }}>{s.label}</span>
+                      </div>
+                      {cr.reasons.map((r, j) => (
+                        <div key={j} style={{ fontSize: 12.5, color: C.body, lineHeight: 1.5, paddingLeft: 27, marginTop: 4 }}>{r}</div>
+                      ))}
+                    </div>
                   );
                 })}
               </div>
             )}
-          </div>
 
-          <div data-tour="courses">
-          {expanded.length === 0 && (
-            <div style={{ color: C.muted, fontSize: 13.5, padding: "32px 20px", textAlign: "center", border: "1px dashed rgba(0,0,0,0.15)", borderRadius: 14, background: "#FFFFFF" }}>
-              <div style={{ ...eyebrow, marginBottom: 8 }}>No courses yet</div>
-              Search above to start building your schedule.
+            <div data-tour="week">
+              <Calendar blocks={blocks} />
             </div>
-          )}
 
-          {expanded.map((courseName) => {
-            const entry = catalog[courseName];
-            if (!entry) return null;
-            const color = colorFor(courseName);
-            return (
-              <div key={courseName} className="course-card" style={{ ...card, marginBottom: 14, overflow: "hidden" }}>
-                <div style={{ padding: "12px 15px", background: "#FAFAF9", borderBottom: "1px solid rgba(0,0,0,0.06)", borderLeft: `4px solid ${color}` }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                  <div>
-                    <span style={{ fontWeight: 700, fontSize: 15, color: C.ink, fontFamily: HEAD }}>{courseName}</span>
-                    <span style={{ color: C.muted, fontSize: 12, marginLeft: 8 }}>{entry.units} units</span>
-                  </div>
-                  <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
-                    {entry.has_d_clearance && <Tag c={C.warn}>D-clear</Tag>}
-                    {entry.has_restrictions && <Tag c="#6f42c1">Restricted</Tag>}
-                    {entry.has_lab && <Tag c={C.ok}>Lab req</Tag>}
-                    {entry.has_discussion && <Tag c={C.ok}>Disc req</Tag>}
-                    <button onClick={() => removeCourse(courseName)} className="remove-btn" style={{ background: "none", border: "none", color: C.faint, cursor: "pointer", fontSize: 16, padding: "1px 5px", borderRadius: 6, lineHeight: 1 }}>×</button>
-                  </div>
-                  </div>
-                  {entry.description && (
-                    <div style={{ fontSize: 11.5, color: C.body, marginTop: 6, lineHeight: 1.45 }}>{entry.description}</div>
-                  )}
-                </div>
-                <div style={{ padding: "6px 9px 9px" }}>
-                  {Object.entries(entry.sections).map(([group, secs]) => (
-                    <div key={group}>
-                      <div style={{ ...eyebrow, fontSize: 9.5, padding: "9px 5px 4px" }}>{group}</div>
-                      {secs.map((s) => {
-                        const on = !!picked[s.section_id];
-                        return (
-                          <button key={s.section_id} onClick={() => toggleSection(courseName, s)}
-                            className={on ? undefined : "section-row"}
-                            style={{ width: "100%", textAlign: "left", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8,
-                              background: on ? `${color}14` : "transparent", border: `1px solid ${on ? color + "80" : "rgba(0,0,0,0.06)"}`,
-                              borderRadius: 9, padding: "8px 10px", margin: "3px 0", color: C.ink, fontFamily: "inherit" }}>
-                            <span style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                              <span className="mono" style={{ fontSize: 11, color: on ? color : C.faint, width: 44, flexShrink: 0, fontWeight: 500 }}>{s.section_id}</span>
-                              <span className="mono" style={{ fontSize: 11.5, color: C.body, whiteSpace: "nowrap" }}>
-                                {s.days.join("/")} {fmt(s.start_time)}–{fmt(s.end_time)}
-                              </span>
-                              {s.instructor && s.instructor !== "TBD" && (
-                                <span style={{ fontSize: 11, color: C.body, whiteSpace: "nowrap" }}>{s.instructor}</span>
-                              )}
-                            </span>
-                            <span style={{ display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
-                              {s.has_d_clearance && <span style={{ fontSize: 9.5, color: C.gold, fontWeight: 700, fontFamily: HEAD, border: `1px solid ${C.goldLine}`, borderRadius: 4, padding: "1px 4px" }}>D</span>}
-                              <span style={{ fontSize: 11, fontWeight: 600, color: s.is_full ? C.bad : C.ok }}>{s.is_full ? "Full" : `${s.open_seats} open`}</span>
-                              <span style={{ fontSize: 14, color: on ? color : "rgba(0,0,0,0.25)", lineHeight: 1 }}>{on ? "✓" : "+"}</span>
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  ))}
+
+            {validateWarning && (
+              <div role="alert" style={{ marginTop: 16, padding: "12px 14px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 10, fontSize: 13, color: C.body, lineHeight: 1.55 }}>
+                <div style={{ color: C.warn, fontWeight: 700, marginBottom: 2 }}>You haven't checked your STARS details</div>
+                The checker uses what we read from your PDF. If we misread a course, a prerequisite could pass or fail wrongly.
+                <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+                  <button onClick={() => openCurrentReport(pdfUrl ? "side" : "dialog")} style={{ ...primaryButton, padding: "8px 14px" }}>Check details</button>
+                  <button onClick={runValidate} disabled={!canValidate} className="outline-btn" style={{ ...secondaryButton, padding: "8px 14px" }}>Validate anyway</button>
                 </div>
               </div>
-            );
-          })}
+            )}
+
+            <button data-tour="validate" onClick={onValidateClick} disabled={!canValidate} className="validate-btn"
+              style={{ ...primaryButton, width: "100%", marginTop: 16, padding: "14px", fontSize: 13.5, letterSpacing: 1, textTransform: "uppercase",
+                cursor: canValidate ? "pointer" : "not-allowed",
+                background: canValidate ? C.cardinal : "#E7E7E4", color: canValidate ? "#fff" : "#A1A1AA" }}>
+              {validating ? "Validating…" : "Validate schedule"}
+            </button>
+            {pyodideStatus === "failed" && (
+              <div style={{ marginTop: 9, fontSize: 12, color: C.bad, textAlign: "center" }}>
+                Couldn't load the checker. Check your connection and refresh the page to try again.
+              </div>
+            )}
+            {pyodideStatus === "loading" && (
+              <div style={{ marginTop: 9, fontSize: 12, color: C.muted, textAlign: "center" }}>
+                Loading the checker…
+              </div>
+            )}
+            {!starsReady && starsSource !== "parsing" && (
+              <div style={{ marginTop: 9, fontSize: 12, color: C.muted, textAlign: "center" }}>
+                {starsSource === "review" ? "Confirm your STARS details to validate." : "Upload your STARS report to validate."}
+              </div>
+            )}
+            {needSections.length > 0 && (
+              <div style={{ marginTop: 9, fontSize: 12, color: C.muted, textAlign: "center" }}>
+                Pick at least one section for {needSections.join(", ")} to validate.
+              </div>
+            )}
           </div>
         </div>
-
-        {/* RIGHT — calendar + validate + results */}
-        <div className="sticky-col">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <span style={{ fontSize: 20, fontWeight: 700, color: C.ink, fontFamily: HEAD }}>Your week</span>
-            <span className="mono" style={{ fontSize: 12, color: totalUnits > 18 ? C.bad : C.body, background: "#fff", border: `1px solid ${C.line}`, borderRadius: 999, padding: "4px 12px" }}>{totalUnits} {totalUnits === 1 ? "unit" : "units"} · {pickedList.length} {pickedList.length === 1 ? "section" : "sections"}</span>
-          </div>
-
-          {expanded.length > 0 && totalUnits > 0 && totalUnits < 12 && (
-            <div style={{ marginBottom: 12, padding: "10px 14px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8, fontSize: 12.5, color: C.body, lineHeight: 1.5 }}>
-              <span style={{ color: C.warn, fontWeight: 700 }}>Low unit count:</span> {totalUnits} units is below the typical full-time minimum of 12. Most students take 12–18 units. Check with your advisor if this is intentional.
-            </div>
-          )}
-
-          {result && (
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ ...card, display: "flex", alignItems: "center", gap: 12, marginBottom: 14, padding: "14px 16px",
-                borderLeft: `4px solid ${result.overall_status === "valid" ? C.ok : result.overall_status === "warning" ? C.warn : C.bad}` }}>
-                <span style={{ width: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "#fff", flexShrink: 0,
-                  background: result.overall_status === "valid" ? C.ok : result.overall_status === "warning" ? C.warn : C.bad }}>
-                  {result.overall_status === "valid" ? "✓" : "!"}
-                </span>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: 15, color: C.ink, fontFamily: HEAD }}>
-                    {result.overall_status === "valid" ? "Schedule looks good" : result.overall_status === "warning" ? "Worth reviewing" : "Schedule has problems"}
-                  </div>
-                  <div className="mono" style={{ fontSize: 11.5, color: C.body, marginTop: 2 }}>
-                    {result.summary.total_units} units{result.summary.warnings.map((w, i) => <span key={i}> · {w}</span>)}
-                  </div>
-                </div>
-              </div>
-
-              {result.course_results.map((cr, i) => {
-                const s = STATUS[cr.status];
-                return (
-                  <div key={i} style={{ background: s.bg, border: `1px solid ${s.border}`, borderRadius: 10, padding: "11px 13px", marginBottom: 8 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                      <span style={{ width: 18, height: 18, borderRadius: "50%", background: s.dot, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "#fff", flexShrink: 0 }}>{s.icon}</span>
-                      <span style={{ fontWeight: 700, fontSize: 14, color: C.ink, fontFamily: HEAD }}>{cr.course}</span>
-                      <span style={{ fontSize: 10.5, fontWeight: 600, fontFamily: HEAD, color: s.dot, marginLeft: "auto", textTransform: "uppercase", letterSpacing: 1.5 }}>{s.label}</span>
-                    </div>
-                    {cr.reasons.map((r, j) => (
-                      <div key={j} style={{ fontSize: 12.5, color: C.body, lineHeight: 1.5, paddingLeft: 27, marginTop: 4 }}>{r}</div>
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          <div data-tour="week">
-            <Calendar blocks={blocks} />
-          </div>
-
-
-          {validateWarning && (
-            <div role="alert" style={{ marginTop: 16, padding: "12px 14px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 10, fontSize: 13, color: C.body, lineHeight: 1.55 }}>
-              <div style={{ color: C.warn, fontWeight: 700, marginBottom: 2 }}>You haven't checked your STARS details</div>
-              The checker uses what we read from your PDF. If we misread a course, a prerequisite could pass or fail wrongly.
-              <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-                <button onClick={() => openCurrentReport(pdfUrl ? "side" : "dialog")} style={{ ...primaryButton, padding: "8px 14px" }}>Check details</button>
-                <button onClick={runValidate} disabled={!canValidate} className="outline-btn" style={{ ...secondaryButton, padding: "8px 14px" }}>Validate anyway</button>
-              </div>
-            </div>
-          )}
-
-          <button data-tour="validate" onClick={onValidateClick} disabled={!canValidate} className="validate-btn"
-            style={{ ...primaryButton, width: "100%", marginTop: 16, padding: "14px", fontSize: 13.5, letterSpacing: 1, textTransform: "uppercase",
-              cursor: canValidate ? "pointer" : "not-allowed",
-              background: canValidate ? C.cardinal : "#E7E7E4", color: canValidate ? "#fff" : "#A1A1AA" }}>
-            {validating ? "Validating…" : "Validate schedule"}
-          </button>
-          {pyodideStatus === "failed" && (
-            <div style={{ marginTop: 9, fontSize: 12, color: C.bad, textAlign: "center" }}>
-              Couldn't load the checker. Check your connection and refresh the page to try again.
-            </div>
-          )}
-          {pyodideStatus === "loading" && (
-            <div style={{ marginTop: 9, fontSize: 12, color: C.muted, textAlign: "center" }}>
-              Loading the checker…
-            </div>
-          )}
-          {!starsReady && starsSource !== "parsing" && (
-            <div style={{ marginTop: 9, fontSize: 12, color: C.muted, textAlign: "center" }}>
-              {starsSource === "review" ? "Confirm your STARS details to validate." : "Upload your STARS report to validate."}
-            </div>
-          )}
-          {needSections.length > 0 && (
-            <div style={{ marginTop: 9, fontSize: 12, color: C.muted, textAlign: "center" }}>
-              Pick at least one section for {needSections.join(", ")} to validate.
-            </div>
-          )}
-        </div>
-      </div>
+      )}
 
       <footer style={{ borderTop: `1px solid ${C.line}`, marginTop: 48, padding: "32px 24px", textAlign: "center", fontSize: 12, color: C.faint, lineHeight: 1.8 }}>
         RegCheck is a <a href="https://usc-bbh.github.io/bbh-website/" target="_blank" rel="noopener noreferrer" style={{ color: C.muted, textDecoration: "none", fontWeight: 600 }}>BUAI Builder Hub ↗</a> tool · Tools by Students, for Students

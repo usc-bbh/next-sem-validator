@@ -5,13 +5,17 @@ import { C, HEAD, BODY, eyebrow, primaryButton, secondaryButton } from "./theme"
 // First-visit guided tour. Each step spotlights an element marked
 // data-tour="<target>" and explains it in a card beside it. The page
 // underneath can't be clicked while the tour is open. Escape skips it.
+//
+// Steps whose element isn't on the page are left out: before a report is
+// uploaded that's everything after step one. onClose(true) means the
+// student got to the end rather than skipping.
 // ─────────────────────────────────────────────────────────────
 
 const TOUR_STEPS = [
   {
     target: "stars",
     title: "Start with your STARS report",
-    body: "Print your STARS report to PDF from experience.usc.edu and upload it here. It's read in your browser and never uploaded.",
+    body: "Print your STARS report to PDF from experience.usc.edu and upload it here. It's read in your browser and never uploaded. Once it's read, the course search and your weekly calendar appear.",
   },
   {
     target: "search",
@@ -38,11 +42,12 @@ const TOUR_STEPS = [
 const PAD = 8;
 const CARD_W = 320;
 
-export default function Tour({ onClose }) {
-  const [step, setStep] = useState(0);
+export default function Tour({ from, onClose }) {
+  const [steps] = useState(() => TOUR_STEPS.filter((s) => document.querySelector(`[data-tour="${s.target}"]`)));
+  const [step, setStep] = useState(() => Math.max(0, steps.findIndex((s) => s.target === from)));
   const [rect, setRect] = useState(null);
-  const { target, title, body } = TOUR_STEPS[step];
-  const last = step === TOUR_STEPS.length - 1;
+  const { target, title, body } = steps[step];
+  const last = step === steps.length - 1;
 
   useLayoutEffect(() => {
     const el = document.querySelector(`[data-tour="${target}"]`);
@@ -63,13 +68,13 @@ export default function Tour({ onClose }) {
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === "Escape") onClose();
-      else if (e.key === "ArrowRight") setStep((s) => Math.min(s + 1, TOUR_STEPS.length - 1));
+      if (e.key === "Escape") onClose(false);
+      else if (e.key === "ArrowRight") setStep((s) => Math.min(s + 1, steps.length - 1));
       else if (e.key === "ArrowLeft") setStep((s) => Math.max(s - 1, 0));
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  }, [onClose, steps]);
 
   // The card goes below the target if it fits, otherwise above, otherwise
   // pinned to the bottom of the screen (a tall target on a phone).
@@ -93,18 +98,18 @@ export default function Tour({ onClose }) {
         <div style={{ position: "fixed", inset: 0, background: "rgba(20,20,24,0.55)" }} />
       )}
       <div style={{ position: "fixed", ...cardPos, width, background: C.card, borderRadius: 14, padding: "16px 18px", boxShadow: "0 24px 60px -18px rgba(0,0,0,0.5)", fontFamily: BODY, color: C.ink }}>
-        <div style={{ ...eyebrow, color: C.cardinal, marginBottom: 6 }}>Step {step + 1} of {TOUR_STEPS.length}</div>
+        <div style={{ ...eyebrow, color: C.cardinal, marginBottom: 6 }}>Step {TOUR_STEPS.indexOf(steps[step]) + 1} of {TOUR_STEPS.length}</div>
         <div id="tour-title" style={{ fontSize: 17, fontWeight: 700, fontFamily: HEAD, marginBottom: 6 }}>{title}</div>
         <div style={{ fontSize: 13, color: C.body, lineHeight: 1.6 }}>{body}</div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14 }}>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 12.5, fontFamily: HEAD, fontWeight: 600, padding: 0, marginRight: "auto" }}>
+          <button onClick={() => onClose(false)} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 12.5, fontFamily: HEAD, fontWeight: 600, padding: 0, marginRight: "auto" }}>
             Skip tour
           </button>
           {step > 0 && (
             <button onClick={() => setStep(step - 1)} className="outline-btn" style={{ ...secondaryButton, padding: "7px 12px" }}>Back</button>
           )}
-          <button autoFocus onClick={() => (last ? onClose() : setStep(step + 1))} style={{ ...primaryButton, padding: "8px 16px" }}>
-            {last ? "Done" : "Next"}
+          <button autoFocus onClick={() => (last ? onClose(true) : setStep(step + 1))} style={{ ...primaryButton, padding: "8px 16px" }}>
+            {!last ? "Next" : steps.length < TOUR_STEPS.length && steps[step].target === "stars" ? "Got it" : "Done"}
           </button>
         </div>
       </div>
