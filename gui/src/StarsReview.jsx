@@ -150,7 +150,7 @@ export default function StarsReview({ initial, mode, failure, onConfirm, onCance
 
 // The same editor as a full page, with the uploaded PDF on the left so the
 // student can check each line against the report itself.
-export function StarsSideBySide({ initial, mode, failure, pdfUrl, onConfirm, onCancel }) {
+export function StarsSideBySide({ initial, mode, failure, pdfUrl, onConfirm, onCancel, onPopOut }) {
   const editor = useStarsDraft(initial);
   const { draft } = editor;
   const ready = canSave(draft);
@@ -169,7 +169,7 @@ export function StarsSideBySide({ initial, mode, failure, pdfUrl, onConfirm, onC
       <div style={{ padding: "12px 20px", borderBottom: `1px solid ${C.line}`, background: C.card, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <div style={{ marginRight: "auto" }}><ReviewHeading mode={mode} compact /></div>
         {!ready && <span style={{ fontSize: 12.5, color: C.muted }}>Choose your class level to save.</span>}
-        <button onClick={onCancel} className="outline-btn" style={secondaryButton}>Back without saving</button>
+        <button onClick={onCancel} className="outline-btn" style={secondaryButton}>Back</button>
         <button onClick={() => onConfirm(draft)} disabled={!ready}
           style={{ ...primaryButton, opacity: ready ? 1 : 0.5, cursor: ready ? "pointer" : "not-allowed" }}>
           Save details
@@ -178,7 +178,16 @@ export function StarsSideBySide({ initial, mode, failure, pdfUrl, onConfirm, onC
       <div className="side-by-side">
         <iframe src={`${pdfUrl}#view=FitH`} title="Your STARS report (PDF)"
           style={{ width: "100%", height: "100%", border: "none", borderRight: `1px solid ${C.line}`, background: "#525659" }} />
-        <div style={{ overflowY: "auto", padding: "18px 22px", background: C.card }}>
+        <div style={{ overflowY: "auto", padding: "14px 22px 18px", background: C.card }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+            <div style={eyebrow}>What we read</div>
+            {onPopOut && (
+              <button onClick={() => onPopOut(draft)} title="Pop out: details only, without the PDF" aria-label="Pop out details without the PDF"
+                className="outline-btn" style={{ ...secondaryButton, padding: "5px 10px", fontSize: 12, display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <span aria-hidden style={{ fontSize: 14, lineHeight: 1 }}>↗</span> Pop out
+              </button>
+            )}
+          </div>
           <StarsEditor editor={editor} mode={mode} failure={failure} />
         </div>
       </div>

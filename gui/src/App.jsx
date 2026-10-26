@@ -277,7 +277,8 @@ export default function App() {
     setLooked(true);
     setValidateWarning(false);
   };
-  const openCurrentReport = (view) => openReview({ mode: "parsed", initial: starsReport, failure: null, pdfUrl, view });
+  // Details open beside the PDF when there is one; the student can pop them out.
+  const openCurrentReport = () => openReview({ mode: "parsed", initial: starsReport, failure: null, pdfUrl, view: pdfUrl ? "side" : "dialog" });
 
   const handleStarsUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -642,24 +643,13 @@ export default function App() {
             <div style={{ fontSize: 14, color: C.ink }}>
               {starsSource === "parsing" ? (starsStatusMsg || "Reading your report…")
                 : starsSource === "review" ? "Check what we read from your report…"
-                : starsSource === "parsed" ? <>
-                    <span style={{ color: C.ok, fontWeight: 600 }}>✓ Read</span> · {starsReport.classLevel ?? "No class level"} · {starsReport.completedCourses.length} completed courses.{" "}
-                    <button onClick={() => openCurrentReport("dialog")} style={linkButton}>Click here to edit details</button>
+                : hasReport ? <>
+                    <span style={{ color: C.ok, fontWeight: 600 }}>{starsSource === "confirmed" ? "✓ Checked" : "✓ Read"}</span> · {starsReport.classLevel ?? "No class level"} · {starsReport.completedCourses.length} completed courses.{" "}
+                    <button onClick={openCurrentReport} style={linkButton}>Click here to view details</button>
                   </>
-                : starsSource === "confirmed" ? <><span style={{ color: C.ok, fontWeight: 600 }}>✓ Checked</span> · {starsReport.classLevel} · {starsReport.completedCourses.length} completed courses</>
                 : <>Upload your report, printed to PDF from experience.usc.edu. It's read in your browser and never uploaded.</>}
             </div>
           </div>
-          {pdfUrl && (starsSource === "parsed" || starsSource === "confirmed") && (
-            <button onClick={() => openCurrentReport("side")} className="outline-btn" style={secondaryButton}>
-              View next to PDF
-            </button>
-          )}
-          {starsSource === "confirmed" && (
-            <button onClick={() => openCurrentReport("dialog")} className="outline-btn" style={secondaryButton}>
-              Edit details
-            </button>
-          )}
           <button onClick={() => fileInputRef.current?.click()} disabled={starsSource === "parsing"}
             className={hasReport ? "outline-btn" : undefined}
             style={hasReport ? secondaryButton : primaryButton}>
@@ -672,7 +662,7 @@ export default function App() {
             <div style={{ flex: 1 }}>
               <div style={{ color: C.warn, fontWeight: 700, marginBottom: 2 }}>Before you rely on this</div>
               <ul style={{ margin: 0, paddingLeft: 18 }}>
-                <li>We read your courses straight from the PDF, and the reader can get things wrong. <button onClick={() => openCurrentReport("dialog")} style={linkButton}>Check your details</button>{pdfUrl && <> or <button onClick={() => openCurrentReport("side")} style={linkButton}>view them next to your PDF</button></>}.</li>
+                <li>We read your courses straight from the PDF, and the reader can get things wrong. <button onClick={openCurrentReport} style={linkButton}>Check your details</button>.</li>
                 <li>Your report stays in this browser. It's never uploaded or saved anywhere.</li>
                 {(starsReport.meta?.redacted || starsReport.gpa === null) && (
                   <li>{starsReport.meta?.redacted ? "Your report is redacted, so grades show as hidden and your GPA isn't on it." : "Your GPA isn't on your report."} Add it in your details if you want GPA minimums checked.</li>
@@ -691,7 +681,8 @@ export default function App() {
       )}
       {review?.view === "side" && (
         <StarsSideBySide initial={review.initial} mode={review.mode} failure={review.failure} pdfUrl={review.pdfUrl}
-          onConfirm={confirmReview} onCancel={cancelReview} />
+          onConfirm={confirmReview} onCancel={cancelReview}
+          onPopOut={(draft) => setReview({ ...review, initial: draft, view: "dialog" })} />
       )}
       {showTour && !review && starsSource !== "graduate" && <Tour from={tourFrom} onClose={closeTour} />}
       {starsSource === "graduate" && (
@@ -866,7 +857,7 @@ export default function App() {
                 <div style={{ color: C.warn, fontWeight: 700, marginBottom: 2 }}>You haven't checked your STARS details</div>
                 The checker uses what we read from your PDF. If we misread a course, a prerequisite could pass or fail wrongly.
                 <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-                  <button onClick={() => openCurrentReport(pdfUrl ? "side" : "dialog")} style={{ ...primaryButton, padding: "8px 14px" }}>Check details</button>
+                  <button onClick={openCurrentReport} style={{ ...primaryButton, padding: "8px 14px" }}>Check details</button>
                   <button onClick={runValidate} disabled={!canValidate} className="outline-btn" style={{ ...secondaryButton, padding: "8px 14px" }}>Validate anyway</button>
                 </div>
               </div>
