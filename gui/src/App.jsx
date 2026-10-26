@@ -538,7 +538,6 @@ export default function App() {
           .layout { grid-template-columns: 1fr; }
           .sticky-col { position: static; }
         }
-        @media (max-width: 600px) { .nav-count { display: none; } }
         button { transition: background .15s ease, border-color .15s ease, color .15s ease, box-shadow .18s ease, transform .1s ease; }
         button:focus-visible { outline: 2px solid #990000; outline-offset: 2px; }
         input:focus { outline: none; border-color: #990000; box-shadow: 0 0 0 3px rgba(153,0,0,0.14); }
@@ -572,18 +571,11 @@ export default function App() {
           <span style={{ fontSize: 15, fontWeight: 600, fontFamily: HEAD, color: C.cardinal, letterSpacing: 0.5 }}>RegCheck</span>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <span className="mono nav-count" style={{ fontSize: 11, color: C.faint }}>{courseNames.length.toLocaleString()} Spring 2027 courses</span>
           <button onClick={() => setShowAbout(true)}
             style={{ fontSize: 10.5, letterSpacing: 1, fontFamily: HEAD, fontWeight: 600, borderRadius: 5, padding: "4px 9px",
               color: C.muted, border: `1px solid ${C.line}`, background: "transparent", cursor: "pointer" }}>
             About
           </button>
-          <span style={{ fontSize: 10.5, letterSpacing: 1, fontFamily: HEAD, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 5, padding: "4px 9px",
-            color: pyodideStatus === "ready" ? C.ok : pyodideStatus === "loading" ? C.gold : C.bad,
-            border: `1px solid ${pyodideStatus === "ready" ? "rgba(22,163,74,0.35)" : pyodideStatus === "loading" ? C.goldLine : "rgba(193,18,31,0.35)"}` }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "currentColor" }} />
-            {pyodideStatus === "ready" ? "CHECKER READY" : pyodideStatus === "loading" ? "LOADING CHECKER…" : "CHECKER UNAVAILABLE"}
-          </span>
         </div>
       </nav>
 
