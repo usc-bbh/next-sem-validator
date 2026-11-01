@@ -304,50 +304,147 @@ def _check_gpa(course: str, catalog_entry: dict | None, stars_summary: dict) -> 
     return CourseResult(course, "fail", [f"{course} requires a {required_gpa} GPA minimum (yours: {gpa})."])
 
 
+# The text after "Prerequisite(s):" / "Prereq:", up to the end of its sentence or the next
+# clause. Not "Prerequisite for Medicine..." (this course is one for others), and not a
+# corequisite, recommended preparation or "Duplicates credit in" course, none of which is required.
+_PREREQ_CLAUSE = re.compile(
+    r"(?i:\bprereq(?:uisite(?:s|\(s\))?)?)(?![A-Za-z])(?!\s+(?i:for|to)\b)\s*[:;]?\s*"
+    r"(.*?)(?=\.(?:\s|\(|$)|\(|(?i:co-?requisite|recommended\s*preparation|duplicates\s+credit)|$)",
+    re.DOTALL,
+)
+# "MATH 125", "ECON-601", "CHEM 322aL", "MATH 118xg".
+_PREREQ_CODE = re.compile(r"\b([A-Z]{2,4})[ -]?(\d{3})([A-Za-z]{0,3})\b")
+PROVEN_BY_IN_PROGRESS = "in_progress"
+
+
+def _prereq_key(code: str) -> str:
+    """Compares a catalog code with a STARS one. STARS keeps a sequence letter (CHEM 105A) but
+    not the lab L or the old catalog's x (not for major credit) and g (GE): "MATH 118xg" is
+    MATH 118. "305abL" is the a-b sequence; having b means having taken a."""
+    m = re.match(r"([A-Za-z]+)[\s-]*(\d+)([A-Za-z]*)", code.strip())
+    if not m:
+        return code.strip().upper()
+    suffix = re.sub(r"[LXG]", "", m.group(3).upper())[-1:]
+    return f"{m.group(1).upper()} {m.group(2)}{suffix}"
+
+
+def _prereq_groups(clause: str) -> tuple[list[tuple[list[str], bool]], list[str], bool]:
+    """Reads a prerequisite clause as "all of these groups, each met by any one of its codes".
+    Returns the groups (codes, and whether something other than a course also satisfies it,
+    like "or equivalent"), the parts that name no course, and whether the clause mixes "and"
+    with "or", where which binds tighter is anyone's guess."""
+    clause = re.sub(r"\band\s*/\s*or\b", "or", clause)
+    parts = [p.strip(" ,") for p in re.split(r"\band\b|;", clause) if p.strip(" ,")]
+    has_or = [bool(re.search(r"\bor\b", p)) for p in parts]
+    groups, unchecked = [], []
+    for part, is_or in zip(parts, has_or):
+        # "A, B, or C" is a choice; "A, B, C" (no "or") is a list of requirements.
+        pieces = re.split(r"\bor\b|,", part) if is_or else part.split(",")
+        found = [(piece, [m.group(0) for m in _PREREQ_CODE.finditer(piece)]) for piece in pieces]
+        if is_or:
+            codes = [c for _, cs in found for c in cs]
+            other = any(not cs and re.search(r"\w", p) for p, cs in found)
+            if codes:
+                groups.append((codes, other))
+            else:
+                unchecked.append(part)
+        else:
+            for piece, cs in found:
+                groups.extend(([c], False) for c in cs)
+                # Bare numbers ("Prerequisite: 101") mean the same department, which can't be assumed.
+                if not cs and re.search(r"\w", piece):
+                    unchecked.append(piece.strip())
+    return groups, unchecked, len(parts) > 1 and any(has_or)
+
+
+def _describe_group(codes: list[str]) -> str:
+    return codes[0] if len(codes) == 1 else f"one of {', '.join(codes[:-1])} or {codes[-1]}"
+
+
 def _check_prereq(course: str, catalog_entry: dict | None, stars_summary: dict) -> CourseResult | None:
-    """Best-effort: extracts course codes from the description and verifies them against the
-    STARS summary. Falls back to an unverified warning when nothing recognizable is found (e.g.
-    "consent of instructor", unit-count-based requirements). GPA minimums are _check_gpa's."""
+    """Best-effort: reads the description's prerequisite clause as groups of alternatives ("A or
+    B", "A and B") and verifies them against the STARS summary. A course the student is taking
+    now counts, since next semester's registration accepts it. Falls back to an unverified
+    warning when the clause names no course (e.g. "consent of instructor"), and warns rather
+    than fails when the catalog offers another route ("or equivalent") or its "and"/"or" could
+    be read two ways. GPA minimums are _check_gpa's."""
     if not catalog_entry:
         return None
     description = catalog_entry.get("description") or ""
-    if not re.search(r"prereq|requisite", description, re.IGNORECASE):
+    clauses = [re.sub(r"\s+", " ", c).strip() for c in _PREREQ_CLAUSE.findall(description) if c.strip()]
+    if not clauses:
         return None
 
-    evidence = _completed_evidence(stars_summary)
+    evidence = {_prereq_key(code): how for code, how in _completed_evidence(stars_summary).items()}
+    for row in stars_summary.get("inProgressCourses", []):
+        if _is_usc_row(row):
+            # Taking it now outranks only a waiver; a row the student added is still theirs.
+            how = PROVEN_BY_STUDENT if row.get("origin") == "student" else PROVEN_BY_IN_PROGRESS
+            if evidence.get(_prereq_key(row["code"]), PROVEN_BY_WAIVER) == PROVEN_BY_WAIVER:
+                evidence[_prereq_key(row["code"])] = how
+    rank = {PROVEN_BY_REPORT: 0, PROVEN_BY_IN_PROGRESS: 1, PROVEN_BY_STUDENT: 2, PROVEN_BY_WAIVER: 3}
+
+    own = _prereq_key(course)
+    missing, maybe_missing, credited, unchecked = [], [], [], []
+    ambiguous = False
+    for clause in clauses:
+        groups, clause_unchecked, clause_ambiguous = _prereq_groups(clause)
+        ambiguous |= clause_ambiguous
+        # A GPA minimum is recognised, just checked elsewhere, so it isn't an unverified note.
+        if any(_gpa_minimum(u) is None for u in clause_unchecked):
+            unchecked.append(clause)
+        for codes, other in groups:
+            codes = [c for c in dict.fromkeys(_prereq_key(c) for c in codes) if c != own]
+            if not codes:
+                continue
+            met = [c for c in codes if c in evidence]
+            if met:
+                credited.append(min(met, key=lambda c: rank[evidence[c]]))
+            elif other:
+                maybe_missing.append(codes)
+            else:
+                missing.append(codes)
 
     reasons = []
     failed = False
     unconfirmed = False
-    # A GPA minimum is recognised, just checked elsewhere, so it isn't an unverified note.
-    matched_any = _gpa_minimum(description) is not None
-
-    required_codes = {
-        f"{dept.upper()} {num.upper()}" for dept, num in re.findall(r"\b([A-Z]{2,4})\s?(\d{3}[A-Za-z]?)\b", description)
-    }
-    required_codes.discard(_normalize_code(course))
-    if required_codes:
-        matched_any = True
-        missing = sorted(required_codes - evidence.keys())
-        if missing:
-            failed = True
-            reasons.append(f"{course} is missing prerequisite(s): {', '.join(missing)}.")
-        by_student = sorted(c for c in required_codes if evidence.get(c) == PROVEN_BY_STUDENT)
-        if by_student:
-            unconfirmed = True
-            reasons.append(
-                f"You added {', '.join(by_student)} yourself; we couldn't confirm it from your report, so check it before relying on it."
-            )
-        by_waiver = sorted(c for c in required_codes if evidence.get(c) == PROVEN_BY_WAIVER)
-        if by_waiver:
-            unconfirmed = True
-            reasons.append(
-                f"{', '.join(by_waiver)} is waived on your report. Check with the department that the waiver covers prerequisites."
-            )
-
-    if not matched_any:
+    if missing and not ambiguous:
+        failed = True
+        reasons.append(f"{course} is missing prerequisite(s): {'; '.join(_describe_group(g) for g in missing)}.")
+    elif missing:
         unconfirmed = True
-        reasons.append(f"Prerequisite note (unverified): {description.strip()}")
+        reasons.append(
+            f"{course} may be missing prerequisite(s): {'; '.join(_describe_group(g) for g in missing)}. "
+            f"The catalog's wording can be read more than one way, so check it: \"{'; '.join(clauses)}\""
+        )
+    if maybe_missing:
+        unconfirmed = True
+        reasons.append(
+            f"{course} lists {'; '.join(_describe_group(g) for g in maybe_missing)} as a prerequisite, which isn't on your report. "
+            f"The catalog allows another way to qualify, so check with the department: \"{'; '.join(clauses)}\""
+        )
+    in_progress = sorted(c for c in credited if evidence[c] == PROVEN_BY_IN_PROGRESS)
+    if in_progress:
+        reasons.append(
+            f"{', '.join(in_progress)} {'is' if len(in_progress) == 1 else 'are'} in progress, which counts toward "
+            f"{course}'s prerequisites. You'll need to pass {'it' if len(in_progress) == 1 else 'them'}."
+        )
+    by_student = sorted(c for c in credited if evidence[c] == PROVEN_BY_STUDENT)
+    if by_student:
+        unconfirmed = True
+        reasons.append(
+            f"You added {', '.join(by_student)} yourself; we couldn't confirm it from your report, so check it before relying on it."
+        )
+    by_waiver = sorted(c for c in credited if evidence[c] == PROVEN_BY_WAIVER)
+    if by_waiver:
+        unconfirmed = True
+        reasons.append(
+            f"{', '.join(by_waiver)} is waived on your report. Check with the department that the waiver covers prerequisites."
+        )
+
+    if unchecked:
+        unconfirmed = True
+        reasons.append(f"Prerequisite note (unverified): {'; '.join(unchecked)}")
 
     if not reasons:
         return None

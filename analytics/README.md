@@ -163,7 +163,7 @@ flagging here instead of changing unilaterally.
 | Already in progress | warning | `stars_summary.inProgressCourses` | — |
 | Class standing (400+ level vs. Freshman/Sophomore) | warning | `stars_summary.classLevel` + course number | [USC Registrar glossary](https://esdcomm.usc.edu/arr/glossary/c.html): 300/400-level is "primarily for" juniors/seniors — guidance, not a blanket rule. Actual enforcement is per-course (e.g. CSCI 442/445 require junior standing themselves), which this validator can't see, so this is a `warning` rather than a `fail`. |
 | D-clearance | warning (never a hard fail — see below) | `course_catalog.has_d_clearance` + `dept_clearance.json` | per-department `source_url` field already inside `dept_clearance.json` |
-| Prerequisites | fail / warning | `course_catalog.description` (best-effort GPA + course-code parsing) against `stars_summary` | — |
+| Prerequisites | fail / warning | `course_catalog.description`'s prerequisite clause (best-effort "and"/"or" parsing) against `stars_summary`'s completed and in-progress courses | — |
 | Not found in catalog | warning | `course_catalog` presence | — |
 | Seat availability | fail | selected section(s) `is_full` | — |
 | Lab/discussion pairing | fail | `course_catalog.has_lab` / `has_discussion` + selected sections' `link_code` | — |
@@ -185,6 +185,14 @@ specific course/section is blocked outright.
   instructor", unit-count-based requirements like "8 units of upper division
   ANTH courses") falls back to an unverified warning rather than a wrong
   pass/fail.
+- **Prerequisites are read from the "Prerequisite(s):" clause only**, so a
+  "Duplicates credit in", "Corequisite:" or "Recommended preparation:" course
+  is never required. "A or B" is met by either and "A and B" / "A, B" needs
+  both. A course in progress counts (with a note that it has to be passed).
+  It's a warning, not a fail, when the clause offers another route ("or
+  equivalent", "or consent of instructor") or mixes "and" with "or"
+  ("A or B and C" reads two ways). A number with no department ("Prerequisite:
+  101") is an unverified note, since assuming the same department can be wrong.
 - **Time conflict** is checked pairwise across each course's *selected*
   sections only — it's a simple `fail` if any of them overlaps any of the
   other course's selected sections. TBA or malformed section times are

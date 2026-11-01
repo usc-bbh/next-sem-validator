@@ -406,6 +406,118 @@ def test_prereq_none_when_no_prereq_keyword():
     assert _check_prereq("CSCI 999", entry, {"completedCourses": []}) is None
 
 
+# Catalog wording, verbatim (whitespace included), for the cases Vishal's review found.
+ECON_351 = ("Microeconomics for Business. Development and business applications of: theory of the firm;      "
+            "theory of the consumer; inter-temporaldecisions; decisions under   risk; market failures; industrial "
+            "and enterprise structure.        Prerequisites: MATH 118 or MATH 125 or MATH 126 or MATH 226. Not   "
+            "for major credit for: Economics, Economics/Mathematics, Social     Sciences (Economics). Duplicates "
+            "credit in BUAD 351.              ")
+PSYC_353 = ("Close Relationships. Scientific perspective of close relationships: intimate relationships, "
+            "friendships and others. Prerequisite: PSYC 100. (Duplicates credit in PSYC 359)")
+CSCI_310 = ("Software Engineering. Introduction to the software engineering process and software lifecycle. "
+            "Prerequisites: CSCI 201. Duplicates credit in former CSCI 377.")
+
+
+def test_prereq_or_is_met_by_any_one_course():
+    # aibiz_jr_doubledegree has MATH 125, one of four alternatives. The old check required all
+    # four, plus BUAD 351 from "Duplicates credit in", and blocked the student.
+    summary = load_shared_stars("aibiz_jr_doubledegree.json")
+    assert _check_prereq("ECON 351", {"description": ECON_351}, summary) is None
+
+
+def test_prereq_or_fails_when_no_alternative_is_met():
+    result = _check_prereq("ECON 351", {"description": ECON_351}, {"completedCourses": []})
+    assert result.status == "fail"
+    assert "one of MATH 118, MATH 125, MATH 126 or MATH 226" in result.reasons[0]
+    assert "BUAD 351" not in result.reasons[0]
+
+
+def test_prereq_met_by_a_course_in_progress():
+    # cpns_so is taking PSYC 100 now. Next semester's registration accepts that.
+    summary = load_shared_stars("cpns_so.json")
+    result = _check_prereq("PSYC 353", {"description": PSYC_353}, summary)
+    assert result.status == "pass"
+    assert "PSYC 100 is in progress" in result.reasons[0]
+
+
+def test_prereq_in_progress_and_duplicates_credit_course_not_required():
+    stars = {"completedCourses": [], "inProgressCourses": [{"code": "CSCI 201", "source": "usc"}]}
+    result = _check_prereq("CSCI 310", {"description": CSCI_310}, stars)
+    assert result.status == "pass"
+    assert not any("CSCI 377" in r for r in result.reasons)
+
+
+def test_prereq_in_progress_row_added_by_the_student_is_a_warning():
+    stars = {"completedCourses": [], "inProgressCourses": [{"code": "CSCI 201", "source": "usc", "origin": "student"}]}
+    assert _check_prereq("CSCI 310", {"description": CSCI_310}, stars).status == "warning"
+
+
+def test_prereq_and_still_requires_every_course():
+    # ECON 605, hyphenated as printed.
+    entry = {"description": "Prerequisites: ECON-601 and ECON-602."}
+    stars = {"completedCourses": [{"code": "ECON 601"}]}
+    result = _check_prereq("ECON 605", entry, stars)
+    assert result.status == "fail"
+    assert "ECON 602" in result.reasons[0] and "ECON 601" not in result.reasons[0]
+
+
+def test_prereq_comma_list_without_or_requires_every_course():
+    entry = {"description": "Prerequisites: HBIO 203, HBIO 301, HBIO 302, HBIO 320. Duplicates credit in former EXSC 491."}
+    stars = {"completedCourses": [{"code": c} for c in ("HBIO 203", "HBIO 301", "HBIO 302")]}
+    result = _check_prereq("HBIO 491", entry, stars)
+    assert result.status == "fail"
+    assert "HBIO 320" in result.reasons[0] and "EXSC 491" not in result.reasons[0]
+
+
+def test_prereq_with_or_equivalent_warns_instead_of_failing():
+    entry = {"description": "Prereq: SPAN 150 or equivalent. "}
+    result = _check_prereq("SPAN 220", entry, {"completedCourses": []})
+    assert result.status == "warning"
+    assert "SPAN 150" in result.reasons[0]
+
+
+def test_prereq_mixing_and_with_or_warns_instead_of_failing():
+    # MEDS 450: "(BISC 220 or BISC 221) and MEDS 220" or "BISC 220 or (BISC 221 and MEDS 220)"?
+    entry = {"description": "Prerequisites: BISC-220 or BISC-221 and MEDS-220."}
+    stars = {"completedCourses": [{"code": "BISC 220"}]}
+    result = _check_prereq("MEDS 450", entry, stars)
+    assert result.status == "warning"
+    assert "MEDS 220" in result.reasons[0] and "read more than one way" in result.reasons[0]
+
+
+def test_prereq_for_other_programs_is_not_a_requirement():
+    entry = {"description": "Prerequisite for Biological Sciences, Medicine, Dentistry, Pharmacy. Lecture, 4 hrs.; Lab, 3 hrs."}
+    assert _check_prereq("PHYS 135A", entry, {"completedCourses": []}) is None
+
+
+def test_corequisite_is_not_a_prerequisite():
+    entry = {"description": "Prerequisite: CHEM 322aL. Corequisite: CHEM-322bL. Graded CR/NC."}
+    stars = {"completedCourses": [{"code": "CHEM 322A"}]}
+    assert _check_prereq("CHEM 251", entry, stars) is None
+
+
+def test_prereq_matches_codes_with_old_catalog_suffixes():
+    # "x" (not for major credit) and "g" (GE) aren't part of the code STARS prints.
+    entry = {"description": "Prerequisite: MATH 118xg or MATH 125."}
+    assert _check_prereq("MATH 208", entry, {"completedCourses": [{"code": "MATH 118"}]}) is None
+
+
+def test_prereq_with_only_a_bare_course_number_is_unverified_not_silent():
+    # GERM 201: "101 and 102" means GERM 101 and 102, but that's a guess, so it's surfaced.
+    result = _check_prereq("GERM 201", {"description": "Prerequisite: 101 and 102. "}, {"completedCourses": []})
+    assert result.status == "warning"
+    assert result.reasons == ["Prerequisite note (unverified): 101 and 102"]
+
+
+def test_prereq_fix_reaches_the_validator_result():
+    catalog = {"ECON 351": {"units": 4, "description": ECON_351,
+                            "sections": {"Lecture": [{"section_id": "1", "days": [], "start_time": "TBA", "end_time": "TBA"}]}}}
+    summary = load_shared_stars("aibiz_jr_doubledegree.json")
+    result = validate_next_semester([{"course": "ECON 351", "sections": ["1"]}], summary, catalog,
+                                    {"_schema_version": EXPECTED_DEPT_CLEARANCE_SCHEMA_VERSION, "departments": []})
+    assert not any("prerequisite" in r for r in result.course_results[0].reasons)
+
+
 # ---- in catalog ----------------------------------------------------------
 
 def test_in_catalog_warns_when_course_missing():
