@@ -4,6 +4,7 @@ import StarsReview, { GraduateNotice, StarsSideBySide } from "./StarsReview";
 import Tour from "./Tour";
 import { C, HEAD, BODY, SHADOW, eyebrow, card, primaryButton, secondaryButton } from "./theme";
 import { EMPTY_REPORT } from "./emptyReport";
+import { VALIDATOR_ASSETS } from "./validatorAssets";
 
 // ─────────────────────────────────────────────────────────────
 // Catalog loader — fetches the full scraped catalog from public/catalog.json.
@@ -144,7 +145,6 @@ const STATUS = {
 //   3. Pyodide CDN loads automatically
 // ─────────────────────────────────────────────────────────────
 const PYODIDE_CDN = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/";
-const VALIDATOR_PY_URL = "./validator/validate_next_semester.py";
 
 const BRIDGE_PY = `
 import json
@@ -173,10 +173,16 @@ async function loadPyodideValidator() {
 
   const pyodide = await globalThis.loadPyodide({ indexURL: PYODIDE_CDN });
 
-  // Fetch Tanzil's validator source
-  const resp = await fetch(VALIDATOR_PY_URL);
+  // Fetch Tanzil's validator source and the D-clearance rules it checks against.
+  // Without the rules there's no D-clearance check, so a failed fetch fails the checker.
+  const [resp, clearanceResp] = await Promise.all([
+    fetch(VALIDATOR_ASSETS.source.url),
+    fetch(VALIDATOR_ASSETS.deptClearance.url),
+  ]);
   if (!resp.ok) throw new Error(`Fetch validator failed: ${resp.status}`);
+  if (!clearanceResp.ok) throw new Error(`Fetch D-clearance rules failed: ${clearanceResp.status}`);
   let src = await resp.text();
+  const deptClearanceJson = await clearanceResp.text();
 
   // Strip the if __name__ == "__main__" block — it tries to read
   // fixture files from disk which don't exist in the browser.
@@ -192,44 +198,8 @@ async function loadPyodideValidator() {
   await pyodide.runPythonAsync(src);
   await pyodide.runPythonAsync(BRIDGE_PY);
 
-  return pyodide;
+  return { pyodide, deptClearanceJson };
 }
-
-// Mock dept_clearance data — trimmed to departments relevant to demo.
-// Real file (from Tanzil's repo) has ~90 entries; this is a subset for demo
-// purposes. Once static hosting is set up, fetch the real dept_clearance.json
-// instead of using this constant.
-const MOCK_DEPT_CLEARANCE = {
-  _schema_version: "1.4",
-  _lookup_logic: "Match on dept_code (course prefix) first. If no match, fall back to entries where type='school_fallback' and school matches the course's school.",
-  departments: [
-    {
-      dept_code: "ACCT",
-      dept_name: "Accounting (Leventhal School of Accounting)",
-      school: "Marshall",
-      clearance_required_for: "ACCT 370 and ACCT 371 are D-clearance at all times. Most other ACCT courses switch to D-clearance at the end of Week 2.",
-      how_to_get_clearance: "Contact your Leventhal academic advisor or email leventhalug@marshall.usc.edu.",
-      contact_email: "leventhalug@marshall.usc.edu",
-      contact_office: "Leventhal School of Accounting, ACC 101",
-      contact_phone: "(213) 740-4838",
-      typical_turnaround: "2-3 business days",
-      verified: true,
-    },
-    {
-      dept_code: "BUCO",
-      dept_name: "Business Communication (Marshall General)",
-      also_covers_prefixes: ["FBE", "DSO", "MOR", "MKT"],
-      school: "Marshall",
-      clearance_required_for: "BUCO electives switch to D-clearance at the end of Week 1. Directed research, internships, and honors courses are D-clearance at all times.",
-      how_to_get_clearance: "Email undergrad.advising@marshall.usc.edu with your full name, USC ID, USC email, course number, major, and graduating semester.",
-      contact_email: "undergrad.advising@marshall.usc.edu",
-      contact_office: "Jill and Frank Fertitta Hall (JFF) 201",
-      contact_phone: "213-740-0690",
-      typical_turnaround: "2-3 business days",
-      verified: true,
-    },
-  ],
-};
 
 export default function App() {
   const { catalog, catalogError, catalogLoading } = useCatalog();
@@ -359,13 +329,15 @@ export default function App() {
   // Pyodide state
   const [pyodideStatus, setPyodideStatus] = useState("loading"); // "loading" | "ready" | "failed"
   const pyodideRef = useRef(null);
+  const deptClearanceRef = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
     loadPyodideValidator()
-      .then((pyodide) => {
+      .then(({ pyodide, deptClearanceJson }) => {
         if (cancelled) return;
         pyodideRef.current = pyodide;
+        deptClearanceRef.current = deptClearanceJson;
         setPyodideStatus("ready");
         console.log("[validator] Pyodide loaded — using Python validator.");
       })
@@ -491,7 +463,7 @@ export default function App() {
         JSON.stringify(payload),
         JSON.stringify(starsReport),
         JSON.stringify(catalog),
-        JSON.stringify(MOCK_DEPT_CLEARANCE)
+        deptClearanceRef.current
       );
       setResult(JSON.parse(resultJson));
     } catch (err) {
@@ -610,6 +582,8 @@ export default function App() {
               <li>Does <b>not</b> guarantee seat availability at registration time</li>
               <li>Does <b>not</b> handle holds, registration appointments, or WebReg issues</li>
               <li>Does <b>not</b> verify co-requisite requirements for all courses</li>
+              <li>Does <b>not</b> check minimum grades in prerequisites (like "C or better"): any passing grade counts</li>
+              <li>Does <b>not</b> read a second STARS report: double majors get one per major, and only the one you upload is checked</li>
             </ul>
             <div style={{ marginTop: 16, padding: "12px 16px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8 }}>
               <div style={{ fontSize: 12.5, color: C.body, lineHeight: 1.6 }}>
@@ -827,6 +801,13 @@ export default function App() {
                       {result.summary.total_units} units{result.summary.warnings.map((w, i) => <span key={i}> · {w}</span>)}
                     </div>
                   </div>
+                </div>
+
+                <div role="note" style={{ marginBottom: 14, padding: "10px 14px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8, fontSize: 12.5, color: C.body, lineHeight: 1.55 }}>
+                  <b>Not an official check.</b> These results are a best guess from your STARS report and the course catalog. Confirm with your advisor and on WebReg before you register.{" "}
+                  <button onClick={() => setShowAbout(true)} style={{ background: "none", border: "none", padding: 0, color: C.cardinal, fontWeight: 600, fontSize: 12.5, fontFamily: BODY, cursor: "pointer", textDecoration: "underline" }}>
+                    What RegCheck doesn't check
+                  </button>
                 </div>
 
                 {result.course_results.map((cr, i) => {

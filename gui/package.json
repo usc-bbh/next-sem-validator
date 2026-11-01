@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "sync:validator": "node -e \"const fs=require('fs');fs.mkdirSync('public/validator',{recursive:true});fs.copyFileSync('../analytics/validate_next_semester.py','public/validator/validate_next_semester.py')\"",
+    "sync:validator": "node scripts/sync-validator.mjs",
     "predev": "npm run sync:validator",
     "dev": "vite",
     "prebuild": "npm run sync:validator",
