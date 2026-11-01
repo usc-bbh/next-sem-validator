@@ -124,6 +124,64 @@ def test_already_taken_none_for_new_course(stars_summary):
     assert _check_already_taken("CSCI 999", stars_summary) is None
 
 
+# Catalog wording, verbatim.
+DSO_599 = {"description": "Special Topics. Selected topics reflecting current trends and recent developments in data "
+                          "sciences, operations management, supply chain management and/or decision support systems. "
+                          "May be repeated only if topic is different."}
+
+
+def test_already_taken_repeatable_course_warns_instead_of_failing():
+    # DSO 599 is a different course every time the topic changes. Blocking it was wrong.
+    stars = {"completedCourses": [{"code": "DSO 599", "passed": True, "source": "usc"}]}
+    result = _check_already_taken("DSO 599", stars, DSO_599)
+    assert result.status == "warning"
+    assert '"May be repeated only if topic is different"' in result.reasons[0]
+
+
+def test_already_taken_repeatable_by_title_warns_instead_of_failing():
+    # Directed Research rarely says it repeats; USC's x90 courses do by convention.
+    entry = {"description": "Directed Research. Individual research and readings. Not available for graduate credit."}
+    stars = {"completedCourses": [{"code": "ANTH 490", "passed": True, "source": "usc"}]}
+    result = _check_already_taken("ANTH 490", stars, entry)
+    assert result.status == "warning"
+    assert "Directed Research" in result.reasons[0]
+
+
+@pytest.mark.parametrize("name, code, description", [
+    ("aibiz_sr_forgiveness.json", "MOR 499", "Special Topics. Selected topics reflecting current trends and recent "
+     "developments in organizational behavior, business strategy and organizational theory."),
+    ("csci_sr_renaissance.json", "MUEN 310", "University Concert Choir. Performance of choral works of all styles "
+     "and periods.  Open to  all students by audition. Graded CR/NC."),
+])
+def test_real_sample_repeatable_course_is_not_blocked(name, code, description):
+    summary = load_shared_stars(name)
+    assert _check_already_taken(code, summary).status == "fail"  # what the check said without the catalog
+    assert _check_already_taken(code, summary, {"description": description}).status == "warning"
+
+
+def test_already_taken_still_fails_for_a_course_that_does_not_repeat():
+    entry = {"description": "Data Structures and Object Oriented Design. Balanced trees, hashing, graphs."}
+    stars = {"completedCourses": [{"code": "CSCI 104", "passed": True, "source": "usc"}]}
+    assert _check_already_taken("CSCI 104", stars, entry).status == "fail"
+
+
+def test_already_taken_repeat_language_needs_to_be_about_repeating_the_course():
+    # "may not be repeated" and ARCH 581's "repeatable surfaces" don't make a course repeatable.
+    stars = {"completedCourses": [{"code": "ARCH 581", "passed": True, "source": "usc"}]}
+    for text in ("Digital Fabrication. Thermoforming as applied to repeatable surfaces in architecture.",
+                 "Studio. May not be repeated for credit."):
+        assert _check_already_taken("ARCH 581", stars, {"description": text}).status == "fail"
+
+
+def test_repeatable_course_reaches_the_validator_result():
+    catalog = {"DSO 599": {**DSO_599, "units": 1,
+                           "sections": {"Lecture": [{"section_id": "1", "days": [], "start_time": "TBA", "end_time": "TBA"}]}}}
+    stars = {"completedCourses": [{"code": "DSO 599", "passed": True, "source": "usc"}], "inProgressCourses": [], "classLevel": "Senior"}
+    result = validate_next_semester([{"course": "DSO 599", "sections": ["1"]}], stars, catalog,
+                                    {"_schema_version": EXPECTED_DEPT_CLEARANCE_SCHEMA_VERSION, "departments": []})
+    assert result.course_results[0].status == "warning"
+
+
 # ---- standing --------------------------------------------------------------
 
 def test_standing_warns_for_freshman_taking_400_level():

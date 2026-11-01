@@ -180,9 +180,40 @@ def _completed_evidence(stars_summary: dict) -> dict[str, str]:
     return evidence
 
 
-def _check_already_taken(course: str, stars_summary: dict) -> CourseResult | None:
+# "May be repeated only if topic is different.", "Course may be repeated.", "repeatable for credit".
+# Not "may not be repeated", and not ARCH 581's "repeatable surfaces".
+_REPEAT_SENTENCE = re.compile(r"[^.]*\b(?:may be repeated|repeatable for credit|course is repeatable)\b[^.]*\.?", re.IGNORECASE)
+# Titles USC repeats by convention (x90 Directed Research, x99 Special Topics, 790 Research, 794z
+# Doctoral Dissertation), though the description rarely says so. Matched from the start of the
+# title, so "Experimental Research Methods" and "Topics in Linear Algebra" (one-time courses)
+# aren't. "Seminar", "Practicum" and honors/senior theses are left out: plenty are one-time.
+_REPEAT_TITLE = re.compile(
+    r"(?:special|selected) topics\b|directed (?:research|readings?|studies)\b|independent (?:research|study)\b|"
+    r"internship\b|(?:doctoral )?research$|(?:doctoral )?dissertation$|(?:master'?s )?thesis$",
+    re.IGNORECASE,
+)
+# Music ensembles: every MUEN course is a performing group students rejoin each term.
+REPEATABLE_PREFIXES = {"MUEN"}
+
+
+def _repeat_note(course: str, catalog_entry: dict | None) -> str | None:
+    """Why a completed course may be taken again, or None if nothing says it can."""
+    description = re.sub(r"\s+", " ", (catalog_entry or {}).get("description") or "").strip()
+    stated = _REPEAT_SENTENCE.search(description)
+    if stated:
+        return f'the catalog says "{stated.group(0).strip().rstrip(".")}"'
+    # The title is the description's first sentence ("Special Topics. Selected topics...").
+    title = description.split(".")[0].strip()
+    if title and (_REPEAT_TITLE.match(title) or _course_prefix(course) in REPEATABLE_PREFIXES):
+        return f"courses like {title} can usually be repeated, sometimes only for a new topic or up to a unit limit"
+    return None
+
+
+def _check_already_taken(course: str, stars_summary: dict, catalog_entry: dict | None = None) -> CourseResult | None:
     """Fails if already completed, warns if already in progress this term. A withdrawn or failed
-    attempt isn't "completed", and a waived course isn't one the student took."""
+    attempt isn't "completed", and a waived course isn't one the student took. A completed course
+    the catalog lets students repeat (DSO 599, a different topic each time) is a warning to check
+    the repeat qualifies, not a fail."""
     norm = _normalize_code(course)
     completed = {
         code for code, how in _completed_evidence(stars_summary).items() if how != PROVEN_BY_WAIVER
@@ -191,6 +222,11 @@ def _check_already_taken(course: str, stars_summary: dict) -> CourseResult | Non
         _normalize_code(c["code"]) for c in stars_summary.get("inProgressCourses", []) if _is_usc_row(c)
     }
     if norm in completed:
+        repeat = _repeat_note(norm, catalog_entry)
+        if repeat:
+            return CourseResult(course, "warning", [
+                f"You've already completed {norm}, but {repeat}. Check with the department that this section counts as a repeat."
+            ])
         return CourseResult(course, "fail", [f"{norm} is already completed."])
     if norm in in_progress:
         return CourseResult(course, "warning", [f"{norm} is already in progress this term."])
@@ -514,7 +550,7 @@ def validate_next_semester(
         _, unresolved_time_sections = _section_time_options(catalog_entry, selected_section_ids)
 
         checks = [
-            _check_already_taken(course, stars_summary),
+            _check_already_taken(course, stars_summary, catalog_entry),
             _check_standing(course, stars_summary),
             _check_d_clearance(course, catalog_entry, dept_clearance_by_prefix),
             _check_prereq(course, catalog_entry, stars_summary),

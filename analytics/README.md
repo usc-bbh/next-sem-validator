@@ -159,7 +159,7 @@ flagging here instead of changing unilaterally.
 
 | Check | Severity | Data source | USC documentation |
 |---|---|---|---|
-| Already completed | fail | `stars_summary.completedCourses` | — |
+| Already completed | fail, or warning for a repeatable course | `stars_summary.completedCourses` + `course_catalog.description` ("may be repeated", or a Special Topics / Directed Research / Internship / thesis / MUEN ensemble title) | — |
 | Already in progress | warning | `stars_summary.inProgressCourses` | — |
 | Class standing (400+ level vs. Freshman/Sophomore) | warning | `stars_summary.classLevel` + course number | [USC Registrar glossary](https://esdcomm.usc.edu/arr/glossary/c.html): 300/400-level is "primarily for" juniors/seniors — guidance, not a blanket rule. Actual enforcement is per-course (e.g. CSCI 442/445 require junior standing themselves), which this validator can't see, so this is a `warning` rather than a `fail`. |
 | D-clearance | warning (never a hard fail — see below) | `course_catalog.has_d_clearance` + `dept_clearance.json` | per-department `source_url` field already inside `dept_clearance.json` |
