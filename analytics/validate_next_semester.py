@@ -406,7 +406,8 @@ def _check_major_restrictions(
 ) -> CourseResult | None:
     """Best-effort: matches "reserved for X" / "not available for X majors" / "only open to
     undergrad/grad" phrasing in the selected sections' notes against the student's declared major
-    and class level. Unrecognized restriction text is surfaced as an unverified warning."""
+    and class level. Unrecognized restriction text is surfaced as an unverified warning, and so is
+    a "reserved for" program that doesn't match the major."""
     if not catalog_entry or not catalog_entry.get("has_restrictions"):
         return None
     notes = list(dict.fromkeys(s["notes"] for s in _all_sections(catalog_entry, selected_section_ids) if s.get("notes")))
@@ -439,9 +440,14 @@ def _check_major_restrictions(
             allowed = remainder[:end]
             allowed_text = allowed.lower()
             major_words = [w for w in student_major.split() if len(w) > 3]
-            if student_major and student_major not in allowed_text and not any(w in allowed_text for w in major_words):
-                status = "fail"
-                reasons.append(f"{course} is reserved for: {allowed.strip()} (unverified match against your declared major).")
+            # A warning, not a fail: the note's program name rarely matches the report's major
+            # word for word, and a missing major on the report is unknown, not ineligible.
+            if not student_major or (student_major not in allowed_text and not any(w in allowed_text for w in major_words)):
+                if status != "fail":
+                    status = "warning"
+                reasons.append(
+                    f"{course} is reserved for: {allowed.strip()}. We couldn't confirm that from your report's major, so check your eligibility on WebReg."
+                )
 
         for excluded in re.findall(r"not available for ([A-Za-z][A-Za-z &]*?) majors", note, re.IGNORECASE):
             matched = True

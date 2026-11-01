@@ -167,7 +167,7 @@ flagging here instead of changing unilaterally.
 | Not found in catalog | warning | `course_catalog` presence | — |
 | Seat availability | fail | selected section(s) `is_full` | — |
 | Lab/discussion pairing | fail | `course_catalog.has_lab` / `has_discussion` + selected sections' `link_code` | — |
-| Major restrictions | fail / warning | `course_catalog.has_restrictions` + selected sections' `notes` (best-effort keyword match) | — |
+| Major restrictions | fail / warning ("reserved for X" only ever warns: a program name can't be matched reliably against the report's major) | `course_catalog.has_restrictions` + selected sections' `notes` (best-effort keyword match) | — |
 | Time conflict | fail | selected sections' `days` / `start_time` / `end_time` | — |
 | Unit overload | warning | sum of `course_catalog.units`, threshold = 18 | ⚠️ no authoritative source linked yet — needs a citation or should be dropped |
 

@@ -488,7 +488,9 @@ def test_lab_pairing_none_when_not_required():
 
 # ---- major restrictions -----------------------------------------------------
 
-def test_major_restrictions_fails_when_reserved_for_other_major():
+def test_major_restrictions_warns_when_reserved_for_other_major():
+    # Matching a note's program name against the report's major is a guess ("B.S. GeoDesign" vs
+    # "Landscape Architecture and GeoDesign"), so a mismatch isn't proof the student can't enroll.
     entry = {
         "has_restrictions": True,
         "sections": {
@@ -502,7 +504,17 @@ def test_major_restrictions_fails_when_reserved_for_other_major():
         },
     }
     result = _check_major_restrictions("ARCH 203", entry, {"major": "Computer Science", "classLevel": "Junior"}, {"1"})
-    assert result.status == "fail"
+    assert result.status == "warning"
+    assert "reserved for: B.S. GeoDesign program" in result.reasons[0]
+
+
+def test_major_restrictions_warns_when_reserved_and_major_is_unknown():
+    entry = {"has_restrictions": True, "sections": {"lectures": [
+        {"section_id": "1", "is_cancelled": False, "notes": "This course is reserved for students in the B.S. GeoDesign program."}
+    ]}}
+    result = _check_major_restrictions("ARCH 203", entry, {"major": None, "classLevel": "Junior"}, {"1"})
+    assert result.status == "warning"
+    assert "reserved for: B.S. GeoDesign program" in result.reasons[0]
 
 
 def test_major_restrictions_none_when_reserved_for_students_major():
@@ -628,7 +640,7 @@ def test_validate_next_semester_end_to_end(planned_courses, stars_summary, cours
         "ANTH 491": "warning",  # D-clearance + TBA section, no fixed time to conflict-check
         "ANTH 338": "fail",  # time conflicts with CSCI 426 and ARCH 203
         "ACCT 371": "fail",  # both selected sections full, plus time conflicts
-        "ARCH 203": "fail",  # reserved for GeoDesign/Landscape Arch, not this student's major
+        "ARCH 203": "fail",  # time conflicts with CSCI 426 and ANTH 338 (its "reserved for" note alone only warns)
         "CSCI 999": "warning",  # not in catalog
     }
     for course, status in expected_status.items():
