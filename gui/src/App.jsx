@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import { parseStarsReport } from "../stars-parser";
 import StarsReview, { GraduateNotice, StarsSideBySide } from "./StarsReview";
 import Tour from "./Tour";
-import About from "./About";
+import About, { ResultsDisclaimer } from "./About";
 import { INITIAL_STARS, hasUsableReport, canValidate as validateAllowed, reportHint } from "./validateGate";
 import { C, HEAD, BODY, SHADOW, eyebrow, card, primaryButton, secondaryButton } from "./theme";
 import { EMPTY_REPORT } from "./emptyReport";
@@ -765,12 +765,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <div role="note" style={{ marginBottom: 14, padding: "10px 14px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8, fontSize: 12.5, color: C.body, lineHeight: 1.55 }}>
-                  <b>Not an official check.</b> These results are a best guess from your STARS report and the course catalog. Confirm with your advisor and on WebReg before you register.{" "}
-                  <button onClick={() => setShowAbout(true)} style={{ background: "none", border: "none", padding: 0, color: C.cardinal, fontWeight: 600, fontSize: 12.5, fontFamily: BODY, cursor: "pointer", textDecoration: "underline" }}>
-                    What RegCheck doesn't check
-                  </button>
-                </div>
+                <ResultsDisclaimer onShowLimits={() => setShowAbout(true)} />
 
                 {result.course_results.map((cr, i) => {
                   const s = STATUS[cr.status];

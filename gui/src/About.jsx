@@ -1,5 +1,5 @@
 import React from "react";
-import { C, HEAD, eyebrow, card, primaryButton, secondaryButton } from "./theme";
+import { C, HEAD, BODY, eyebrow, card, primaryButton, secondaryButton } from "./theme";
 
 // The About popup: shown on a first visit before the tour, and from the nav.
 // What RegCheck checks, what it doesn't, and where to go for help. Every link
@@ -46,6 +46,19 @@ export default function About({ onClose, onTour }) {
           <button onClick={onTour} autoFocus style={primaryButton}>Take the tour</button>
         </div>
       </div>
+    </div>
+  );
+}
+
+// Sits under the overall result: the results are a best guess, not an
+// official check, with a way into About's list of what isn't checked.
+export function ResultsDisclaimer({ onShowLimits }) {
+  return (
+    <div role="note" style={{ marginBottom: 14, padding: "10px 14px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8, fontSize: 12.5, color: C.body, lineHeight: 1.55 }}>
+      <b>Not an official check.</b> These results are a best guess from your STARS report and the course catalog. Confirm with your advisor and on WebReg before you register.{" "}
+      <button onClick={onShowLimits} style={{ background: "none", border: "none", padding: 0, color: C.cardinal, fontWeight: 600, fontSize: 12.5, fontFamily: BODY, cursor: "pointer", textDecoration: "underline" }}>
+        What RegCheck doesn't check
+      </button>
     </div>
   );
 }
