@@ -247,6 +247,8 @@ function StarsEditor({ editor, mode, failure }) {
         <Notice key={i} tone={C.warn} bg="#FEFAEC">{w.message}</Notice>
       ))}
 
+      <AddCourse onAdd={(row) => { addRow(row); setOpen((s) => new Set(s).add(row.passed === null ? "inProgress" : "term:")); }} />
+
       <div style={{ marginBottom: 16 }}>
         <div style={{ ...eyebrow, margin: "0 0 8px" }}>In progress · {draft.inProgressCourses.length}</div>
         <Collapsible title={ipTerms.length === 1 ? termLabel(ipTerms[0]) : "This semester"} open={open.has("inProgress")} onToggle={() => toggle("inProgress")}
@@ -255,8 +257,6 @@ function StarsEditor({ editor, mode, failure }) {
             onEdit={editRow} onRemove={removeRow} onMove={moveRow} moveLabel="Move to completed" />
         </Collapsible>
       </div>
-
-      <AddCourse onAdd={(row) => { addRow(row); setOpen((s) => new Set(s).add(row.passed === null ? "inProgress" : "term:")); }} />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 14 }}>
         <Field label="Major">
@@ -363,27 +363,25 @@ function AddCourse({ onAdd }) {
     setAdding({ code: "", grade: "", units: "4", list: adding.list });
   };
 
+  // One slim row: the label sits inline, so the controls are labelled for
+  // screen readers instead of with a heading above each one.
   return (
-    <div style={{ border: `1px dashed ${C.lineStrong}`, borderRadius: 12, padding: 14, marginBottom: 16, display: "flex", gap: 8, flexWrap: "wrap", alignItems: "flex-end" }}>
-      <Field label="Add a course">
-        <input value={adding.code} placeholder="e.g. CSCI 104" onChange={(e) => setAdding({ ...adding, code: e.target.value })}
-          onKeyDown={(e) => e.key === "Enter" && add()} style={{ ...inputStyle, width: 130 }} />
-      </Field>
-      <Field label="List">
-        <select value={adding.list} onChange={(e) => setAdding({ ...adding, list: e.target.value })} style={inputStyle}>
-          <option value="completed">Completed</option>
-          <option value="inProgress">In progress</option>
-        </select>
-      </Field>
+    <div style={{ border: `1px dashed ${C.lineStrong}`, borderRadius: 10, padding: "6px 10px", marginBottom: 14, display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+      <span style={{ ...eyebrow, marginRight: 4 }}>Add a course</span>
+      <input aria-label="Course code" value={adding.code} placeholder="e.g. CSCI 104" onChange={(e) => setAdding({ ...adding, code: e.target.value })}
+        onKeyDown={(e) => e.key === "Enter" && add()} style={{ ...slimInput, width: 120 }} />
+      <select aria-label="List" value={adding.list} onChange={(e) => setAdding({ ...adding, list: e.target.value })} style={slimInput}>
+        <option value="completed">Completed</option>
+        <option value="inProgress">In progress</option>
+      </select>
       {adding.list === "completed" && (
-        <Field label="Grade">
-          <GradeSelect value={adding.grade} onChange={(grade) => setAdding({ ...adding, grade })} style={inputStyle} />
-        </Field>
+        <GradeSelect label="Grade" value={adding.grade} onChange={(grade) => setAdding({ ...adding, grade })} style={{ ...slimInput, width: 130 }} />
       )}
-      <Field label="Units">
-        <input type="number" min="0" max="12" step="0.5" value={adding.units} onChange={(e) => setAdding({ ...adding, units: e.target.value })} style={{ ...inputStyle, width: 64 }} />
-      </Field>
-      <button onClick={add} disabled={!adding.code.trim()} className="outline-btn" style={secondaryButton}>Add</button>
+      <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: C.muted }}>
+        <input type="number" min="0" max="12" step="0.5" value={adding.units} onChange={(e) => setAdding({ ...adding, units: e.target.value })} style={{ ...slimInput, width: 52 }} />
+        units
+      </label>
+      <button onClick={add} disabled={!adding.code.trim()} className="outline-btn" style={{ ...secondaryButton, padding: "4px 12px", fontSize: 12.5 }}>Add</button>
     </div>
   );
 }
@@ -490,4 +488,5 @@ function Notice({ tone, bg, children }) {
 }
 
 const inputStyle = { border: `1px solid ${C.lineStrong}`, borderRadius: 8, padding: "8px 10px", fontSize: 13.5, fontFamily: BODY, color: C.ink, background: "#fff", textTransform: "none", letterSpacing: 0, fontWeight: 400 };
+const slimInput = { ...inputStyle, padding: "4px 8px", fontSize: 13 };
 const iconButton = { background: "#fff", border: `1px solid ${C.lineStrong}`, borderRadius: 7, width: 28, height: 28, cursor: "pointer", color: C.body, fontSize: 13, lineHeight: 1, fontFamily: BODY };

@@ -757,7 +757,7 @@ export default function App() {
                   </span>
                   <div>
                     <div style={{ fontWeight: 700, fontSize: 15, color: C.ink, fontFamily: HEAD }}>
-                      {result.overall_status === "valid" ? "Schedule looks good" : result.overall_status === "warning" ? "Worth reviewing" : "Schedule has problems"}
+                      {result.overall_status === "valid" ? "Schedule looks good" : result.overall_status === "warning" ? "Needs reviewing" : "Schedule has problems"}
                     </div>
                     <div className="mono" style={{ fontSize: 11.5, color: C.body, marginTop: 2 }}>
                       {result.summary.total_units} units{result.summary.warnings.map((w, i) => <span key={i}> · {w}</span>)}
