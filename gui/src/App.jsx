@@ -2,6 +2,8 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import { parseStarsReport } from "../stars-parser";
 import StarsReview, { GraduateNotice, StarsSideBySide } from "./StarsReview";
 import Tour from "./Tour";
+import About from "./About";
+import { INITIAL_STARS, hasUsableReport, canValidate as validateAllowed, reportHint } from "./validateGate";
 import { C, HEAD, BODY, SHADOW, eyebrow, card, primaryButton, secondaryButton } from "./theme";
 import { EMPTY_REPORT } from "./emptyReport";
 import { VALIDATOR_ASSETS } from "./validatorAssets";
@@ -217,8 +219,8 @@ export default function App() {
   // ("parsed") and the student is pointed at the review screen rather than
   // dropped into it; saving there makes it "confirmed". A failed parse opens
   // the review screen, since there's nothing to use (STARS_PARSER_DESIGN.md §9).
-  const [starsReport, setStarsReport] = useState(null);
-  const [starsSource, setStarsSource] = useState("none"); // "none" | "parsing" | "parsed" | "review" | "confirmed" | "graduate"
+  const [starsReport, setStarsReport] = useState(INITIAL_STARS.report);
+  const [starsSource, setStarsSource] = useState(INITIAL_STARS.source);
   const [starsStatusMsg, setStarsStatusMsg] = useState("");
   const [review, setReview] = useState(null); // { mode: "parsed" | "failed", initial, failure, pdfUrl, view: "dialog" | "side" }
   // Where Cancel on the review screen returns to: no report, or the report
@@ -438,9 +440,11 @@ export default function App() {
   const checkerReady = pyodideStatus === "ready"; // set only after pyodideRef is populated
   // Validation needs a report: prerequisites and already-taken courses are
   // checked against it.
-  const hasReport = starsSource === "parsed" || starsSource === "confirmed";
-  const starsReady = hasReport;
-  const canValidate = expanded.length > 0 && needSections.length === 0 && !validating && !!catalog && checkerReady && starsReady;
+  const hasReport = hasUsableReport(starsSource);
+  const canValidate = validateAllowed({
+    source: starsSource, courseCount: expanded.length, needSections, catalogReady: !!catalog, checkerReady, validating,
+  });
+  const starsHint = reportHint(starsSource);
 
   // The first time someone validates a report they never opened, say so once.
   const onValidateClick = () => {
@@ -557,49 +561,7 @@ export default function App() {
         </div>
       </nav>
 
-      {showAbout && (
-        <div role="dialog" aria-modal="true" aria-labelledby="about-title" onClick={(e) => e.target === e.currentTarget && closeAbout()}
-          onKeyDown={(e) => e.key === "Escape" && closeAbout()}
-          style={{ position: "fixed", inset: 0, background: "rgba(20,20,24,0.45)", zIndex: 55, display: "flex", justifyContent: "center", alignItems: "flex-start", padding: "48px 16px", overflowY: "auto" }}>
-          <div style={{ ...card, width: "100%", maxWidth: 580, padding: "22px 24px", position: "relative", boxShadow: "0 30px 70px -20px rgba(28,28,31,0.45)" }}>
-            <button onClick={closeAbout} aria-label="Close" style={{ position: "absolute", top: 12, right: 14, background: "none", border: "none", color: C.faint, cursor: "pointer", fontSize: 22, lineHeight: 1, width: 32, height: 32 }}>×</button>
-            <div id="about-title" style={{ fontSize: 22, fontWeight: 700, fontFamily: HEAD, color: C.ink, marginBottom: 14 }}>
-              Welcome to Reg<span style={{ color: C.cardinal }}>Check</span>
-            </div>
-            <div style={{ ...eyebrow, color: C.cardinal, marginBottom: 12 }}>What RegCheck does</div>
-            <ul style={{ fontSize: 13, color: C.body, lineHeight: 1.8, margin: 0, paddingLeft: 18 }}>
-              <li>Checks <b>time conflicts</b> between your picked sections</li>
-              <li>Flags sections that are <b>full</b> (no open seats)</li>
-              <li>Warns about <b>D-clearance</b> requirements</li>
-              <li>Checks <b>prerequisite</b> completion against your STARS report</li>
-              <li>Checks <b>GPA minimums</b> when your GPA is on your report or you enter it</li>
-              <li>Warns if your unit count is unusually <b>low (&lt;12)</b> or <b>high (&gt;18)</b></li>
-            </ul>
-            <div style={{ ...eyebrow, color: C.cardinal, marginBottom: 8, marginTop: 16 }}>What RegCheck does NOT do</div>
-            <ul style={{ fontSize: 13, color: C.body, lineHeight: 1.8, margin: 0, paddingLeft: 18 }}>
-              <li>Does <b>not</b> replace your academic advisor — always confirm with them</li>
-              <li>Does <b>not</b> check graduation requirements or degree progress</li>
-              <li>Does <b>not</b> guarantee seat availability at registration time</li>
-              <li>Does <b>not</b> handle holds, registration appointments, or WebReg issues</li>
-              <li>Does <b>not</b> verify co-requisite requirements for all courses</li>
-              <li>Does <b>not</b> check minimum grades in prerequisites (like "C or better"): any passing grade counts</li>
-              <li>Does <b>not</b> read a second STARS report: double majors get one per major, and only the one you upload is checked</li>
-            </ul>
-            <div style={{ marginTop: 16, padding: "12px 16px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8 }}>
-              <div style={{ fontSize: 12.5, color: C.body, lineHeight: 1.6 }}>
-                <b>Need D-clearance?</b> Reach out to your department.
-              </div>
-            </div>
-            <div style={{ marginTop: 10, fontSize: 12.5, color: C.muted, lineHeight: 1.6 }}>
-              For advising, reach out to your academic advisor.
-            </div>
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 18, paddingTop: 16, borderTop: `1px solid ${C.line}` }}>
-              <button onClick={closeAbout} className="outline-btn" style={secondaryButton}>Close</button>
-              <button onClick={startTour} autoFocus style={primaryButton}>Take the tour</button>
-            </div>
-          </div>
-        </div>
-      )}
+      {showAbout && <About onClose={closeAbout} onTour={startTour} />}
 
       <div style={{ maxWidth: 1320, margin: "0 auto", padding: "36px 28px 0" }}>
         <h1 style={{ fontSize: "clamp(30px, 5vw, 44px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.05, margin: 0 }}>
@@ -860,9 +822,9 @@ export default function App() {
                 Loading the checker…
               </div>
             )}
-            {!starsReady && starsSource !== "parsing" && (
+            {starsHint && (
               <div style={{ marginTop: 9, fontSize: 12, color: C.muted, textAlign: "center" }}>
-                {starsSource === "review" ? "Confirm your STARS details to validate." : "Upload your STARS report to validate."}
+                {starsHint}
               </div>
             )}
             {needSections.length > 0 && (
