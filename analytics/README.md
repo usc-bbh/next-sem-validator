@@ -113,11 +113,13 @@ table below is only what the validator reads from it today.
 |---|---|
 | `units` | unit-overload summary |
 | `description` | prereq check (GPA + course-code parsing) |
-| `has_d_clearance` | D-clearance check |
+| `has_d_clearance` | D-clearance check (fallback when the picked sections carry no flag of their own) |
 | `has_restrictions` | major-restrictions check |
 | `has_lab`, `has_discussion` | lab/discussion pairing check |
 | `sections.*[].section_id` | section selection matching |
-| `sections.*[].link_code` | lab/discussion pairing check |
+| `sections.*[].has_d_clearance` | D-clearance check: the picked sections' flags decide, since only some of a course's sections may need it |
+| `sections.*[].mode` | lab/discussion pairing check: a combined `Lecture/Lab` or `Lecture/Discussion` section counts as both |
+| `sections.*[].link_code` | lab/discussion pairing check (labs, discussions and quizzes; a section with no link code goes with any lecture) |
 | `sections.*[].notes` | major-restrictions check |
 | `sections.*[].is_cancelled` | excluded from all section-based checks |
 | `sections.*[].is_full` | seat-availability check |
@@ -162,11 +164,11 @@ flagging here instead of changing unilaterally.
 | Already completed | fail, or warning for a repeatable course | `stars_summary.completedCourses` + `course_catalog.description` ("may be repeated", or a Special Topics / Directed Research / Internship / thesis / MUEN ensemble title) | — |
 | Already in progress | warning | `stars_summary.inProgressCourses` | — |
 | Class standing (400+ level vs. Freshman/Sophomore) | warning | `stars_summary.classLevel` + course number | [USC Registrar glossary](https://esdcomm.usc.edu/arr/glossary/c.html): 300/400-level is "primarily for" juniors/seniors — guidance, not a blanket rule. Actual enforcement is per-course (e.g. CSCI 442/445 require junior standing themselves), which this validator can't see, so this is a `warning` rather than a `fail`. |
-| D-clearance | warning (never a hard fail — see below) | `course_catalog.has_d_clearance` + `dept_clearance.json` | per-department `source_url` field already inside `dept_clearance.json` |
+| D-clearance | warning (never a hard fail — see below) | selected sections' `has_d_clearance` (else the course's) + `dept_clearance.json` | per-department `source_url` field already inside `dept_clearance.json` |
 | Prerequisites | fail / warning | `course_catalog.description`'s prerequisite clause (best-effort "and"/"or" parsing) against `stars_summary`'s completed and in-progress courses | — |
 | Not found in catalog | warning | `course_catalog` presence | — |
 | Seat availability | fail | selected section(s) `is_full` | — |
-| Lab/discussion pairing | fail | `course_catalog.has_lab` / `has_discussion` + selected sections' `link_code` | — |
+| Lab/discussion pairing | fail | a lecture picked when the course has lectures; `course_catalog.has_lab` / `has_discussion`; selected sections' `link_code` and `mode` | — |
 | Major restrictions | fail / warning ("reserved for X" only ever warns: a program name can't be matched reliably against the report's major) | `course_catalog.has_restrictions` + selected sections' `notes` (best-effort keyword match) | — |
 | Time conflict | fail | selected sections' `days` / `start_time` / `end_time` | — |
 | Unit overload | warning | sum of `course_catalog.units`, threshold = 18 | ⚠️ no authoritative source linked yet — needs a citation or should be dropped |
@@ -195,7 +197,10 @@ specific course/section is blocked outright.
   101") is an unverified note, since assuming the same department can be wrong.
 - **Time conflict** is checked pairwise across each course's *selected*
   sections only — it's a simple `fail` if any of them overlaps any of the
-  other course's selected sections. TBA or malformed section times are
+  other course's selected sections, or two of one course's own sections
+  overlap (a lecture and a lab at the same hour). An overlap inside a course
+  that every choice of its sections shares (AME 441B's only lecture and lab)
+  is the department's schedule, so it isn't reported. TBA or malformed section times are
   excluded from the check but surfaced separately as a warning rather than
   silently dropped.
 - Course codes are normalized to `"DEPT ###"` (single space) everywhere in

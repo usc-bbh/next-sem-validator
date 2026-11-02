@@ -30,6 +30,7 @@ surfaced as a separate warning rather than silently dropped.
 
 from __future__ import annotations
 
+import itertools
 import json
 import re
 from dataclasses import asdict, dataclass, field
@@ -251,11 +252,26 @@ def _check_standing(course: str, stars_summary: dict) -> CourseResult | None:
     return None
 
 
-def _check_d_clearance(course: str, catalog_entry: dict | None, dept_clearance_by_prefix: dict) -> CourseResult | None:
-    """Warns (never a hard fail) when the catalog marks this course as requiring D-clearance."""
-    if not catalog_entry or not catalog_entry.get("has_d_clearance"):
+def _check_d_clearance(
+    course: str, catalog_entry: dict | None, dept_clearance_by_prefix: dict, selected_section_ids: set[str] | None = None
+) -> CourseResult | None:
+    """Warns (never a hard fail) when the picked sections need D-clearance. The course-level flag
+    is true if any section needs it (only one of AME 420's two lectures does), so the picked
+    sections' own flags decide when they carry one, and the course flag is the fallback."""
+    if not catalog_entry:
         return None
-    reasons = [f"{course} requires departmental clearance (D-clearance) to enroll this term."]
+    picked = _all_sections(catalog_entry, selected_section_ids or set())
+    if picked and all("has_d_clearance" in s for s in picked):
+        needs = [s["section_id"] for s in picked if s["has_d_clearance"]]
+        if not needs:
+            return None
+        verb = "requires" if len(needs) == 1 else "require"
+        first = f"{course} section{'s' if len(needs) > 1 else ''} {', '.join(needs)} {verb} departmental clearance (D-clearance) to enroll this term."
+    elif catalog_entry.get("has_d_clearance"):
+        first = f"{course} requires departmental clearance (D-clearance) to enroll this term."
+    else:
+        return None
+    reasons = [first]
     dept = dept_clearance_by_prefix.get(_course_prefix(course))
     if dept:
         reasons.append(dept["clearance_required_for"])
@@ -469,29 +485,35 @@ def _check_seat_availability(course: str, catalog_entry: dict | None, selected_s
     return None
 
 
+_SECTION_LABEL = {"labs": "lab", "discussions": "discussion", "quizzes": "quiz"}
+# What a combined section (filed under "other", mode "Lecture/Lab" or "Lecture/Discussion") stands in for.
+_COMBINED_COVERS = {"labs": "Lab", "discussions": "Discussion"}
+
+
 def _check_lab_discussion_pairing(course: str, catalog_entry: dict | None, selected_section_ids: set[str]) -> CourseResult | None:
-    """Verifies a required lab/discussion was selected and shares the lecture's link code."""
+    """Fails when the picked sections aren't a set WebReg would take: no lecture when the course
+    has lectures, a required lab or discussion missing, or a lab, discussion or quiz tied by link
+    code to the other lecture. A section with no link code isn't tied to a lecture (no CHEM 105A
+    lab has one), and a combined section (BUAD 307's "Lecture/Discussion") is both in one."""
     if not catalog_entry:
         return None
-    required_groups = [group for group, key in [("labs", "has_lab"), ("discussions", "has_discussion")] if catalog_entry.get(key)]
-    if not required_groups:
-        return None
-
-    sections_by_group = {
-        group: [s for s in secs if s["section_id"] in selected_section_ids]
-        for group, secs in catalog_entry.get("sections", {}).items()
-    }
-    lecture_selected = sections_by_group.get("lectures", [])
-    lecture_link = lecture_selected[0].get("link_code") if lecture_selected else None
+    sections = catalog_entry.get("sections", {})
+    picked = {group: [s for s in secs if s["section_id"] in selected_section_ids] for group, secs in sections.items()}
+    combined = [s.get("mode") or "" for s in picked.get("other", []) if (s.get("mode") or "").startswith("Lecture/")]
+    lectures = picked.get("lectures", [])
 
     reasons = []
-    for group in required_groups:
-        label = group[:-1]
-        selected_in_group = sections_by_group.get(group, [])
-        if not selected_in_group:
-            reasons.append(f"{course} requires a {label} section, but none was selected.")
-        elif lecture_link is not None and any(s.get("link_code") != lecture_link for s in selected_in_group):
-            reasons.append(f"{course}'s selected {label} section doesn't share a link code with the selected lecture.")
+    if sections.get("lectures") and not lectures and not combined:
+        reasons.append(f"{course} requires a lecture section, but none was selected.")
+    for group, key in (("labs", "has_lab"), ("discussions", "has_discussion")):
+        if catalog_entry.get(key) and not picked.get(group) and not any(_COMBINED_COVERS[group] in mode for mode in combined):
+            reasons.append(f"{course} requires a {_SECTION_LABEL[group]} section, but none was selected.")
+
+    lecture_link = lectures[0].get("link_code") if lectures else None
+    if lecture_link:
+        for group, label in _SECTION_LABEL.items():
+            if any(s.get("link_code") and s["link_code"] != lecture_link for s in picked.get(group, [])):
+                reasons.append(f"{course}'s selected {label} section doesn't share a link code with the selected lecture.")
 
     if not reasons:
         return None
@@ -584,20 +606,58 @@ def _section_time_options(
     options = []
     unresolved = []
     for section in _all_sections(catalog_entry, selected_section_ids):
-        days = frozenset(section.get("days") or [])
-        start = _to_minutes(section.get("start_time"))
-        end = _to_minutes(section.get("end_time"))
-        if not days or start is None or end is None:
+        time = _section_time(section)
+        if time is None:
             unresolved.append(section["section_id"])
             continue
-        options.append((days, start, end))
+        options.append(time)
     return options, unresolved
+
+
+def _section_time(section: dict) -> tuple[frozenset, int, int] | None:
+    days = frozenset(section.get("days") or [])
+    start = _to_minutes(section.get("start_time"))
+    end = _to_minutes(section.get("end_time"))
+    if not days or start is None or end is None:
+        return None
+    return days, start, end
 
 
 def _sections_overlap(a: tuple[frozenset, int, int], b: tuple[frozenset, int, int]) -> bool:
     days_a, start_a, end_a = a
     days_b, start_b, end_b = b
     return bool(days_a & days_b) and start_a < end_b and start_b < end_a
+
+
+# How many ways of picking one section per group _own_overlap tries before giving up on finding
+# one that fits. The largest Spring 2027 course has a few hundred.
+_MAX_COMBINATIONS = 20000
+
+
+def _own_overlap(catalog_entry: dict | None, selected_section_ids: set[str]) -> tuple[str, str] | None:
+    """Two of one course's picked sections that meet at the same time (CHEM 105A's 1:00 lecture
+    and a 1:00 lab), unless every way of picking from those groups overlaps too: AME 441B's only
+    lecture and only lab do, which is the department's schedule, not the student's choice."""
+    if not catalog_entry:
+        return None
+    timed = []
+    groups = []
+    for group, secs in catalog_entry.get("sections", {}).items():
+        live = [s for s in secs if not s.get("is_cancelled")]
+        mine = [s for s in live if s["section_id"] in selected_section_ids]
+        if mine:
+            groups.append(live)
+        timed += [(s["section_id"], t) for s in mine if (t := _section_time(s))]
+    clash = next(
+        ((a, b) for i, (a, ta) in enumerate(timed) for b, tb in timed[i + 1 :] if _sections_overlap(ta, tb)), None
+    )
+    if clash is None:
+        return None
+    for combo in itertools.islice(itertools.product(*groups), _MAX_COMBINATIONS):
+        times = [t for s in combo if (t := _section_time(s))]
+        if not any(_sections_overlap(a, b) for i, a in enumerate(times) for b in times[i + 1 :]):
+            return clash
+    return None
 
 
 def _check_unresolved_time_sections(course: str, unresolved: list[str]) -> CourseResult | None:
@@ -611,10 +671,16 @@ def _check_unresolved_time_sections(course: str, unresolved: list[str]) -> Cours
 
 
 def _check_time_conflicts(parsed_entries: list[tuple[str, set[str]]], catalog: dict) -> dict[str, list[CourseResult]]:
-    """Pairwise: fails when any of one course's selected sections overlaps any of another's.
-    Sections are required, so every listed section is a real, simultaneous commitment (a
-    lecture and its lab both apply at once) -- not an alternative to choose between."""
+    """Pairwise: fails when any of one course's selected sections overlaps any of another's, or
+    two of its own do. Sections are required, so every listed section is a real, simultaneous
+    commitment (a lecture and its lab both apply at once) -- not an alternative to choose between."""
     results: dict[str, list[CourseResult]] = {}
+    for course, selected in parsed_entries:
+        clash = _own_overlap(catalog.get(_normalize_code(course)), selected)
+        if clash:
+            results.setdefault(course, []).append(CourseResult(
+                course, "fail", [f"{course}'s sections {clash[0]} and {clash[1]} meet at the same time. Pick sections that don't overlap."]
+            ))
     options_by_course = {
         course: _section_time_options(catalog.get(_normalize_code(course)), selected)[0] for course, selected in parsed_entries
     }
@@ -655,7 +721,7 @@ def validate_next_semester(
         checks = [
             _check_already_taken(course, stars_summary, catalog_entry),
             _check_standing(course, stars_summary),
-            _check_d_clearance(course, catalog_entry, dept_clearance_by_prefix),
+            _check_d_clearance(course, catalog_entry, dept_clearance_by_prefix, selected_section_ids),
             _check_prereq(course, catalog_entry, stars_summary),
             _check_gpa(course, catalog_entry, stars_summary),
             _check_in_catalog(course, catalog),

@@ -216,6 +216,35 @@ def test_d_clearance_none_when_not_required(dept_clearance):
     assert _check_d_clearance("CSCI 360", {"has_d_clearance": False}, by_prefix) is None
 
 
+# AME 420 has two lectures, and only 29014 needs D-clearance. The course-level flag is true if
+# any section needs it, so it alone warned students who picked 28814.
+AME_420 = {
+    "has_d_clearance": True,
+    "sections": {"lectures": [
+        {"section_id": "28814", "has_d_clearance": False},
+        {"section_id": "29014", "has_d_clearance": True},
+    ]},
+}
+
+
+def test_d_clearance_none_when_the_picked_section_needs_none(dept_clearance):
+    by_prefix = _dept_clearance_by_prefix(dept_clearance)
+    assert _check_d_clearance("AME 420", AME_420, by_prefix, {"28814"}) is None
+
+
+def test_d_clearance_warns_and_names_the_picked_section_that_needs_it(dept_clearance):
+    by_prefix = _dept_clearance_by_prefix(dept_clearance)
+    result = _check_d_clearance("AME 420", AME_420, by_prefix, {"29014"})
+    assert result.status == "warning"
+    assert result.reasons[0] == "AME 420 section 29014 requires departmental clearance (D-clearance) to enroll this term."
+
+
+def test_d_clearance_section_fix_reaches_the_validator_result(dept_clearance):
+    stars = {"completedCourses": [], "inProgressCourses": [], "classLevel": "Senior"}
+    result = validate_next_semester([{"course": "AME 420", "sections": ["28814"]}], stars, {"AME 420": {**AME_420, "units": 3}}, dept_clearance)
+    assert not any("D-clearance" in r for r in result.course_results[0].reasons)
+
+
 def test_d_clearance_warns_generically_for_unknown_department(dept_clearance):
     by_prefix = _dept_clearance_by_prefix(dept_clearance)
     result = _check_d_clearance("ZZZZ 100", {"has_d_clearance": True}, by_prefix)
@@ -598,6 +627,78 @@ def test_lab_pairing_none_when_not_required():
     assert _check_lab_discussion_pairing("CSCI 360", entry, {"L1"}) is None
 
 
+# Spring 2027 CHEM 105A, cut down: lectures and quizzes pair by link code (A with A), and the
+# labs have no link code, so any lab goes with either lecture.
+CHEM_105A = {
+    "has_lab": True,
+    "has_discussion": False,
+    "sections": {
+        "lectures": [
+            {"section_id": "17218", "link_code": "A", "days": ["Mon", "Wed", "Fri"], "start_time": "09:00", "end_time": "09:50"},
+            {"section_id": "17219", "link_code": "B", "days": ["Mon", "Wed", "Fri"], "start_time": "13:00", "end_time": "13:50"},
+        ],
+        "quizzes": [
+            {"section_id": "17220", "link_code": "A", "days": ["Tue"], "start_time": "15:30", "end_time": "16:50"},
+            {"section_id": "17221", "link_code": "B", "days": ["Tue"], "start_time": "15:30", "end_time": "16:50"},
+        ],
+        "labs": [
+            {"section_id": "17232", "link_code": None, "days": ["Wed"], "start_time": "13:00", "end_time": "15:50"},
+            {"section_id": "17250", "link_code": None, "days": ["Wed"], "start_time": "16:00", "end_time": "18:50"},
+        ],
+    },
+}
+
+
+def test_lab_pairing_none_when_the_lab_has_no_link_code():
+    # No link code means the lab isn't tied to a lecture. Reading None as "a different code"
+    # failed every CHEM 105A schedule, however it was built.
+    assert _check_lab_discussion_pairing("CHEM 105A", CHEM_105A, {"17218", "17220", "17250"}) is None
+
+
+def test_lab_pairing_fails_when_the_quiz_belongs_to_the_other_lecture():
+    result = _check_lab_discussion_pairing("CHEM 105A", CHEM_105A, {"17218", "17221", "17250"})
+    assert result.status == "fail"
+    assert "quiz section doesn't share a link code" in result.reasons[0]
+
+
+def test_lab_pairing_fails_when_no_lecture_is_picked():
+    # A lab on its own isn't a registration: WebReg needs the lecture too.
+    entry = {
+        "has_lab": True,
+        "has_discussion": False,
+        "sections": {"lectures": [{"section_id": "30201", "link_code": None}], "labs": [{"section_id": "30225", "link_code": None}]},
+    }
+    result = _check_lab_discussion_pairing("CSCI 102", entry, {"30225"})
+    assert result.status == "fail"
+    assert "CSCI 102 requires a lecture section, but none was selected." in result.reasons
+
+
+def test_lab_pairing_needs_no_lecture_when_the_course_has_none():
+    entry = {"has_lab": False, "has_discussion": False, "sections": {"other": [{"section_id": "1", "mode": "Studio", "link_code": None}]}}
+    assert _check_lab_discussion_pairing("ARCH 102", entry, {"1"}) is None
+
+
+# BUAD 307 runs two ways: a combined Lecture/Discussion section, or a lecture plus a discussion.
+BUAD_307 = {
+    "has_lab": False,
+    "has_discussion": True,
+    "sections": {
+        "other": [{"section_id": "14851", "mode": "Lecture/Discussion", "link_code": None}],
+        "lectures": [{"section_id": "14800", "mode": "Lecture", "link_code": "J"}],
+        "discussions": [{"section_id": "14802", "mode": "Discussion", "link_code": "J"}],
+    },
+}
+
+
+def test_lab_pairing_combined_lecture_discussion_is_both():
+    assert _check_lab_discussion_pairing("BUAD 307", BUAD_307, {"14851"}) is None
+
+
+def test_lab_pairing_separate_lecture_still_needs_its_discussion():
+    result = _check_lab_discussion_pairing("BUAD 307", BUAD_307, {"14800"})
+    assert result.reasons == ["BUAD 307 requires a discussion section, but none was selected."]
+
+
 # ---- major restrictions -----------------------------------------------------
 
 def test_major_restrictions_warns_when_reserved_for_other_major():
@@ -727,6 +828,28 @@ def test_time_conflict_absent_when_no_overlap():
     }
     conflicts = _check_time_conflicts([("A", {"1"}), ("B", {"1"})], catalog)
     assert conflicts == {}
+
+
+def test_time_conflict_fails_when_a_courses_own_sections_overlap():
+    # Lecture 17219 (MWF 1:00) and lab 17232 (Wed 1:00-3:50) can't both be attended. Only pairs of
+    # different courses were compared, so this passed.
+    conflicts = _check_time_conflicts([("CHEM 105A", {"17219", "17221", "17232"})], {"CHEM 105A": CHEM_105A})
+    assert conflicts["CHEM 105A"][0].status == "fail"
+    assert "17219" in conflicts["CHEM 105A"][0].reasons[0] and "17232" in conflicts["CHEM 105A"][0].reasons[0]
+
+
+def test_time_conflict_none_within_a_course_when_its_sections_fit():
+    assert _check_time_conflicts([("CHEM 105A", {"17218", "17220", "17232"})], {"CHEM 105A": CHEM_105A}) == {}
+
+
+def test_time_conflict_allows_an_overlap_the_department_scheduled():
+    # AME 441B's only lecture and only lab overlap: that's the course's design, not the student's
+    # mistake, so it isn't a conflict to report.
+    entry = {"sections": {
+        "lectures": [{"section_id": "28817", "days": ["Mon"], "start_time": "12:00", "end_time": "13:50"}],
+        "labs": [{"section_id": "28818", "days": ["Mon"], "start_time": "10:00", "end_time": "12:50"}],
+    }}
+    assert _check_time_conflicts([("AME 441B", {"28817", "28818"})], {"AME 441B": entry}) == {}
 
 
 def test_to_minutes_handles_malformed_input_gracefully():
