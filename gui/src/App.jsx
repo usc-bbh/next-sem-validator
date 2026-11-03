@@ -58,12 +58,12 @@ const fmt = (t) => {
 };
 
 // ─────────────────────────────────────────────────────────────
-// Calendar
+// Calendar — dynamically expands for Saturday / early / late classes
 // ─────────────────────────────────────────────────────────────
-const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-const DAY_START = 8 * 60;
-const DAY_END = 21 * 60;
-const SPAN = DAY_END - DAY_START;
+const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+const ALL_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DEFAULT_START = 8 * 60;  // 8 am
+const DEFAULT_END   = 21 * 60; // 9 pm
 // Course accent colors — chosen to stay legible on a white background,
 // anchored by USC cardinal for the first course.
 const PALETTE = ["#990000", "#16A34A", "#1d4ed8", "#A16207", "#6f42c1", "#0e7490", "#b3006b"];
@@ -76,34 +76,54 @@ const SEAT_FULL = C.bad;
 const isOpen = (s) => !s.is_full && s.open_seats !== 0;
 
 function Calendar({ blocks }) {
+  // Expand the calendar range only when picked sections need it.
+  // Default: Mon–Fri 8 am–9 pm. Adds Saturday if any picked section
+  // meets on Sat; extends hours if any section starts before 8 am or
+  // ends after 9 pm. Rounds to the nearest hour for clean grid lines.
+  const hasSat = blocks.some((b) => b.days?.includes("Sat"));
+  const days = hasSat ? ALL_DAYS : WEEKDAYS;
+
+  let dayStart = DEFAULT_START;
+  let dayEnd = DEFAULT_END;
+  for (const b of blocks) {
+    const s = toMin(b.start_time);
+    const e = toMin(b.end_time);
+    if (s != null && s < dayStart) dayStart = Math.floor(s / 60) * 60;
+    if (e != null && e > dayEnd)   dayEnd   = Math.ceil(e / 60) * 60;
+  }
+  const span = dayEnd - dayStart;
+
   const hours = [];
-  for (let h = 8; h <= 21; h++) hours.push(h);
+  for (let h = dayStart / 60; h <= dayEnd / 60; h++) hours.push(h);
+
+  // Scale height: ~36 px per hour, minimum 400
+  const calHeight = Math.max(400, Math.round((span / 60) * 36));
 
   return (
     <div style={{ ...card, overflow: "hidden" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "46px repeat(5, 1fr)", background: "#FAFAF9", borderBottom: `1px solid ${C.line}` }}>
+      <div style={{ display: "grid", gridTemplateColumns: `46px repeat(${days.length}, 1fr)`, background: "#FAFAF9", borderBottom: `1px solid ${C.line}` }}>
         <div />
-        {DAYS.map((d) => (
+        {days.map((d) => (
           <div key={d} style={{ ...eyebrow, padding: "12px 0", textAlign: "center", borderLeft: `1px solid ${C.line}` }}>{d}</div>
         ))}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "46px repeat(5, 1fr)", position: "relative", height: 470 }}>
+      <div style={{ display: "grid", gridTemplateColumns: `46px repeat(${days.length}, 1fr)`, position: "relative", height: calHeight }}>
         {/* hour gutter */}
         <div style={{ position: "relative" }}>
           {hours.map((h) => (
-            <div key={h} style={{ position: "absolute", top: `${((h * 60 - DAY_START) / SPAN) * 100}%`, right: 8, transform: "translateY(-50%)", fontSize: 10, color: C.faint, fontFamily: HEAD }}>
+            <div key={h} style={{ position: "absolute", top: `${((h * 60 - dayStart) / span) * 100}%`, right: 8, transform: "translateY(-50%)", fontSize: 10, color: C.faint, fontFamily: HEAD }}>
               {h % 12 || 12}{h < 12 ? "a" : "p"}
             </div>
           ))}
         </div>
-        {DAYS.map((day) => (
+        {days.map((day) => (
           <div key={day} style={{ position: "relative", borderLeft: "1px solid #ededf0" }}>
             {hours.map((h) => (
-              <div key={h} style={{ position: "absolute", top: `${((h * 60 - DAY_START) / SPAN) * 100}%`, left: 0, right: 0, borderTop: "1px solid #f2f2f4" }} />
+              <div key={h} style={{ position: "absolute", top: `${((h * 60 - dayStart) / span) * 100}%`, left: 0, right: 0, borderTop: "1px solid #f2f2f4" }} />
             ))}
             {blocks.filter((b) => b.days.includes(day)).map((b) => {
-              const top = ((toMin(b.start_time) - DAY_START) / SPAN) * 100;
-              const height = ((toMin(b.end_time) - toMin(b.start_time)) / SPAN) * 100;
+              const top = ((toMin(b.start_time) - dayStart) / span) * 100;
+              const height = ((toMin(b.end_time) - toMin(b.start_time)) / span) * 100;
               return (
                 <div key={`${b.section_id}-${day}`} title={`${b.course_name} ${b.section_id}`}
                   style={{ position: "absolute", top: `${top}%`, height: `${height}%`, left: 3, right: 3,
@@ -353,6 +373,21 @@ export default function App() {
 
   const courseNames = useMemo(() => catalog ? Object.keys(catalog) : [], [catalog]);
 
+  // Detect whether registration has opened yet. When every section in the
+  // catalog has registered_seats === 0, registration hasn't started and the
+  // "N open" seat counts are meaningless (everything would say "open").
+  const registrationOpen = useMemo(() => {
+    if (!catalog) return true; // assume open until proven otherwise
+    for (const entry of Object.values(catalog)) {
+      for (const secs of Object.values(entry.sections || {})) {
+        for (const s of secs) {
+          if (s.registered_seats > 0) return true;
+        }
+      }
+    }
+    return false;
+  }, [catalog]);
+
   // Helper: collect all unique instructor names for a course (skipping TBD)
   const getInstructors = (entry) => {
     if (!entry?.sections) return [];
@@ -488,7 +523,7 @@ export default function App() {
         <div style={{ textAlign: "center", color: C.muted }}>
           <div style={{ ...eyebrow, color: C.cardinal, letterSpacing: 4, marginBottom: 10 }}>RegCheck</div>
           <div style={{ fontSize: 16, fontWeight: 600, color: C.ink, fontFamily: HEAD }}>Loading course catalog…</div>
-          <div style={{ fontSize: 12.5, marginTop: 6 }}>4,549 courses · Spring 2027</div>
+          <div style={{ fontSize: 12.5, marginTop: 6 }}>Spring 2027</div>
         </div>
       </div>
     );
@@ -643,13 +678,19 @@ export default function App() {
                     const desc = entry?.description || "";
                     // Show first ~60 chars of description
                     const shortDesc = desc.length > 65 ? desc.slice(0, 62) + "..." : desc;
+                    const prereq = entry?.prereqs;
                     return (
                       <button key={c} onClick={() => addCourse(c)} className="suggestion"
                         style={{ display: "flex", justifyContent: "space-between", width: "100%", textAlign: "left", padding: "10px 14px", border: "none", borderBottom: "1px solid rgba(0,0,0,0.06)", background: "transparent", color: C.ink, cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>
                         <span style={{ minWidth: 0 }}>
                           <span><b>{c}</b> <span style={{ color: C.muted }}>{entry?.units ?? "?"} units</span></span>
+                          {prereq && (
+                            <span style={{ display: "block", fontSize: 10.5, color: C.muted, marginTop: 2 }}>
+                              <span style={{ fontWeight: 600 }}>Prereqs:</span> {prereq.length > 70 ? prereq.slice(0, 67) + "…" : prereq}
+                            </span>
+                          )}
                           {(instructors.length > 0 || shortDesc) && (
-                            <span style={{ display: "block", fontSize: 11, color: C.muted, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                            <span style={{ display: "block", fontSize: 11, color: C.muted, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                               {instructors.length > 0 && <span style={{ color: C.body }}>{instructors.join(", ")}</span>}
                               {instructors.length > 0 && shortDesc && " · "}
                               {shortDesc}
@@ -665,6 +706,13 @@ export default function App() {
             </div>
 
             <div data-tour="courses">
+            {!registrationOpen && expanded.length > 0 && (
+              <div style={{ marginBottom: 12, padding: "8px 12px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8, fontSize: 12, color: C.body, lineHeight: 1.5 }}>
+                <span style={{ color: C.warn, fontWeight: 700 }}>Registration not yet open.</span>{" "}
+                Seat counts show capacity only — no live availability data yet.
+              </div>
+            )}
+
             {expanded.length === 0 && (
               <div style={{ color: C.muted, fontSize: 13.5, padding: "32px 20px", textAlign: "center", border: "1px dashed rgba(0,0,0,0.15)", borderRadius: 14, background: "#FFFFFF" }}>
                 <div style={{ ...eyebrow, marginBottom: 8 }}>No courses yet</div>
@@ -692,8 +740,19 @@ export default function App() {
                       <button onClick={() => removeCourse(courseName)} className="remove-btn" style={{ background: "none", border: "none", color: C.faint, cursor: "pointer", fontSize: 16, padding: "1px 5px", borderRadius: 6, lineHeight: 1 }}>×</button>
                     </div>
                     </div>
+                    {entry.prereqs && (
+                      <div style={{ fontSize: 11, color: C.body, marginTop: 6, lineHeight: 1.4 }}>
+                        <span style={{ fontWeight: 600, color: C.muted }}>Prereqs:</span> {entry.prereqs}
+                        {entry.coreqs && <> · <span style={{ fontWeight: 600, color: C.muted }}>Coreqs:</span> {entry.coreqs}</>}
+                      </div>
+                    )}
+                    {!entry.prereqs && entry.coreqs && (
+                      <div style={{ fontSize: 11, color: C.body, marginTop: 6, lineHeight: 1.4 }}>
+                        <span style={{ fontWeight: 600, color: C.muted }}>Coreqs:</span> {entry.coreqs}
+                      </div>
+                    )}
                     {entry.description && (
-                      <div style={{ fontSize: 11.5, color: C.body, marginTop: 6, lineHeight: 1.45 }}>{entry.description}</div>
+                      <div style={{ fontSize: 11.5, color: C.body, marginTop: 4, lineHeight: 1.45 }}>{entry.description}</div>
                     )}
                   </div>
                   <div style={{ padding: "6px 9px 9px" }}>
@@ -719,7 +778,9 @@ export default function App() {
                               </span>
                               <span style={{ display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
                                 {s.has_d_clearance && <span style={{ fontSize: 9.5, color: C.gold, fontWeight: 700, fontFamily: HEAD, border: `1px solid ${C.goldLine}`, borderRadius: 4, padding: "1px 4px" }}>D</span>}
-                                <span style={{ fontSize: 11, fontWeight: 600, color: s.is_full ? C.bad : C.ok }}>{s.is_full ? "Full" : `${s.open_seats} open`}</span>
+                                <span style={{ fontSize: 11, fontWeight: 600, color: !registrationOpen ? C.muted : s.is_full ? C.bad : C.ok }}>
+                                  {!registrationOpen ? `${s.total_seats} seats` : s.is_full ? "Full" : `${s.open_seats} open`}
+                                </span>
                                 <span style={{ fontSize: 14, color: on ? color : "rgba(0,0,0,0.25)", lineHeight: 1 }}>{on ? "✓" : "+"}</span>
                               </span>
                             </button>
@@ -782,6 +843,13 @@ export default function App() {
                     </div>
                   );
                 })}
+                <div style={{ textAlign: "center", marginTop: 4, marginBottom: 4 }}>
+                  <a href="https://github.com/usc-bbh/next-sem-validator/issues/new?labels=wrong-result&title=Wrong+result+report"
+                    target="_blank" rel="noopener noreferrer"
+                    style={{ fontSize: 11.5, color: C.muted, textDecoration: "none" }}>
+                    Something wrong? <span style={{ color: C.cardinal, fontWeight: 600 }}>Report it ↗</span>
+                  </a>
+                </div>
               </div>
             )}
 
@@ -845,4 +913,3 @@ const linkButton = { background: "none", border: "none", padding: 0, color: C.ca
 function Tag({ children, c }) {
   return <span style={{ fontSize: 9.5, color: c, border: `1px solid ${c}4d`, background: `${c}1f`, borderRadius: 6, padding: "2px 7px", fontWeight: 600, letterSpacing: "0.01em", whiteSpace: "nowrap" }}>{children}</span>;
 }
-
