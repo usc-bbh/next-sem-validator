@@ -7,10 +7,15 @@ test("#/about opens the About page", () => {
   assert.equal(pageFromHash("#/about/"), "about");
 });
 
+test("#/feedback opens the Feedback page", () => {
+  assert.equal(pageFromHash("#/feedback"), "feedback");
+  assert.equal(pageFromHash("#/feedback/"), "feedback");
+});
+
 test("anything else is the main page", () => {
-  for (const h of ["", "#", "#/", "#/aboutx", "#about"]) assert.equal(pageFromHash(h), "home");
+  for (const h of ["", "#", "#/", "#/aboutx", "#about", "#/feedbackx", "#feedback"]) assert.equal(pageFromHash(h), "home");
 });
 
 test("each page's hash reads back as that page", () => {
-  for (const p of ["about", "home"]) assert.equal(pageFromHash(hashForPage(p)), p);
+  for (const p of ["about", "feedback", "home"]) assert.equal(pageFromHash(hashForPage(p)), p);
 });

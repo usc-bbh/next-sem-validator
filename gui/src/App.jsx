@@ -3,6 +3,7 @@ import { parseStarsReport } from "../stars-parser";
 import StarsReview, { GraduateNotice, StarsSideBySide } from "./StarsReview";
 import Tour from "./Tour";
 import About from "./About";
+import Feedback from "./Feedback";
 import { pageFromHash, hashForPage } from "./route";
 import { calendarRange, hasTime, toMin } from "./calendarRange";
 import { resultSummary, isLowUnits, lowUnitsMessage } from "./resultSummary";
@@ -209,7 +210,7 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState(null);
   const [validating, setValidating] = useState(false);
-  // "home" or "about", kept in the URL hash so the back button moves between them.
+  // "home", "about" or "feedback", kept in the URL hash so the back button moves between them.
   const [page, setPage] = useState(() => pageFromHash(window.location.hash));
   useEffect(() => {
     const onPop = () => setPage(pageFromHash(window.location.hash));
@@ -570,7 +571,9 @@ export default function App() {
         </div>
       </nav>
 
-      {page === "about" ? <About onBack={() => goTo("home")} /> : (<>
+      {page === "about" ? <About onBack={() => goTo("home")} />
+        : page === "feedback" ? <Feedback onBack={() => goTo("home")} />
+        : (<>
 
       <div style={{ maxWidth: 1320, margin: "0 auto", padding: "36px 28px 0" }}>
         <h1 style={{ fontSize: "clamp(30px, 5vw, 44px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.05, margin: 0 }}>
@@ -829,11 +832,10 @@ export default function App() {
                   );
                 })}
                 <div style={{ textAlign: "center", marginTop: 4, marginBottom: 4 }}>
-                  <a href="https://github.com/usc-bbh/next-sem-validator/issues/new?labels=wrong-result&title=Wrong+result+report"
-                    target="_blank" rel="noopener noreferrer"
-                    style={{ fontSize: 11.5, color: C.muted, textDecoration: "none" }}>
-                    Something wrong? <span style={{ color: C.cardinal, fontWeight: 600 }}>Report it ↗</span>
-                  </a>
+                  <button onClick={() => goTo("feedback")}
+                    style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 11.5, color: C.muted }}>
+                    Something wrong? <span style={{ color: C.cardinal, fontWeight: 600 }}>Report it →</span>
+                  </button>
                 </div>
               </div>
             )}
