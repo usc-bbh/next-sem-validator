@@ -567,7 +567,7 @@ export default function App() {
         </div>
       </nav>
 
-      {page === "about" ? <About onBack={() => goTo("home")} onTour={startTour} /> : (<>
+      {page === "about" ? <About onBack={() => goTo("home")} /> : (<>
 
       <div style={{ maxWidth: 1320, margin: "0 auto", padding: "36px 28px 0" }}>
         <h1 style={{ fontSize: "clamp(30px, 5vw, 44px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.05, margin: 0 }}>

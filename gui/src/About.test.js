@@ -14,7 +14,7 @@ const server = await createServer({
 });
 after(() => server.close());
 const { default: About, ResultsDisclaimer, COMPARISON } = await server.ssrLoadModule("/src/About.jsx");
-const html = renderToStaticMarkup(createElement(About, { onBack() {}, onTour() {} }));
+const html = renderToStaticMarkup(createElement(About, { onBack() {} }));
 const hrefs = [...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]);
 
 // Pages someone has opened and confirmed exist. A new link in About goes here
@@ -64,6 +64,11 @@ test("About says seats aren't tracked", () => {
 test("About is a page, not a dialog", () => {
   assert.doesNotMatch(html, /role="dialog"/);
   assert.match(html, /<button[^>]*>← Back to RegCheck<\/button>/);
+});
+
+// The tour lives in the nav, which About shares, so About doesn't repeat it.
+test("About has no tour button of its own", () => {
+  assert.doesNotMatch(html, /Take the tour/);
 });
 
 test("About sets what's checked against what isn't, row by row", () => {

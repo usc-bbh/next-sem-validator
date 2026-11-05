@@ -1,5 +1,5 @@
 import React from "react";
-import { C, HEAD, BODY, eyebrow, card, primaryButton, secondaryButton } from "./theme";
+import { C, HEAD, BODY, eyebrow, card, primaryButton } from "./theme";
 
 // The About page (#/about), from the nav and the results disclaimer. What
 // RegCheck checks set against what it doesn't, topic by topic, and where to go
@@ -95,7 +95,7 @@ function Items({ items, yes }) {
 
 const colHead = (yes) => ({ ...eyebrow, color: yes ? C.ok : C.faint, letterSpacing: 1.5 });
 
-export default function About({ onBack, onTour }) {
+export default function About({ onBack }) {
   return (
     <main style={{ maxWidth: 1000, margin: "0 auto", padding: "28px 28px 0" }}>
       <style>{css}</style>
@@ -149,9 +149,8 @@ export default function About({ onBack, onTour }) {
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 28 }}>
+      <div style={{ marginTop: 28 }}>
         <button onClick={onBack} style={primaryButton}>Back to RegCheck</button>
-        <button onClick={onTour} className="outline-btn" style={secondaryButton}>Take the tour</button>
       </div>
     </main>
   );
