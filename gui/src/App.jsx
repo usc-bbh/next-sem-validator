@@ -745,7 +745,7 @@ export default function App() {
                                   {s.days.join("/")} {fmt(s.start_time)}–{fmt(s.end_time)}
                                 </span>
                                 {s.instructor && s.instructor !== "TBD" && (
-                                  <span style={{ fontSize: 11, color: C.body, whiteSpace: "nowrap" }}>{s.instructor}</span>
+                                  <span title={s.instructor} style={{ fontSize: 11, color: C.body, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0 }}>{s.instructor}</span>
                                 )}
                               </span>
                               <span style={{ display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
