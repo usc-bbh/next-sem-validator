@@ -4,6 +4,7 @@ import StarsReview, { GraduateNotice, StarsSideBySide } from "./StarsReview";
 import Tour from "./Tour";
 import About, { ResultsDisclaimer } from "./About";
 import { pageFromHash, hashForPage } from "./route";
+import { calendarRange, hasTime, toMin } from "./calendarRange";
 import { INITIAL_STARS, hasUsableReport, canValidate as validateAllowed, reportHint } from "./validateGate";
 import { C, HEAD, BODY, SHADOW, eyebrow, card, primaryButton, secondaryButton } from "./theme";
 import { EMPTY_REPORT } from "./emptyReport";
@@ -46,11 +47,6 @@ const markSeen = (key) => {
   try { localStorage.setItem(`regcheck.${key}`, "1"); } catch { /* blocked: shows again next visit */ }
 };
 
-const toMin = (t) => {
-  if (!t || t === "TBA") return null;
-  const [h, m] = t.split(":").map(Number);
-  return h * 60 + m;
-};
 const fmt = (t) => {
   const [h, m] = t.split(":").map(Number);
   const ampm = h < 12 ? "am" : "pm";
@@ -59,12 +55,8 @@ const fmt = (t) => {
 };
 
 // ─────────────────────────────────────────────────────────────
-// Calendar — dynamically expands for Saturday / early / late classes
+// Calendar — widens for weekend, early and late classes (calendarRange.js)
 // ─────────────────────────────────────────────────────────────
-const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-const ALL_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const DEFAULT_START = 8 * 60;  // 8 am
-const DEFAULT_END   = 21 * 60; // 9 pm
 // Course accent colors — chosen to stay legible on a white background,
 // anchored by USC cardinal for the first course.
 const PALETTE = ["#990000", "#16A34A", "#1d4ed8", "#A16207", "#6f42c1", "#0e7490", "#b3006b"];
@@ -76,22 +68,10 @@ const SEAT_OPEN = C.ok;
 const SEAT_FULL = C.bad;
 const isOpen = (s) => !s.is_full && s.open_seats !== 0;
 
-function Calendar({ blocks }) {
-  // Expand the calendar range only when picked sections need it.
-  // Default: Mon–Fri 8 am–9 pm. Adds Saturday if any picked section
-  // meets on Sat; extends hours if any section starts before 8 am or
-  // ends after 9 pm. Rounds to the nearest hour for clean grid lines.
-  const hasSat = blocks.some((b) => b.days?.includes("Sat"));
-  const days = hasSat ? ALL_DAYS : WEEKDAYS;
+const CAL_PAD = 10; // px above the first hour line and below the last
 
-  let dayStart = DEFAULT_START;
-  let dayEnd = DEFAULT_END;
-  for (const b of blocks) {
-    const s = toMin(b.start_time);
-    const e = toMin(b.end_time);
-    if (s != null && s < dayStart) dayStart = Math.floor(s / 60) * 60;
-    if (e != null && e > dayEnd)   dayEnd   = Math.ceil(e / 60) * 60;
-  }
+function Calendar({ blocks }) {
+  const { days, dayStart, dayEnd } = calendarRange(blocks);
   const span = dayEnd - dayStart;
 
   const hours = [];
@@ -108,9 +88,10 @@ function Calendar({ blocks }) {
           <div key={d} style={{ ...eyebrow, padding: "12px 0", textAlign: "center", borderLeft: `1px solid ${C.line}` }}>{d}</div>
         ))}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: `46px repeat(${days.length}, 1fr)`, position: "relative", height: calHeight }}>
-        {/* hour gutter */}
-        <div style={{ position: "relative" }}>
+      <div style={{ display: "grid", gridTemplateColumns: `46px repeat(${days.length}, 1fr)`, position: "relative", height: calHeight + 2 * CAL_PAD }}>
+        {/* hour gutter. Each column's hours sit CAL_PAD in from the top and bottom, so
+            the first and last labels, centred on their lines, aren't cut off. */}
+        <div style={{ position: "absolute", inset: `${CAL_PAD}px auto ${CAL_PAD}px 0`, width: 46 }}>
           {hours.map((h) => (
             <div key={h} style={{ position: "absolute", top: `${((h * 60 - dayStart) / span) * 100}%`, right: 8, transform: "translateY(-50%)", fontSize: 10, color: C.faint, fontFamily: HEAD }}>
               {h % 12 || 12}{h < 12 ? "a" : "p"}
@@ -118,7 +99,8 @@ function Calendar({ blocks }) {
           ))}
         </div>
         {days.map((day) => (
-          <div key={day} style={{ position: "relative", borderLeft: "1px solid #ededf0" }}>
+          <div key={day} style={{ position: "relative", borderLeft: "1px solid #ededf0", gridColumn: days.indexOf(day) + 2 }}>
+            <div style={{ position: "absolute", inset: `${CAL_PAD}px 0` }}>
             {hours.map((h) => (
               <div key={h} style={{ position: "absolute", top: `${((h * 60 - dayStart) / span) * 100}%`, left: 0, right: 0, borderTop: "1px solid #f2f2f4" }} />
             ))}
@@ -135,6 +117,7 @@ function Calendar({ blocks }) {
                 </div>
               );
             })}
+            </div>
           </div>
         ))}
       </div>
@@ -464,7 +447,7 @@ export default function App() {
   // views agree. Per-course accent colours (colorFor) still drive the
   // course cards in the left column.
   const blocks = pickedList
-    .filter((s) => s.start_time && s.days?.length)
+    .filter(hasTime)
     .map((s) => ({ ...s, color: isOpen(s) ? SEAT_OPEN : SEAT_FULL }));
 
   // Build the section-aware payload we agreed with Tanzil:
