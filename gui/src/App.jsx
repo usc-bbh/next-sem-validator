@@ -3,6 +3,7 @@ import { parseStarsReport } from "../stars-parser";
 import StarsReview, { GraduateNotice, StarsSideBySide } from "./StarsReview";
 import Tour from "./Tour";
 import About, { ResultsDisclaimer } from "./About";
+import { pageFromHash, hashForPage } from "./route";
 import { INITIAL_STARS, hasUsableReport, canValidate as validateAllowed, reportHint } from "./validateGate";
 import { C, HEAD, BODY, SHADOW, eyebrow, card, primaryButton, secondaryButton } from "./theme";
 import { EMPTY_REPORT } from "./emptyReport";
@@ -231,8 +232,18 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState(null);
   const [validating, setValidating] = useState(false);
-  // First visit opens About, which leads into the tour.
-  const [showAbout, setShowAbout] = useState(() => !seen("tourDone"));
+  // "home" or "about", kept in the URL hash so the back button moves between them.
+  const [page, setPage] = useState(() => pageFromHash(window.location.hash));
+  useEffect(() => {
+    const onPop = () => setPage(pageFromHash(window.location.hash));
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+  const goTo = (next) => {
+    if (next !== page) window.history.pushState(null, "", hashForPage(next) || window.location.pathname + window.location.search);
+    setPage(next);
+    window.scrollTo(0, 0);
+  };
 
   // ── STARS upload state ──
   // There's no report until the student uploads one. A parsed report is used as read
@@ -310,13 +321,9 @@ export default function App() {
     setShowUploadNotice(false);
   };
 
-  const closeAbout = () => {
-    markSeen("tourDone");
-    setShowAbout(false);
-  };
-
+  // The tour spotlights the main page, so it starts from there.
   const startTour = () => {
-    setShowAbout(false);
+    goTo("home");
     setTourFrom(null);
     setShowTour(true);
   };
@@ -594,15 +601,15 @@ export default function App() {
               color: C.cardinal, border: `1px solid ${C.cardinal}`, background: C.cardinalTint, cursor: "pointer" }}>
             Take the tour
           </button>
-          <button onClick={() => setShowAbout(true)}
+          <button onClick={() => goTo("about")} aria-current={page === "about" ? "page" : undefined}
             style={{ fontSize: 10.5, letterSpacing: 1, fontFamily: HEAD, fontWeight: 600, borderRadius: 5, padding: "4px 9px",
-              color: C.muted, border: `1px solid ${C.line}`, background: "transparent", cursor: "pointer" }}>
+              color: page === "about" ? C.ink : C.muted, border: `1px solid ${page === "about" ? C.lineStrong : C.line}`, background: page === "about" ? "#FAFAF9" : "transparent", cursor: "pointer" }}>
             About
           </button>
         </div>
       </nav>
 
-      {showAbout && <About onClose={closeAbout} />}
+      {page === "about" ? <About onBack={() => goTo("home")} onTour={startTour} /> : (<>
 
       <div style={{ maxWidth: 1320, margin: "0 auto", padding: "36px 28px 0" }}>
         <h1 style={{ fontSize: "clamp(30px, 5vw, 44px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.05, margin: 0 }}>
@@ -840,7 +847,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <ResultsDisclaimer onShowLimits={() => setShowAbout(true)} />
+                <ResultsDisclaimer onShowLimits={() => goTo("about")} />
 
                 {result.course_results.map((cr, i) => {
                   const s = STATUS[cr.status];
@@ -912,6 +919,8 @@ export default function App() {
           </div>
         </div>
       )}
+
+      </>)}
 
       <footer style={{ borderTop: `1px solid ${C.line}`, marginTop: 48, padding: "32px 24px", textAlign: "center", fontSize: 12, color: C.faint, lineHeight: 1.8 }}>
         RegCheck is a <a href="https://usc-bbh.github.io/bbh-website/" target="_blank" rel="noopener noreferrer" style={{ color: C.muted, textDecoration: "none", fontWeight: 600 }}>BUAI Builder Hub ↗</a> tool · Tools by Students, for Students

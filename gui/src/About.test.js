@@ -13,8 +13,8 @@ const server = await createServer({
   logLevel: "silent",
 });
 after(() => server.close());
-const { default: About, ResultsDisclaimer } = await server.ssrLoadModule("/src/About.jsx");
-const html = renderToStaticMarkup(createElement(About, { onClose() {} }));
+const { default: About, ResultsDisclaimer, COMPARISON } = await server.ssrLoadModule("/src/About.jsx");
+const html = renderToStaticMarkup(createElement(About, { onBack() {}, onTour() {} }));
 const hrefs = [...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]);
 
 // Pages someone has opened and confirmed exist. A new link in About goes here
@@ -39,12 +39,27 @@ test("About still says where to go for D-clearance and advising", () => {
 
 // The limits list left out two things the checker can't do, so a student
 // could read a pass as covering them (#11).
+const notChecked = renderToStaticMarkup(createElement("div", null, ...COMPARISON.flatMap((row) => row.no)));
+
 test("About's limits list says grade minimums aren't checked", () => {
-  assert.match(html, /Does <b>not<\/b> check minimum grades in prerequisites/);
+  assert.match(notChecked, /Minimum grades in prerequisites/);
 });
 
 test("About's limits list says a double major's second report isn't read", () => {
-  assert.match(html, /Does <b>not<\/b> read a second STARS report/);
+  assert.match(notChecked, /A second STARS report/);
+});
+
+// About was a popup over the planner; it's a page of its own now (#/about),
+// with what's checked and what isn't side by side.
+test("About is a page, not a dialog", () => {
+  assert.doesNotMatch(html, /role="dialog"/);
+  assert.match(html, /<button[^>]*>← Back to RegCheck<\/button>/);
+});
+
+test("About sets what's checked against what isn't, row by row", () => {
+  assert.match(html, /<table class="about-compare"/);
+  assert.equal((html.match(/<th class="topic" scope="row"/g) ?? []).length, COMPARISON.length);
+  for (const row of COMPARISON) assert.ok(row.yes.length > 0 && row.no.length > 0, `${row.topic} needs both columns`);
 });
 
 // The results read as a verdict, with nothing saying they're a best guess (#10).
@@ -62,10 +77,4 @@ test("the disclaimer's button opens the limits", () => {
   const button = [el.props.children].flat().find((c) => c?.type === "button");
   button.props.onClick();
   assert.equal(opened, 1);
-});
-
-// The tour moved out of About onto the main page, next to the steps it walks through.
-test("About has no tour button", () => {
-  assert.doesNotMatch(html, /Take the tour/);
-  assert.match(html, /<button[^>]*>Got it<\/button>/);
 });

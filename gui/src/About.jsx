@@ -1,51 +1,167 @@
 import React from "react";
-import { C, HEAD, BODY, eyebrow, card, primaryButton } from "./theme";
+import { C, HEAD, BODY, eyebrow, card, primaryButton, secondaryButton } from "./theme";
 
-// The About popup: shown on a first visit, and from the nav.
-// What RegCheck checks, what it doesn't, and where to go for help. Every link
-// here must be a page someone has opened and checked (About.test.js).
-export default function About({ onClose }) {
+// The About page (#/about), from the nav and the results disclaimer. What
+// RegCheck checks set against what it doesn't, topic by topic, and where to go
+// for help. Every link here must be a page someone has opened and checked
+// (About.test.js).
+
+// One row per topic: `yes` is what the validator checks, `no` is what a pass
+// doesn't cover. Keep `yes` in step with validate_next_semester.py's checks.
+export const COMPARISON = [
+  {
+    topic: "Prerequisites",
+    yes: [
+      <>Prerequisites, counting courses you've finished <b>and</b> ones you're taking now</>,
+      <>GPA minimums, when your GPA is on your report or you add it</>,
+    ],
+    no: [
+      <>Minimum grades in prerequisites (like "C or better"): any passing grade counts</>,
+      <>Co-requisites, for every course</>,
+    ],
+  },
+  {
+    topic: "Your schedule",
+    yes: [
+      <>Time conflicts between your picked sections</>,
+      <>Missing labs or discussions a course needs</>,
+      <>Courses that aren't offered next semester</>,
+      <>Unit totals under 12 or over 18</>,
+    ],
+    no: [
+      <>Graduation requirements or degree progress</>,
+    ],
+  },
+  {
+    topic: "Seats",
+    yes: [
+      <>Sections that are full right now</>,
+    ],
+    no: [
+      <>Whether a seat will still be open when your registration window opens</>,
+    ],
+  },
+  {
+    topic: "Permissions",
+    yes: [
+      <>D-clearance sections, with how that department gives clearance</>,
+      <>Sections reserved for certain majors or programs</>,
+    ],
+    no: [
+      <>Holds, registration appointments, or WebReg issues</>,
+    ],
+  },
+  {
+    topic: "Your record",
+    yes: [
+      <>Courses you've already taken (repeatable ones only warn)</>,
+      <>Whether your class standing fits 400-level courses</>,
+    ],
+    no: [
+      <>A second STARS report: double majors get one per major, and only the one you upload is checked</>,
+    ],
+  },
+];
+
+const css = `
+  .about-compare { width: 100%; border-collapse: separate; border-spacing: 0; }
+  .about-compare th, .about-compare td { text-align: left; vertical-align: top; padding: 16px 20px; border-top: 1px solid ${C.line}; }
+  .about-compare thead th { border-top: none; padding-top: 14px; padding-bottom: 14px; }
+  .about-compare .topic { width: 170px; }
+  .about-compare ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .about-compare li { display: grid; grid-template-columns: 18px 1fr; gap: 8px; align-items: baseline; }
+  .about-compare .col-label { display: none; }
+  @media (max-width: 720px) {
+    .about-compare thead { display: none; }
+    .about-compare, .about-compare tbody, .about-compare tr, .about-compare th, .about-compare td { display: block; width: auto; }
+    .about-compare tr { border-top: 1px solid ${C.line}; padding: 6px 0 10px; }
+    .about-compare tr:first-child { border-top: none; }
+    .about-compare th, .about-compare td { border-top: none; padding: 8px 18px; }
+    .about-compare .col-label { display: block; margin-bottom: 6px; }
+  }
+`;
+
+function Mark({ yes }) {
   return (
-    <div role="dialog" aria-modal="true" aria-labelledby="about-title" onClick={(e) => e.target === e.currentTarget && onClose()}
-      onKeyDown={(e) => e.key === "Escape" && onClose()}
-      style={{ position: "fixed", inset: 0, background: "rgba(20,20,24,0.45)", zIndex: 55, display: "flex", justifyContent: "center", alignItems: "flex-start", padding: "48px 16px", overflowY: "auto" }}>
-      <div style={{ ...card, width: "100%", maxWidth: 580, padding: "22px 24px", position: "relative", boxShadow: "0 30px 70px -20px rgba(28,28,31,0.45)" }}>
-        <button onClick={onClose} aria-label="Close" style={{ position: "absolute", top: 12, right: 14, background: "none", border: "none", color: C.faint, cursor: "pointer", fontSize: 22, lineHeight: 1, width: 32, height: 32 }}>×</button>
-        <div id="about-title" style={{ fontSize: 22, fontWeight: 700, fontFamily: HEAD, color: C.ink, marginBottom: 14 }}>
-          Welcome to Reg<span style={{ color: C.cardinal }}>Check</span>
+    <span aria-hidden="true" style={{ width: 18, height: 18, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center",
+      fontSize: 10.5, fontWeight: 700, fontFamily: HEAD, transform: "translateY(3px)",
+      background: yes ? "rgba(22,163,74,0.12)" : "rgba(0,0,0,0.06)", color: yes ? C.ok : C.faint }}>
+      {yes ? "✓" : "✕"}
+    </span>
+  );
+}
+
+function Items({ items, yes }) {
+  return (
+    <ul>
+      {items.map((item, i) => (
+        <li key={i}><Mark yes={yes} /><span>{item}</span></li>
+      ))}
+    </ul>
+  );
+}
+
+const colHead = (yes) => ({ ...eyebrow, color: yes ? C.ok : C.faint, letterSpacing: 1.5 });
+
+export default function About({ onBack, onTour }) {
+  return (
+    <main style={{ maxWidth: 1000, margin: "0 auto", padding: "28px 28px 0" }}>
+      <style>{css}</style>
+      <button onClick={onBack} style={{ background: "none", border: "none", padding: 0, color: C.muted, fontFamily: HEAD, fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
+        ← Back to RegCheck
+      </button>
+
+      <div style={{ ...eyebrow, color: C.cardinal, marginTop: 26 }}>About RegCheck</div>
+      <h1 id="about-title" style={{ fontSize: "clamp(28px, 4.5vw, 40px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.1, margin: "8px 0 0", maxWidth: 720 }}>
+        What RegCheck checks, and what it doesn't
+      </h1>
+      <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 680, margin: "12px 0 0" }}>
+        RegCheck reads your STARS report and next semester's course catalog, then checks the sections you pick for the
+        things that stop a registration. It's a best guess, not an official check, so confirm with your advisor and on
+        WebReg before you register.
+      </p>
+
+      <div style={{ ...card, marginTop: 28, overflow: "hidden", padding: 0 }}>
+        <table className="about-compare" aria-labelledby="about-title">
+          <thead>
+            <tr style={{ background: "#FAFAF9" }}>
+              <th className="topic" scope="col"><span style={colHead(false)}>Topic</span></th>
+              <th scope="col" style={{ background: "rgba(22,163,74,0.05)" }}><span style={colHead(true)}>✓ RegCheck checks</span></th>
+              <th scope="col"><span style={colHead(false)}>✕ RegCheck doesn't check</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {COMPARISON.map((row) => (
+              <tr key={row.topic}>
+                <th className="topic" scope="row" style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 14.5, color: C.ink }}>{row.topic}</th>
+                <td data-col="yes" style={{ background: "rgba(22,163,74,0.05)", fontSize: 13.5, color: C.ink, lineHeight: 1.55 }}>
+                  <div className="col-label" style={colHead(true)}>Checks</div>
+                  <Items items={row.yes} yes />
+                </td>
+                <td data-col="no" style={{ fontSize: 13.5, color: C.body, lineHeight: 1.55 }}>
+                  <div className="col-label" style={colHead(false)}>Doesn't check</div>
+                  <Items items={row.no} yes={false} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginTop: 18 }}>
+        <div style={{ padding: "16px 18px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 12, fontSize: 13.5, color: C.body, lineHeight: 1.6 }}>
+          <b>Need D-clearance?</b> Reach out to your department.
         </div>
-        <div style={{ ...eyebrow, color: C.cardinal, marginBottom: 12 }}>What RegCheck does</div>
-        <ul style={{ fontSize: 13, color: C.body, lineHeight: 1.8, margin: 0, paddingLeft: 18 }}>
-          <li>Checks <b>time conflicts</b> between your picked sections</li>
-          <li>Flags sections that are <b>full</b> (no open seats)</li>
-          <li>Warns about <b>D-clearance</b> requirements</li>
-          <li>Checks <b>prerequisite</b> completion against your STARS report</li>
-          <li>Checks <b>GPA minimums</b> when your GPA is on your report or you enter it</li>
-          <li>Warns if your unit count is unusually <b>low (&lt;12)</b> or <b>high (&gt;18)</b></li>
-        </ul>
-        <div style={{ ...eyebrow, color: C.cardinal, marginBottom: 8, marginTop: 16 }}>What RegCheck does NOT do</div>
-        <ul style={{ fontSize: 13, color: C.body, lineHeight: 1.8, margin: 0, paddingLeft: 18 }}>
-          <li>Does <b>not</b> replace your academic advisor — always confirm with them</li>
-          <li>Does <b>not</b> check graduation requirements or degree progress</li>
-          <li>Does <b>not</b> guarantee seat availability at registration time</li>
-          <li>Does <b>not</b> handle holds, registration appointments, or WebReg issues</li>
-          <li>Does <b>not</b> verify co-requisite requirements for all courses</li>
-          <li>Does <b>not</b> check minimum grades in prerequisites (like "C or better"): any passing grade counts</li>
-          <li>Does <b>not</b> read a second STARS report: double majors get one per major, and only the one you upload is checked</li>
-        </ul>
-        <div style={{ marginTop: 16, padding: "12px 16px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8 }}>
-          <div style={{ fontSize: 12.5, color: C.body, lineHeight: 1.6 }}>
-            <b>Need D-clearance?</b> Reach out to your department.
-          </div>
-        </div>
-        <div style={{ marginTop: 10, fontSize: 12.5, color: C.muted, lineHeight: 1.6 }}>
+        <div style={{ ...card, padding: "16px 18px", fontSize: 13.5, color: C.body, lineHeight: 1.6 }}>
           For advising, reach out to your academic advisor.
         </div>
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 18, paddingTop: 16, borderTop: `1px solid ${C.line}` }}>
-          <button onClick={onClose} autoFocus style={primaryButton}>Got it</button>
-        </div>
       </div>
-    </div>
+
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 28 }}>
+        <button onClick={onBack} style={primaryButton}>Back to RegCheck</button>
+        <button onClick={onTour} className="outline-btn" style={secondaryButton}>Take the tour</button>
+      </div>
+    </main>
   );
 }
 
