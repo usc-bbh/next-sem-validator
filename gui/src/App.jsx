@@ -589,6 +589,11 @@ export default function App() {
           <span style={{ fontSize: 15, fontWeight: 600, fontFamily: HEAD, color: C.cardinal, letterSpacing: 0.5 }}>RegCheck</span>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <button onClick={startTour}
+            style={{ fontSize: 12, letterSpacing: 0.3, fontFamily: HEAD, fontWeight: 600, borderRadius: 6, padding: "6px 12px",
+              color: C.cardinal, border: `1px solid ${C.cardinal}`, background: C.cardinalTint, cursor: "pointer" }}>
+            Take the tour
+          </button>
           <button onClick={() => setShowAbout(true)}
             style={{ fontSize: 10.5, letterSpacing: 1, fontFamily: HEAD, fontWeight: 600, borderRadius: 5, padding: "4px 9px",
               color: C.muted, border: `1px solid ${C.line}`, background: "transparent", cursor: "pointer" }}>
@@ -612,7 +617,7 @@ export default function App() {
           them before your registration window opens.
         </p>
 
-        <Steps current={!hasReport ? 1 : pickedList.length === 0 ? 2 : 3} onTour={startTour} />
+        <Steps current={!hasReport ? 1 : pickedList.length === 0 ? 2 : 3} />
 
         <input ref={fileInputRef} type="file" accept="application/pdf" onChange={handleStarsUpload} style={{ display: "none" }} />
         {/* Until there's a report, the upload card is the one thing to do, so it's outlined in cardinal. */}
@@ -919,7 +924,7 @@ export default function App() {
 // nothing below the report card appears until there's a report.
 const STEPS = ["Upload your STARS report", "Pick next semester's sections", "Validate before you register"];
 
-function Steps({ current, onTour }) {
+function Steps({ current }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "8px 14px", flexWrap: "wrap", marginTop: 22, fontSize: 13, fontFamily: HEAD }}>
       {STEPS.map((label, i) => {
@@ -939,7 +944,6 @@ function Steps({ current, onTour }) {
           </React.Fragment>
         );
       })}
-      <button onClick={onTour} style={{ ...linkButton, marginLeft: "auto", fontFamily: HEAD, fontSize: 13 }}>Take the tour</button>
     </div>
   );
 }
