@@ -608,7 +608,7 @@ export default function App() {
         <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 680, margin: "8px 0 0" }}>
           Upload your STARS report and pick your sections for next semester. RegCheck flags missing prerequisites,
           D-clearance, time conflicts, missing labs or discussions, and courses you've already taken, so you can fix
-          them before your registration window opens. Your report stays on your device and is never sent to a server.
+          them before your registration window opens.
         </p>
 
         <input ref={fileInputRef} type="file" accept="application/pdf" onChange={handleStarsUpload} style={{ display: "none" }} />
