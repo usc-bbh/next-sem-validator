@@ -1,10 +1,20 @@
 import React from "react";
-import { C, HEAD, eyebrow, card } from "./theme";
+import { C, HEAD, eyebrow, card, primaryButton } from "./theme";
 
 // The Feedback page (#/feedback), from "Something wrong? Report it" under the
-// results. The site is static, so the form itself is a Google Form, embedded
-// here; responses land in that form's Google Sheet.
+// results. Two ways to help: share a redacted STARS report through the STARS
+// Redactor (BBH's Hugging Face app, which strips name, ID, address and grades
+// and stores what a student chooses to submit), and the feedback form itself, a
+// Google Form embedded here, since the site is static. The form asks for the
+// redactor's report ID, so a comment can be matched to the report it's about.
 export const FEEDBACK_FORM_URL = "";
+export const STARS_REDACTOR_URL = "https://huggingface.co/spaces/buai-builder-hub/STARSRedacter";
+
+const REDACT_STEPS = [
+  <>Open the STARS Redactor and upload the same PDF you used here.</>,
+  <>It takes out your name, USC ID, address and grades, and shows you the result.</>,
+  <>Submit the redacted copy there. You'll get a report ID: add it to the form below, and use it if you ever want the report deleted.</>,
+];
 
 // A form's share link ends in /viewform; embedding needs ?embedded=true on it.
 export function embedUrl(link) {
@@ -29,14 +39,43 @@ export default function Feedback({ onBack, formUrl = FEEDBACK_FORM_URL }) {
         A wrong result, a course or section that's missing, something confusing: it all helps us fix it. Name the
         course and section if it's about a result.
       </p>
-      <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6, maxWidth: 640, margin: "8px 0 0" }}>
-        This form is a Google Form, so what you send goes to Google. Your STARS report never leaves your device, so
-        don't paste anything from it you wouldn't want shared.
+
+      <section aria-labelledby="share-title" style={{ ...card, marginTop: 24, padding: "20px 22px", borderTop: `3px solid ${C.cardinal}` }}>
+        <div style={{ ...eyebrow, color: C.cardinal }}>The most useful thing you can send</div>
+        <h2 id="share-title" style={{ fontSize: 20, fontFamily: HEAD, fontWeight: 700, color: C.ink, margin: "6px 0 0" }}>
+          Share your redacted STARS report
+        </h2>
+        <p style={{ fontSize: 14, color: C.body, lineHeight: 1.65, margin: "8px 0 0", maxWidth: 640 }}>
+          STARS reports differ a lot from major to major. Seeing yours, with your personal details removed, is how we
+          find what RegCheck misreads and make it work for students like you.
+        </p>
+        <ol style={{ margin: "14px 0 0", padding: 0, listStyle: "none", display: "grid", gap: 10 }}>
+          {REDACT_STEPS.map((step, i) => (
+            <li key={i} style={{ display: "grid", gridTemplateColumns: "24px 1fr", gap: 10, alignItems: "baseline", fontSize: 13.5, color: C.ink, lineHeight: 1.55 }}>
+              <span aria-hidden="true" style={{ width: 22, height: 22, borderRadius: "50%", background: C.cardinalTint, color: C.cardinal, fontFamily: HEAD, fontWeight: 700, fontSize: 11.5,
+                display: "inline-flex", alignItems: "center", justifyContent: "center", transform: "translateY(5px)" }}>{i + 1}</span>
+              <span>{step}</span>
+            </li>
+          ))}
+        </ol>
+        <a href={STARS_REDACTOR_URL} target="_blank" rel="noopener noreferrer"
+          style={{ ...primaryButton, display: "inline-block", marginTop: 18, textDecoration: "none" }}>
+          Redact and share your report ↗
+        </a>
+        <p style={{ fontSize: 12.5, color: C.muted, lineHeight: 1.6, margin: "12px 0 0" }}>
+          Sharing is up to you. RegCheck never sends your report anywhere; only what you submit in the Redactor is kept.
+        </p>
+      </section>
+
+      <h2 style={{ fontSize: 20, fontFamily: HEAD, fontWeight: 700, color: C.ink, margin: "32px 0 0" }}>Send us feedback</h2>
+      <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6, maxWidth: 640, margin: "6px 0 0" }}>
+        This form is a Google Form, so what you send goes to Google. Don't paste anything from your report you
+        wouldn't want shared; share the redacted report instead.
       </p>
 
       {formUrl ? (
         <>
-          <div style={{ ...card, marginTop: 24, padding: 0, overflow: "hidden" }}>
+          <div style={{ ...card, marginTop: 14, padding: 0, overflow: "hidden" }}>
             <iframe src={embedUrl(formUrl)} title="RegCheck feedback form" loading="lazy"
               style={{ display: "block", width: "100%", height: 900, border: 0 }}>
               Loading the feedback form…
@@ -48,7 +87,7 @@ export default function Feedback({ onBack, formUrl = FEEDBACK_FORM_URL }) {
           </p>
         </>
       ) : (
-        <div style={{ ...card, marginTop: 24, padding: "18px 20px", fontSize: 14, color: C.body }}>
+        <div style={{ ...card, marginTop: 14, padding: "18px 20px", fontSize: 14, color: C.body }}>
           The feedback form isn't set up yet.
         </div>
       )}
