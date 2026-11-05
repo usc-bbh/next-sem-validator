@@ -14,7 +14,7 @@ const server = await createServer({
 });
 after(() => server.close());
 const { default: About, ResultsDisclaimer } = await server.ssrLoadModule("/src/About.jsx");
-const html = renderToStaticMarkup(createElement(About, { onClose() {}, onTour() {} }));
+const html = renderToStaticMarkup(createElement(About, { onClose() {} }));
 const hrefs = [...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]);
 
 // Pages someone has opened and confirmed exist. A new link in About goes here
@@ -62,4 +62,10 @@ test("the disclaimer's button opens the limits", () => {
   const button = [el.props.children].flat().find((c) => c?.type === "button");
   button.props.onClick();
   assert.equal(opened, 1);
+});
+
+// The tour moved out of About onto the main page, next to the steps it walks through.
+test("About has no tour button", () => {
+  assert.doesNotMatch(html, /Take the tour/);
+  assert.match(html, /<button[^>]*>Got it<\/button>/);
 });

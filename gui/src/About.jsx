@@ -1,10 +1,10 @@
 import React from "react";
-import { C, HEAD, BODY, eyebrow, card, primaryButton, secondaryButton } from "./theme";
+import { C, HEAD, BODY, eyebrow, card, primaryButton } from "./theme";
 
-// The About popup: shown on a first visit before the tour, and from the nav.
+// The About popup: shown on a first visit, and from the nav.
 // What RegCheck checks, what it doesn't, and where to go for help. Every link
 // here must be a page someone has opened and checked (About.test.js).
-export default function About({ onClose, onTour }) {
+export default function About({ onClose }) {
   return (
     <div role="dialog" aria-modal="true" aria-labelledby="about-title" onClick={(e) => e.target === e.currentTarget && onClose()}
       onKeyDown={(e) => e.key === "Escape" && onClose()}
@@ -42,8 +42,7 @@ export default function About({ onClose, onTour }) {
           For advising, reach out to your academic advisor.
         </div>
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 18, paddingTop: 16, borderTop: `1px solid ${C.line}` }}>
-          <button onClick={onClose} className="outline-btn" style={secondaryButton}>Close</button>
-          <button onClick={onTour} autoFocus style={primaryButton}>Take the tour</button>
+          <button onClick={onClose} autoFocus style={primaryButton}>Got it</button>
         </div>
       </div>
     </div>

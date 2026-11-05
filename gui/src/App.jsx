@@ -555,6 +555,7 @@ export default function App() {
           .layout { grid-template-columns: 1fr; }
           .sticky-col { position: static; }
         }
+        @media (max-width: 640px) { .step-arrow { display: none; } }
         button { transition: background .15s ease, border-color .15s ease, color .15s ease, box-shadow .18s ease, transform .1s ease; }
         button:focus-visible { outline: 2px solid #990000; outline-offset: 2px; }
         input:focus { outline: none; border-color: #990000; box-shadow: 0 0 0 3px rgba(153,0,0,0.14); }
@@ -596,7 +597,7 @@ export default function App() {
         </div>
       </nav>
 
-      {showAbout && <About onClose={closeAbout} onTour={startTour} />}
+      {showAbout && <About onClose={closeAbout} />}
 
       <div style={{ maxWidth: 1320, margin: "0 auto", padding: "36px 28px 0" }}>
         <h1 style={{ fontSize: "clamp(30px, 5vw, 44px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.05, margin: 0 }}>
@@ -611,10 +612,14 @@ export default function App() {
           them before your registration window opens.
         </p>
 
+        <Steps current={!hasReport ? 1 : pickedList.length === 0 ? 2 : 3} onTour={startTour} />
+
         <input ref={fileInputRef} type="file" accept="application/pdf" onChange={handleStarsUpload} style={{ display: "none" }} />
-        <div data-tour="stars" style={{ ...card, marginTop: 22, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+        {/* Until there's a report, the upload card is the one thing to do, so it's outlined in cardinal. */}
+        <div data-tour="stars" style={{ ...card, marginTop: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap",
+          ...(!hasReport && { border: `1.5px solid ${C.cardinal}`, boxShadow: `0 0 0 4px ${C.cardinalTint}` }) }}>
           <div style={{ flex: 1, minWidth: 240 }}>
-            <div style={{ ...eyebrow, marginBottom: 4 }}>Your STARS report</div>
+            <div style={{ ...eyebrow, marginBottom: 4, ...(!hasReport && { color: C.cardinal }) }}>{hasReport ? "Your STARS report" : "Start here"}</div>
             <div style={{ fontSize: 14, color: C.ink }}>
               {starsSource === "parsing" ? (starsStatusMsg || "Reading your report…")
                 : starsSource === "review" ? "Check what we read from your report…"
@@ -906,6 +911,35 @@ export default function App() {
       <footer style={{ borderTop: `1px solid ${C.line}`, marginTop: 48, padding: "32px 24px", textAlign: "center", fontSize: 12, color: C.faint, lineHeight: 1.8 }}>
         RegCheck is a <a href="https://usc-bbh.github.io/bbh-website/" target="_blank" rel="noopener noreferrer" style={{ color: C.muted, textDecoration: "none", fontWeight: 600 }}>BUAI Builder Hub ↗</a> tool · Tools by Students, for Students
       </footer>
+    </div>
+  );
+}
+
+// The three steps, with the one the student is on filled in. Upload is step one:
+// nothing below the report card appears until there's a report.
+const STEPS = ["Upload your STARS report", "Pick next semester's sections", "Validate before you register"];
+
+function Steps({ current, onTour }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "8px 14px", flexWrap: "wrap", marginTop: 22, fontSize: 13, fontFamily: HEAD }}>
+      {STEPS.map((label, i) => {
+        const n = i + 1;
+        const done = n < current;
+        const on = n === current;
+        return (
+          <React.Fragment key={label}>
+            {i > 0 && <span aria-hidden="true" className="step-arrow" style={{ color: C.faint }}>→</span>}
+            <span aria-current={on ? "step" : undefined} style={{ display: "inline-flex", alignItems: "center", gap: 7, color: on ? C.ink : C.muted, fontWeight: on ? 700 : 500 }}>
+              <span style={{ width: 20, height: 20, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, flexShrink: 0,
+                background: done ? C.ok : on ? C.cardinal : "transparent", color: done || on ? "#fff" : C.faint, border: done || on ? "none" : `1px solid ${C.lineStrong}` }}>
+                {done ? "✓" : n}
+              </span>
+              {label}
+            </span>
+          </React.Fragment>
+        );
+      })}
+      <button onClick={onTour} style={{ ...linkButton, marginLeft: "auto", fontFamily: HEAD, fontSize: 13 }}>Take the tour</button>
     </div>
   );
 }
