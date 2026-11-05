@@ -30,7 +30,7 @@ test("step 1 redacts the report on the page, not on another site", () => {
   assert.match(html, /Having an issue with a result\?/);
   assert.match(html, /Redact your STARS report/);
   assert.match(html, />Choose your STARS PDF</);
-  assert.match(html, /Your report isn&#x27;t uploaded anywhere\./);
+  assert.match(html, /nothing is uploaded/);
   assert.doesNotMatch(html, /huggingface/);
 });
 
@@ -47,14 +47,24 @@ test("step 2's button opens the form in a popup, not straight away", () => {
   assert.doesNotMatch(html, /<iframe/);
 });
 
-test("the popup embeds the real form, with a new-tab link if the frame won't load", () => {
+// The form takes file uploads, so Google requires sign-in, which can't happen in
+// a frame; the popup has to give a way out for browsers that show sign-in there.
+test("the popup embeds the real form and says to open it in a new tab if asked to sign in", () => {
   const html = renderToStaticMarkup(createElement(FormPopup, { formUrl: FEEDBACK_FORM_URL, onClose() {} }));
   assert.match(html, /role="dialog"/);
   assert.match(html, new RegExp(`<iframe src="${esc(FEEDBACK_FORM_URL)}\\?embedded=true"`));
-  assert.match(html, new RegExp(`<a href="${esc(FEEDBACK_FORM_URL)}"[^>]*>Open in a new tab ↗</a>`));
+  assert.match(html, /Asked to sign in\? Google doesn&#x27;t allow signing in here\./);
+  assert.match(html, new RegExp(`<a href="${esc(FEEDBACK_FORM_URL)}"[^>]*>Open the form in a new tab ↗</a>`));
   assert.match(html, /aria-label="Close"/);
 });
 
+test("both steps say to attach the redacted copy, never the original", () => {
+  const html = render();
+  assert.match(html, /attach the redacted\s+copy in step 2/);
+  assert.match(html, /attach your redacted report from step 1/);
+  assert.match(html, /Attach only the redacted copy, never the original\./);
+});
+
 test("the page says the form goes to Google", () => {
-  assert.match(render(), /The form is a Google Form, so what you type there goes to Google\./);
+  assert.match(render(), /The form is a Google Form, so what you send goes to Google/);
 });
