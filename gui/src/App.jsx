@@ -607,7 +607,7 @@ export default function App() {
           Find out what will block your registration before WebReg does.
         </p>
         <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 680, margin: "8px 0 0" }}>
-          Upload your STARS report and pick your sections for next semester. RegCheck flags missing prerequisites,
+          RegCheck flags missing prerequisites,
           D-clearance, time conflicts, missing labs or discussions, and courses you've already taken, so you can fix
           them before your registration window opens.
         </p>
