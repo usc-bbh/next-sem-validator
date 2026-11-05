@@ -13,7 +13,8 @@ const server = await createServer({
 });
 after(() => server.close());
 const { default: Feedback, embedUrl } = await server.ssrLoadModule("/src/Feedback.jsx");
-const render = (formUrl) => renderToStaticMarkup(createElement(Feedback, { onBack() {}, formUrl }));
+const { FEEDBACK_FORM_URL, FEEDBACK_FORM_EMBED } = await server.ssrLoadModule("/src/Feedback.jsx");
+const render = (formUrl, embed = true) => renderToStaticMarkup(createElement(Feedback, { onBack() {}, formUrl, embed }));
 
 const FORM = "https://docs.google.com/forms/d/e/1FAIpQLSexample/viewform";
 
@@ -51,4 +52,14 @@ test("the page sends students to the STARS Redactor to share a redacted report",
 
 test("the Redactor section shows even before the form is set up", () => {
   assert.match(render(""), /Redact and share your report/);
+});
+
+// The real form needs a Google sign-in, which an iframe can't do, so the page
+// links out to it rather than showing a frame that won't load.
+test("the live page links out to the real form instead of embedding it", () => {
+  assert.equal(FEEDBACK_FORM_EMBED, false);
+  assert.match(FEEDBACK_FORM_URL, /^https:\/\/docs\.google\.com\/forms\/d\/e\/[\w-]+\/viewform$/);
+  const html = renderToStaticMarkup(createElement(Feedback, { onBack() {} }));
+  assert.doesNotMatch(html, /<iframe/);
+  assert.match(html, new RegExp(`<a href="${FEEDBACK_FORM_URL.replace(/[.?/]/g, "\\$&")}"[^>]*>Open the feedback form ↗</a>`));
 });

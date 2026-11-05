@@ -1,13 +1,19 @@
 import React from "react";
-import { C, HEAD, eyebrow, card, primaryButton } from "./theme";
+import { C, HEAD, eyebrow, card, primaryButton, secondaryButton } from "./theme";
 
 // The Feedback page (#/feedback), from "Something wrong? Report it" under the
 // results. Two ways to help: share a redacted STARS report through the STARS
 // Redactor (BBH's Hugging Face app, which strips name, ID, address and grades
 // and stores what a student chooses to submit), and the feedback form itself, a
-// Google Form embedded here, since the site is static. The form asks for the
-// redactor's report ID, so a comment can be matched to the report it's about.
-export const FEEDBACK_FORM_URL = "";
+// Google Form, since the site is static. The form asks for the redactor's
+// report ID, so a comment can be matched to the report it's about.
+//
+// The form needs a Google sign-in, which can't happen inside an iframe (Google
+// won't frame its sign-in page, and Safari blocks the frame's cookies), so it
+// opens in a new tab. If the form is ever made open to anyone, set
+// FEEDBACK_FORM_EMBED to true to show it on the page instead.
+export const FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdpxZGDSFvv3VdKaWftf-rdTySfJeZqkjRDFmnzmE788DldDQ/viewform";
+export const FEEDBACK_FORM_EMBED = false;
 export const STARS_REDACTOR_URL = "https://huggingface.co/spaces/buai-builder-hub/STARSRedacter";
 
 const REDACT_STEPS = [
@@ -24,7 +30,7 @@ export function embedUrl(link) {
   return url.toString();
 }
 
-export default function Feedback({ onBack, formUrl = FEEDBACK_FORM_URL }) {
+export default function Feedback({ onBack, formUrl = FEEDBACK_FORM_URL, embed = FEEDBACK_FORM_EMBED }) {
   return (
     <main style={{ maxWidth: 820, margin: "0 auto", padding: "28px 28px 0" }}>
       <button onClick={onBack} style={{ background: "none", border: "none", padding: 0, color: C.muted, fontFamily: HEAD, fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
@@ -73,7 +79,17 @@ export default function Feedback({ onBack, formUrl = FEEDBACK_FORM_URL }) {
         wouldn't want shared; share the redacted report instead.
       </p>
 
-      {formUrl ? (
+      {formUrl && !embed ? (
+        <div style={{ ...card, marginTop: 14, padding: "18px 20px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+          <div style={{ flex: 1, minWidth: 220, fontSize: 13.5, color: C.body, lineHeight: 1.6 }}>
+            Takes a minute. You'll sign in with your Google account (your USC one works).
+          </div>
+          <a href={formUrl} target="_blank" rel="noopener noreferrer" className="outline-btn"
+            style={{ ...secondaryButton, display: "inline-block", textDecoration: "none" }}>
+            Open the feedback form ↗
+          </a>
+        </div>
+      ) : formUrl ? (
         <>
           <div style={{ ...card, marginTop: 14, padding: 0, overflow: "hidden" }}>
             <iframe src={embedUrl(formUrl)} title="RegCheck feedback form" loading="lazy"
