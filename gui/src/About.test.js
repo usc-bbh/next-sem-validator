@@ -13,7 +13,7 @@ const server = await createServer({
   logLevel: "silent",
 });
 after(() => server.close());
-const { default: About, ResultsDisclaimer, COMPARISON } = await server.ssrLoadModule("/src/About.jsx");
+const { default: About, COMPARISON } = await server.ssrLoadModule("/src/About.jsx");
 const html = renderToStaticMarkup(createElement(About, { onBack() {} }));
 const hrefs = [...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]);
 
@@ -75,21 +75,4 @@ test("About sets what's checked against what isn't, row by row", () => {
   assert.match(html, /<table class="about-compare"/);
   assert.equal((html.match(/<th class="topic" scope="row"/g) ?? []).length, COMPARISON.length);
   for (const row of COMPARISON) assert.ok(row.yes.length > 0 && row.no.length > 0, `${row.topic} needs both columns`);
-});
-
-// The results read as a verdict, with nothing saying they're a best guess (#10).
-test("the results disclaimer says it isn't an official check and links to the limits", () => {
-  const note = renderToStaticMarkup(createElement(ResultsDisclaimer, { onShowLimits() {} }));
-  assert.match(note, /role="note"/);
-  assert.match(note, /<b>Not an official check\.<\/b>/);
-  assert.match(note, /Confirm with your advisor and on WebReg before you register\./);
-  assert.match(note, /<button[^>]*>What RegCheck doesn&#x27;t check<\/button>/);
-});
-
-test("the disclaimer's button opens the limits", () => {
-  let opened = 0;
-  const el = ResultsDisclaimer({ onShowLimits: () => opened++ });
-  const button = [el.props.children].flat().find((c) => c?.type === "button");
-  button.props.onClick();
-  assert.equal(opened, 1);
 });

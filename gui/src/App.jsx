@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import { parseStarsReport } from "../stars-parser";
 import StarsReview, { GraduateNotice, StarsSideBySide } from "./StarsReview";
 import Tour from "./Tour";
-import About, { ResultsDisclaimer } from "./About";
+import About from "./About";
 import { pageFromHash, hashForPage } from "./route";
 import { calendarRange, hasTime, toMin } from "./calendarRange";
 import { INITIAL_STARS, hasUsableReport, canValidate as validateAllowed, reportHint } from "./validateGate";
@@ -794,8 +794,6 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-
-                <ResultsDisclaimer onShowLimits={() => goTo("about")} />
 
                 {result.course_results.map((cr, i) => {
                   const s = STATUS[cr.status];
