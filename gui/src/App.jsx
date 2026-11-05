@@ -581,7 +581,7 @@ export default function App() {
       </nav>
 
       {page === "about" ? <About onBack={() => goTo("home")} />
-        : page === "feedback" ? <Feedback onBack={() => goTo("home")} />
+        : page === "feedback" ? <Feedback onBack={() => goTo("home")} reportPdfUrl={hasReport ? pdfUrl : null} />
         : (<>
 
       <div style={{ maxWidth: 1320, margin: "0 auto", padding: "36px 28px 0" }}>

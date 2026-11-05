@@ -12,54 +12,49 @@ const server = await createServer({
   logLevel: "silent",
 });
 after(() => server.close());
-const { default: Feedback, embedUrl } = await server.ssrLoadModule("/src/Feedback.jsx");
-const { FEEDBACK_FORM_URL, FEEDBACK_FORM_EMBED } = await server.ssrLoadModule("/src/Feedback.jsx");
-const render = (formUrl, embed = true) => renderToStaticMarkup(createElement(Feedback, { onBack() {}, formUrl, embed }));
-
-const FORM = "https://docs.google.com/forms/d/e/1FAIpQLSexample/viewform";
+const { default: Feedback, FormPopup, embedUrl, FEEDBACK_FORM_URL } = await server.ssrLoadModule("/src/Feedback.jsx");
+const render = (props = {}) => renderToStaticMarkup(createElement(Feedback, { onBack() {}, ...props }));
+const esc = (s) => s.replace(/[.?/]/g, "\\$&");
 
 test("a form's share link gets embedded=true, keeping what it had", () => {
+  const FORM = "https://docs.google.com/forms/d/e/1FAIpQLSexample/viewform";
   assert.equal(embedUrl(FORM), `${FORM}?embedded=true`);
   assert.equal(embedUrl(`${FORM}?usp=sf_link`), `${FORM}?usp=sf_link&embedded=true`);
   assert.equal(embedUrl(""), "");
 });
 
-test("the page embeds the form and links it for when the frame won't load", () => {
-  const html = render(FORM);
-  assert.match(html, new RegExp(`<iframe src="${FORM.replace(/[.?/]/g, "\\$&")}\\?embedded=true"`));
-  assert.match(html, new RegExp(`<a href="${FORM.replace(/[.?/]/g, "\\$&")}"`));
+// Students with an issue are sent to redact their report first, on this page,
+// rather than off to the hosted STARS Redactor.
+test("step 1 redacts the report on the page, not on another site", () => {
+  const html = render();
+  assert.match(html, /Having an issue with a result\?/);
+  assert.match(html, /Redact your STARS report/);
+  assert.match(html, />Choose your STARS PDF</);
+  assert.match(html, /Your report isn&#x27;t uploaded anywhere\./);
+  assert.doesNotMatch(html, /huggingface/);
 });
 
-test("with no form yet, the page says so instead of showing an empty frame", () => {
-  const html = render("");
+test("with a report already uploaded to RegCheck, step 1 offers to redact that one", () => {
+  const html = render({ reportPdfUrl: "blob:report" });
+  assert.match(html, />Redact the report you uploaded</);
+  assert.match(html, />Choose a different PDF</);
+});
+
+// The form opens in a popup on the page, not a new tab.
+test("step 2's button opens the form in a popup, not straight away", () => {
+  const html = render();
+  assert.match(html, /<button[^>]*>Report an issue<\/button>/);
   assert.doesNotMatch(html, /<iframe/);
-  assert.match(html, /isn&#x27;t set up yet/);
 });
 
-// What's sent goes to Google, so the page says so.
+test("the popup embeds the real form, with a new-tab link if the frame won't load", () => {
+  const html = renderToStaticMarkup(createElement(FormPopup, { formUrl: FEEDBACK_FORM_URL, onClose() {} }));
+  assert.match(html, /role="dialog"/);
+  assert.match(html, new RegExp(`<iframe src="${esc(FEEDBACK_FORM_URL)}\\?embedded=true"`));
+  assert.match(html, new RegExp(`<a href="${esc(FEEDBACK_FORM_URL)}"[^>]*>Open in a new tab ↗</a>`));
+  assert.match(html, /aria-label="Close"/);
+});
+
 test("the page says the form goes to Google", () => {
-  assert.match(render(FORM), /This form is a Google Form, so what you send goes to Google\./);
-});
-
-// Students are asked to share a redacted report, through the Redactor, not the form.
-test("the page sends students to the STARS Redactor to share a redacted report", () => {
-  const html = render(FORM);
-  assert.match(html, /Share your redacted STARS report/);
-  assert.match(html, /<a href="https:\/\/huggingface\.co\/spaces\/buai-builder-hub\/STARSRedacter"[^>]*>Redact and share your report ↗<\/a>/);
-  assert.match(html, /takes out your name, USC ID, address and grades/);
-  assert.match(html, /RegCheck never sends your report anywhere/);
-});
-
-test("the Redactor section shows even before the form is set up", () => {
-  assert.match(render(""), /Redact and share your report/);
-});
-
-// The real form needs a Google sign-in, which an iframe can't do, so the page
-// links out to it rather than showing a frame that won't load.
-test("the live page links out to the real form instead of embedding it", () => {
-  assert.equal(FEEDBACK_FORM_EMBED, false);
-  assert.match(FEEDBACK_FORM_URL, /^https:\/\/docs\.google\.com\/forms\/d\/e\/[\w-]+\/viewform$/);
-  const html = renderToStaticMarkup(createElement(Feedback, { onBack() {} }));
-  assert.doesNotMatch(html, /<iframe/);
-  assert.match(html, new RegExp(`<a href="${FEEDBACK_FORM_URL.replace(/[.?/]/g, "\\$&")}"[^>]*>Open the feedback form ↗</a>`));
+  assert.match(render(), /The form is a Google Form, so what you type there goes to Google\./);
 });

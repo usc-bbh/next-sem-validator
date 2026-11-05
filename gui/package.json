@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "sync:validator": "node scripts/sync-validator.mjs",
-    "predev": "npm run sync:validator",
+    "sync:redactor": "node scripts/sync-redactor.mjs",
+    "predev": "npm run sync:validator && npm run sync:redactor",
     "dev": "vite",
-    "prebuild": "npm run sync:validator",
+    "prebuild": "npm run sync:validator && npm run sync:redactor",
     "build": "vite build",
     "lint": "oxlint",
     "test": "node --test stars-parser/test/*.test.js src/*.test.js",

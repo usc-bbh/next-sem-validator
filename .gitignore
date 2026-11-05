@@ -25,7 +25,11 @@ dist-ssr
 
 # Copied from analytics/ at dev/build time (gui prebuild) — not a source file
 gui/public/validator/
+gui/public/redactor/
 
 # Deploy and secrets
 .vercel
 .env*
+
+# Python bytecode from running the vendored redactor locally
+redactor/**/__pycache__/
