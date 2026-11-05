@@ -5,6 +5,7 @@ import Tour from "./Tour";
 import About from "./About";
 import { pageFromHash, hashForPage } from "./route";
 import { calendarRange, hasTime, toMin } from "./calendarRange";
+import { resultSummary, isLowUnits, lowUnitsMessage } from "./resultSummary";
 import { INITIAL_STARS, hasUsableReport, canValidate as validateAllowed, reportHint } from "./validateGate";
 import { C, HEAD, BODY, SHADOW, eyebrow, card, primaryButton, secondaryButton } from "./theme";
 import { EMPTY_REPORT } from "./emptyReport";
@@ -433,6 +434,8 @@ export default function App() {
   }));
 
   const totalUnits = expanded.reduce((sum, c) => sum + (catalog?.[c]?.units || 0), 0);
+  const lowUnits = isLowUnits(totalUnits, expanded.length);
+  const { status: overallStatus, warnings: scheduleWarnings } = resultSummary(result, totalUnits, expanded.length);
 
   // Sections are required on every entry, so the GUI enforces it rather than
   // letting an invalid payload reach the validator.
@@ -771,29 +774,44 @@ export default function App() {
               <span className="mono" style={{ fontSize: 12, color: totalUnits > 18 ? C.bad : C.body, background: "#fff", border: `1px solid ${C.line}`, borderRadius: 999, padding: "4px 12px" }}>{totalUnits} {totalUnits === 1 ? "unit" : "units"} · {pickedList.length} {pickedList.length === 1 ? "section" : "sections"}</span>
             </div>
 
-            {expanded.length > 0 && totalUnits > 0 && totalUnits < 12 && (
+            {/* Before a check this is live feedback; after one it moves under the result banner. */}
+            {!result && lowUnits && (
               <div style={{ marginBottom: 12, padding: "10px 14px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8, fontSize: 12.5, color: C.body, lineHeight: 1.5 }}>
-                <span style={{ color: C.warn, fontWeight: 700 }}>Low unit count:</span> {totalUnits} units is below the typical full-time minimum of 12. Most students take 12–18 units. Check with your advisor if this is intentional.
+                <span style={{ color: C.warn, fontWeight: 700 }}>Low unit count:</span> {lowUnitsMessage(totalUnits)}
               </div>
             )}
 
             {result && (
               <div style={{ marginBottom: 16 }}>
                 <div style={{ ...card, display: "flex", alignItems: "center", gap: 12, marginBottom: 14, padding: "14px 16px",
-                  borderLeft: `4px solid ${result.overall_status === "valid" ? C.ok : result.overall_status === "warning" ? C.warn : C.bad}` }}>
+                  borderLeft: `4px solid ${overallStatus === "valid" ? C.ok : overallStatus === "warning" ? C.warn : C.bad}` }}>
                   <span style={{ width: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "#fff", flexShrink: 0,
-                    background: result.overall_status === "valid" ? C.ok : result.overall_status === "warning" ? C.warn : C.bad }}>
-                    {result.overall_status === "valid" ? "✓" : "!"}
+                    background: overallStatus === "valid" ? C.ok : overallStatus === "warning" ? C.warn : C.bad }}>
+                    {overallStatus === "valid" ? "✓" : "!"}
                   </span>
                   <div>
                     <div style={{ fontWeight: 700, fontSize: 15, color: C.ink, fontFamily: HEAD }}>
-                      {result.overall_status === "valid" ? "Schedule looks good" : result.overall_status === "warning" ? "Needs reviewing" : "Schedule has problems"}
+                      {overallStatus === "valid" ? "Schedule looks good" : overallStatus === "warning" ? "Needs reviewing" : "Schedule has problems"}
                     </div>
                     <div className="mono" style={{ fontSize: 11.5, color: C.body, marginTop: 2 }}>
-                      {result.summary.total_units} units{result.summary.warnings.map((w, i) => <span key={i}> · {w}</span>)}
+                      {result.summary.total_units} units
                     </div>
                   </div>
                 </div>
+
+                {/* Schedule-wide warnings sit right under the banner, before the per-course results. */}
+                {scheduleWarnings.length > 0 && (
+                  <div style={{ background: STATUS.warning.bg, border: `1px solid ${STATUS.warning.border}`, borderRadius: 10, padding: "11px 13px", marginBottom: 8 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                      <span style={{ width: 18, height: 18, borderRadius: "50%", background: STATUS.warning.dot, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "#fff", flexShrink: 0 }}>{STATUS.warning.icon}</span>
+                      <span style={{ fontWeight: 700, fontSize: 14, color: C.ink, fontFamily: HEAD }}>Your schedule</span>
+                      <span style={{ fontSize: 10.5, fontWeight: 600, fontFamily: HEAD, color: STATUS.warning.dot, marginLeft: "auto", textTransform: "uppercase", letterSpacing: 1.5 }}>{STATUS.warning.label}</span>
+                    </div>
+                    {scheduleWarnings.map((w, j) => (
+                      <div key={j} style={{ fontSize: 12.5, color: C.body, lineHeight: 1.5, paddingLeft: 27, marginTop: 4 }}>{w}</div>
+                    ))}
+                  </div>
+                )}
 
                 {result.course_results.map((cr, i) => {
                   const s = STATUS[cr.status];
