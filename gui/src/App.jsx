@@ -602,9 +602,13 @@ export default function App() {
         <h1 style={{ fontSize: "clamp(30px, 5vw, 44px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.05, margin: 0 }}>
           Reg<span style={{ color: C.cardinal }}>Check</span>
         </h1>
-        <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 640, margin: "10px 0 0" }}>
-          Upload your STARS report, then pick your sections for next semester and check the schedule before you register.
-          Everything runs on your device: your report is never sent to a server or stored.
+        <p style={{ fontSize: "clamp(18px, 2.4vw, 22px)", fontFamily: HEAD, fontWeight: 600, color: C.ink, lineHeight: 1.3, maxWidth: 680, margin: "12px 0 0" }}>
+          Find out what will block your registration before WebReg does.
+        </p>
+        <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 680, margin: "8px 0 0" }}>
+          Upload your STARS report and pick your sections for next semester. RegCheck flags missing prerequisites,
+          D-clearance, time conflicts, missing labs or discussions, and courses you've already taken, so you can fix
+          them before your registration window opens. Your report stays on your device and is never sent to a server.
         </p>
 
         <input ref={fileInputRef} type="file" accept="application/pdf" onChange={handleStarsUpload} style={{ display: "none" }} />
@@ -901,8 +905,6 @@ export default function App() {
 
       <footer style={{ borderTop: `1px solid ${C.line}`, marginTop: 48, padding: "32px 24px", textAlign: "center", fontSize: 12, color: C.faint, lineHeight: 1.8 }}>
         RegCheck is a <a href="https://usc-bbh.github.io/bbh-website/" target="_blank" rel="noopener noreferrer" style={{ color: C.muted, textDecoration: "none", fontWeight: 600 }}>BUAI Builder Hub ↗</a> tool · Tools by Students, for Students
-        <br />
-        Not an official USC system. Always confirm in WebReg and with your advisor.
       </footer>
     </div>
   );
