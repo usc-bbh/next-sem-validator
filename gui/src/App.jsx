@@ -525,6 +525,13 @@ export default function App() {
           .sticky-col { position: static; }
         }
         @media (max-width: 640px) { .step-arrow { display: none; } }
+        /* Three nav buttons and the logo fit a phone once the wordmark goes and nothing wraps. */
+        .nav-actions button { white-space: nowrap; }
+        @media (max-width: 480px) {
+          .topnav { padding: 0 16px !important; }
+          .nav-wordmark { display: none; }
+          .nav-actions { gap: 6px !important; }
+        }
         button { transition: background .15s ease, border-color .15s ease, color .15s ease, box-shadow .18s ease, transform .1s ease; }
         button:focus-visible { outline: 2px solid #990000; outline-offset: 2px; }
         input:focus { outline: none; border-color: #990000; box-shadow: 0 0 0 3px rgba(153,0,0,0.14); }
@@ -539,7 +546,7 @@ export default function App() {
         ::-webkit-scrollbar-thumb { background: rgba(153,0,0,0.3); border-radius: 3px; }
       `}</style>
 
-      <nav style={{ position: "sticky", top: 0, zIndex: 40, height: 64, padding: "0 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, background: "rgba(255,255,255,0.92)", backdropFilter: "blur(16px)", borderBottom: `1px solid ${C.line}` }}>
+      <nav className="topnav" style={{ position: "sticky", top: 0, zIndex: 40, height: 64, padding: "0 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, background: "rgba(255,255,255,0.92)", backdropFilter: "blur(16px)", borderBottom: `1px solid ${C.line}` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <a href="https://usc-bbh.github.io/bbh-website/" target="_blank" rel="noopener noreferrer" title="BUAI Builder Hub" style={{ display: "flex" }}>
             {/* Same mark as public/favicon.svg; keep the two in step. */}
@@ -555,19 +562,21 @@ export default function App() {
               <rect x="13" y="35" width="22" height="3.5" rx="1.75" fill="#D4AF37" />
             </svg>
           </a>
-          <span style={{ fontSize: 15, fontWeight: 600, fontFamily: HEAD, color: C.cardinal, letterSpacing: 0.5 }}>RegCheck</span>
+          <span className="nav-wordmark" style={{ fontSize: 15, fontWeight: 600, fontFamily: HEAD, color: C.cardinal, letterSpacing: 0.5 }}>RegCheck</span>
         </div>
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+        <div className="nav-actions" style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <button onClick={startTour}
             style={{ fontSize: 12, letterSpacing: 0.3, fontFamily: HEAD, fontWeight: 600, borderRadius: 6, padding: "6px 12px",
               color: C.cardinal, border: `1px solid ${C.cardinal}`, background: C.cardinalTint, cursor: "pointer" }}>
             Take the tour
           </button>
-          <button onClick={() => goTo("about")} aria-current={page === "about" ? "page" : undefined}
-            style={{ fontSize: 10.5, letterSpacing: 1, fontFamily: HEAD, fontWeight: 600, borderRadius: 5, padding: "4px 9px",
-              color: page === "about" ? C.ink : C.muted, border: `1px solid ${page === "about" ? C.lineStrong : C.line}`, background: page === "about" ? "#FAFAF9" : "transparent", cursor: "pointer" }}>
-            About
-          </button>
+          {[["feedback", "Feedback"], ["about", "About"]].map(([p, label]) => (
+            <button key={p} onClick={() => goTo(p)} aria-current={page === p ? "page" : undefined}
+              style={{ fontSize: 10.5, letterSpacing: 1, fontFamily: HEAD, fontWeight: 600, borderRadius: 5, padding: "4px 9px",
+                color: page === p ? C.ink : C.muted, border: `1px solid ${page === p ? C.lineStrong : C.line}`, background: page === p ? "#FAFAF9" : "transparent", cursor: "pointer" }}>
+              {label}
+            </button>
+          ))}
         </div>
       </nav>
 
