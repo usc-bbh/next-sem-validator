@@ -12,11 +12,15 @@ requires a specific section, so a course-only check could only ever say
 module's purpose (module 4B is next-semester validation, not a full degree
 plan).
 
-Because sections are required, seat availability, lab/discussion pairing,
-and time conflicts are all simple, deterministic fail-or-pass checks -- no
-"maybe" warning tier needed for any of them. All of a course's selected
+Because sections are required, lab/discussion pairing and time conflicts
+are simple, deterministic fail-or-pass checks -- no "maybe" warning tier
+needed for either. All of a course's selected
 sections are treated as simultaneous commitments (a lecture and its lab both
 apply at once), not alternatives to choose between.
+
+Seat availability isn't checked. The catalog's seat counts are a snapshot
+from the scrape, not live, so "full" or "open" would be stale by the time a
+student registers.
 
 Prereqs and major restrictions are parsed out of free-text catalog fields on
 a best-effort basis (course codes, GPA thresholds, "reserved for X" /
@@ -474,17 +478,6 @@ def _check_in_catalog(course: str, catalog: dict) -> CourseResult | None:
     return None
 
 
-def _check_seat_availability(course: str, catalog_entry: dict | None, selected_section_ids: set[str]) -> CourseResult | None:
-    """Fails if any selected section is full."""
-    if not catalog_entry:
-        return None
-    full = [s for s in _all_sections(catalog_entry, selected_section_ids) if s.get("is_full")]
-    if full:
-        ids = ", ".join(s["section_id"] for s in full)
-        return CourseResult(course, "fail", [f"Selected section(s) {ids} of {course} are full."])
-    return None
-
-
 _SECTION_LABEL = {"labs": "lab", "discussions": "discussion", "quizzes": "quiz"}
 # What a combined section (filed under "other", mode "Lecture/Lab" or "Lecture/Discussion") stands in for.
 _COMBINED_COVERS = {"labs": "Lab", "discussions": "Discussion"}
@@ -725,7 +718,6 @@ def validate_next_semester(
             _check_prereq(course, catalog_entry, stars_summary),
             _check_gpa(course, catalog_entry, stars_summary),
             _check_in_catalog(course, catalog),
-            _check_seat_availability(course, catalog_entry, selected_section_ids),
             _check_lab_discussion_pairing(course, catalog_entry, selected_section_ids),
             _check_major_restrictions(course, catalog_entry, stars_summary, selected_section_ids),
             _check_unresolved_time_sections(course, unresolved_time_sections),

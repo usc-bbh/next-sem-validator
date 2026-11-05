@@ -25,7 +25,7 @@ const TOUR_STEPS = [
   {
     target: "courses",
     title: "Pick your sections",
-    body: "Each course lists its lectures, labs and discussions. Pick one of each type you need. Open seats show in green, full sections in red.",
+    body: "Each course lists its lectures, labs and discussions. Pick one of each type you need.",
   },
   {
     target: "week",

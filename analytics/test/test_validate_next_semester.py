@@ -14,7 +14,6 @@ from validate_next_semester import (
     _check_major_restrictions,
     _check_gpa,
     _check_prereq,
-    _check_seat_availability,
     _check_standing,
     _check_time_conflicts,
     _dept_clearance_by_prefix,
@@ -558,31 +557,19 @@ def test_in_catalog_none_when_present():
     assert _check_in_catalog("CSCI 104", {"CSCI 104": {}}) is None
 
 
-# ---- seat availability -----------------------------------------------------
+# ---- seat availability (not checked) ----------------------------------------
+# Seat counts in the catalog are a scrape-time snapshot, not live, so a full
+# section used to fail on data that would be stale by registration.
 
-def test_seat_availability_fails_for_selected_full_section():
-    entry = {
-        "sections": {
-            "lectures": [
-                {"section_id": "1", "is_full": True, "is_cancelled": False},
-                {"section_id": "2", "is_full": False, "is_cancelled": False},
-            ]
-        }
-    }
-    result = _check_seat_availability("CSCI 401", entry, {"1"})
-    assert result.status == "fail"
-
-
-def test_seat_availability_none_for_selected_open_section():
-    entry = {
-        "sections": {
-            "lectures": [
-                {"section_id": "1", "is_full": True, "is_cancelled": False},
-                {"section_id": "2", "is_full": False, "is_cancelled": False},
-            ]
-        }
-    }
-    assert _check_seat_availability("CSCI 401", entry, {"2"}) is None
+def test_full_section_is_not_a_blocker(dept_clearance):
+    stars = {"completedCourses": [], "inProgressCourses": [], "classLevel": "Senior"}
+    catalog = {"CSCI 401": {"units": 4, "description": "", "sections": {"lectures": [
+        {"section_id": "1", "is_full": True, "open_seats": 0, "is_cancelled": False,
+         "days": ["Mon"], "start_time": "10:00", "end_time": "11:50", "link_code": None},
+    ]}}}
+    result = validate_next_semester([{"course": "CSCI 401", "sections": ["1"]}], stars, catalog, dept_clearance)
+    assert result.course_results[0].status == "pass"
+    assert not any("full" in r for r in result.course_results[0].reasons)
 
 
 # ---- lab/discussion pairing -------------------------------------------------
@@ -874,7 +861,7 @@ def test_validate_next_semester_end_to_end(planned_courses, stars_summary, cours
         "MATH 407": "fail",  # mismatched lab/discussion link code, plus conflict with CSCI 401
         "ANTH 491": "warning",  # D-clearance + TBA section, no fixed time to conflict-check
         "ANTH 338": "fail",  # time conflicts with CSCI 426 and ARCH 203
-        "ACCT 371": "fail",  # both selected sections full, plus time conflicts
+        "ACCT 371": "fail",  # time conflicts (its sections are full, which isn't checked)
         "ARCH 203": "fail",  # time conflicts with CSCI 426 and ANTH 338 (its "reserved for" note alone only warns)
         "CSCI 999": "warning",  # not in catalog
     }
@@ -884,7 +871,7 @@ def test_validate_next_semester_end_to_end(planned_courses, stars_summary, cours
     assert "CSCI 426 conflicts with ANTH 338." in by_course["CSCI 426"].reasons
     assert "CSCI 426 conflicts with ARCH 203." in by_course["CSCI 426"].reasons
     assert any("TBA" in r for r in by_course["ANTH 491"].reasons)
-    assert any("full" in r for r in by_course["ACCT 371"].reasons)
+    assert not any("full" in r for r in by_course["ACCT 371"].reasons)
     assert any("reserved for" in r for r in by_course["ARCH 203"].reasons)
     assert any("link code" in r for r in by_course["MATH 407"].reasons)
 

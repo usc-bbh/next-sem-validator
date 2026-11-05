@@ -8,6 +8,7 @@ import { C, HEAD, BODY, eyebrow, card, primaryButton, secondaryButton } from "./
 
 // One row per topic: `yes` is what the validator checks, `no` is what a pass
 // doesn't cover. Keep `yes` in step with validate_next_semester.py's checks.
+// An empty `yes` shows as "Not tracked".
 export const COMPARISON = [
   {
     topic: "Prerequisites",
@@ -34,11 +35,9 @@ export const COMPARISON = [
   },
   {
     topic: "Seats",
-    yes: [
-      <>Sections that are full right now</>,
-    ],
+    yes: [],
     no: [
-      <>Whether a seat will still be open when your registration window opens</>,
+      <>Open seats. RegCheck doesn't track seat availability, so a section you pick may be full when you register. Check WebReg for seats.</>,
     ],
   },
   {
@@ -136,7 +135,9 @@ export default function About({ onBack, onTour }) {
                 <th className="topic" scope="row" style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 14.5, color: C.ink }}>{row.topic}</th>
                 <td data-col="yes" style={{ background: "rgba(22,163,74,0.05)", fontSize: 13.5, color: C.ink, lineHeight: 1.55 }}>
                   <div className="col-label" style={colHead(true)}>Checks</div>
-                  <Items items={row.yes} yes />
+                  {row.yes.length > 0 ? <Items items={row.yes} yes /> : (
+                    <span style={{ display: "inline-block", fontFamily: HEAD, fontWeight: 600, fontSize: 12, color: C.muted, border: `1px dashed ${C.lineStrong}`, borderRadius: 6, padding: "3px 9px" }}>Not tracked</span>
+                  )}
                 </td>
                 <td data-col="no" style={{ fontSize: 13.5, color: C.body, lineHeight: 1.55 }}>
                   <div className="col-label" style={colHead(false)}>Doesn't check</div>

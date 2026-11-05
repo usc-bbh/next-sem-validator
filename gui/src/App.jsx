@@ -61,13 +61,6 @@ const fmt = (t) => {
 // anchored by USC cardinal for the first course.
 const PALETTE = ["#990000", "#16A34A", "#1d4ed8", "#A16207", "#6f42c1", "#0e7490", "#b3006b"];
 
-// Seat-availability colours for the calendar. Matches the same fullness
-// test the validator uses (is_full OR zero open seats), so a block can't
-// read "open" while the validator fails it for being full.
-const SEAT_OPEN = C.ok;
-const SEAT_FULL = C.bad;
-const isOpen = (s) => !s.is_full && s.open_seats !== 0;
-
 const CAL_PAD = 10; // px above the first hour line and below the last
 
 function Calendar({ blocks }) {
@@ -363,21 +356,6 @@ export default function App() {
 
   const courseNames = useMemo(() => catalog ? Object.keys(catalog) : [], [catalog]);
 
-  // Detect whether registration has opened yet. When every section in the
-  // catalog has registered_seats === 0, registration hasn't started and the
-  // "N open" seat counts are meaningless (everything would say "open").
-  const registrationOpen = useMemo(() => {
-    if (!catalog) return true; // assume open until proven otherwise
-    for (const entry of Object.values(catalog)) {
-      for (const secs of Object.values(entry.sections || {})) {
-        for (const s of secs) {
-          if (s.registered_seats > 0) return true;
-        }
-      }
-    }
-    return false;
-  }, [catalog]);
-
   // Helper: collect all unique instructor names for a course (skipping TBD)
   const getInstructors = (entry) => {
     if (!entry?.sections) return [];
@@ -441,14 +419,11 @@ export default function App() {
   };
 
   const pickedList = Object.values(picked);
-  // Calendar blocks are coloured by seat availability, not by course:
-  // green = seats open, cardinal = full. Same two colours the section
-  // picker already uses for its "N open" / "Full" label, so the two
-  // views agree. Per-course accent colours (colorFor) still drive the
-  // course cards in the left column.
+  // Calendar blocks take their course's accent colour, the same one as its
+  // card. RegCheck doesn't track seats, so nothing here says open or full.
   const blocks = pickedList
     .filter(hasTime)
-    .map((s) => ({ ...s, color: isOpen(s) ? SEAT_OPEN : SEAT_FULL }));
+    .map((s) => ({ ...s, color: colorFor(s.course_name) }));
 
   // Build the section-aware payload we agreed with Tanzil:
   //   [{ course: "CSCI 104", sections: ["29903", "30119"] }]
@@ -710,13 +685,6 @@ export default function App() {
             </div>
 
             <div data-tour="courses">
-            {!registrationOpen && expanded.length > 0 && (
-              <div style={{ marginBottom: 12, padding: "8px 12px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 8, fontSize: 12, color: C.body, lineHeight: 1.5 }}>
-                <span style={{ color: C.warn, fontWeight: 700 }}>Registration not yet open.</span>{" "}
-                Seat counts show capacity only — no live availability data yet.
-              </div>
-            )}
-
             {expanded.length === 0 && (
               <div style={{ color: C.muted, fontSize: 13.5, padding: "32px 20px", textAlign: "center", border: "1px dashed rgba(0,0,0,0.15)", borderRadius: 14, background: "#FFFFFF" }}>
                 <div style={{ ...eyebrow, marginBottom: 8 }}>No courses yet</div>
@@ -782,9 +750,6 @@ export default function App() {
                               </span>
                               <span style={{ display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
                                 {s.has_d_clearance && <span style={{ fontSize: 9.5, color: C.gold, fontWeight: 700, fontFamily: HEAD, border: `1px solid ${C.goldLine}`, borderRadius: 4, padding: "1px 4px" }}>D</span>}
-                                <span style={{ fontSize: 11, fontWeight: 600, color: !registrationOpen ? C.muted : s.is_full ? C.bad : C.ok }}>
-                                  {!registrationOpen ? `${s.total_seats} seats` : s.is_full ? "Full" : `${s.open_seats} open`}
-                                </span>
                                 <span style={{ fontSize: 14, color: on ? color : "rgba(0,0,0,0.25)", lineHeight: 1 }}>{on ? "✓" : "+"}</span>
                               </span>
                             </button>

@@ -122,7 +122,6 @@ table below is only what the validator reads from it today.
 | `sections.*[].link_code` | lab/discussion pairing check (labs, discussions and quizzes; a section with no link code goes with any lecture) |
 | `sections.*[].notes` | major-restrictions check |
 | `sections.*[].is_cancelled` | excluded from all section-based checks |
-| `sections.*[].is_full` | seat-availability check |
 | `sections.*[].days`, `start_time`, `end_time` | time-conflict check ("TBA" or malformed values are treated as unresolvable, not a crash) |
 
 ### `dept_clearance`
@@ -167,7 +166,6 @@ flagging here instead of changing unilaterally.
 | D-clearance | warning (never a hard fail — see below) | selected sections' `has_d_clearance` (else the course's) + `dept_clearance.json` | per-department `source_url` field already inside `dept_clearance.json` |
 | Prerequisites | fail / warning | `course_catalog.description`'s prerequisite clause (best-effort "and"/"or" parsing) against `stars_summary`'s completed and in-progress courses | — |
 | Not found in catalog | warning | `course_catalog` presence | — |
-| Seat availability | fail | selected section(s) `is_full` | — |
 | Lab/discussion pairing | fail | a lecture picked when the course has lectures; `course_catalog.has_lab` / `has_discussion`; selected sections' `link_code` and `mode` | — |
 | Major restrictions | fail / warning ("reserved for X" only ever warns: a program name can't be matched reliably against the report's major) | `course_catalog.has_restrictions` + selected sections' `notes` (best-effort keyword match) | — |
 | Time conflict | fail | selected sections' `days` / `start_time` / `end_time` | — |

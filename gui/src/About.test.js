@@ -49,6 +49,16 @@ test("About's limits list says a double major's second report isn't read", () =>
   assert.match(notChecked, /A second STARS report/);
 });
 
+// Seat counts are a scrape-time snapshot, so RegCheck stopped checking them;
+// About has to say so rather than leave a student assuming a pass means a seat.
+test("About says seats aren't tracked", () => {
+  const seats = COMPARISON.find((row) => row.topic === "Seats");
+  assert.deepEqual(seats.yes, []);
+  assert.match(renderToStaticMarkup(createElement("div", null, ...seats.no)), /doesn&#x27;t track seat availability/);
+  assert.match(html, />Not tracked</);
+  assert.doesNotMatch(html, /full right now/);
+});
+
 // About was a popup over the planner; it's a page of its own now (#/about),
 // with what's checked and what isn't side by side.
 test("About is a page, not a dialog", () => {
@@ -59,7 +69,7 @@ test("About is a page, not a dialog", () => {
 test("About sets what's checked against what isn't, row by row", () => {
   assert.match(html, /<table class="about-compare"/);
   assert.equal((html.match(/<th class="topic" scope="row"/g) ?? []).length, COMPARISON.length);
-  for (const row of COMPARISON) assert.ok(row.yes.length > 0 && row.no.length > 0, `${row.topic} needs both columns`);
+  for (const row of COMPARISON) assert.ok(row.no.length > 0, `${row.topic} needs a "doesn't check" entry`);
 });
 
 // The results read as a verdict, with nothing saying they're a best guess (#10).
