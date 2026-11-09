@@ -4,6 +4,7 @@ import StarsReview, { GraduateNotice, StarsSideBySide } from "./StarsReview";
 import Tour from "./Tour";
 import About from "./About";
 import Feedback from "./Feedback";
+import NavBrand from "./NavBrand";
 import { pageFromHash, hashForPage } from "./route";
 import { calendarRange, hasTime, toMin } from "./calendarRange";
 import { resultSummary, isLowUnits, lowUnitsMessage } from "./resultSummary";
@@ -547,23 +548,7 @@ export default function App() {
       `}</style>
 
       <nav className="topnav" style={{ position: "sticky", top: 0, zIndex: 40, height: 64, padding: "0 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, background: "rgba(255,255,255,0.92)", backdropFilter: "blur(16px)", borderBottom: `1px solid ${C.line}` }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <a href="https://usc-bbh.github.io/bbh-website/" target="_blank" rel="noopener noreferrer" title="BUAI Builder Hub" style={{ display: "flex" }}>
-            {/* Same mark as public/favicon.svg; keep the two in step. */}
-            <svg width={28} height={28} viewBox="0 0 48 48" role="img" aria-label="RegCheck" style={{ display: "block" }}>
-              <defs>
-                <linearGradient id="regcheck-mark-grad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stopColor="#A30000" />
-                  <stop offset="1" stopColor="#7A0000" />
-                </linearGradient>
-              </defs>
-              <rect width="48" height="48" rx="12" fill="url(#regcheck-mark-grad)" />
-              <path d="M13 22 L20.5 29.5 L35 15" fill="none" stroke="#fff" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" />
-              <rect x="13" y="35" width="22" height="3.5" rx="1.75" fill="#D4AF37" />
-            </svg>
-          </a>
-          <span className="nav-wordmark" style={{ fontSize: 15, fontWeight: 600, fontFamily: HEAD, color: C.cardinal, letterSpacing: 0.5 }}>RegCheck</span>
-        </div>
+        <NavBrand onHome={() => goTo("home")} />
         <div className="nav-actions" style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <button onClick={startTour}
             style={{ fontSize: 12, letterSpacing: 0.3, fontFamily: HEAD, fontWeight: 600, borderRadius: 6, padding: "6px 12px",
