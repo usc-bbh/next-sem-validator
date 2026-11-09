@@ -104,10 +104,11 @@ export default function Feedback({ onBack, reportPdfUrl = null, formUrl = FEEDBA
 
       <div style={{ ...eyebrow, color: C.cardinal, marginTop: 26 }}>Feedback</div>
       <h1 style={{ fontSize: "clamp(28px, 4.5vw, 40px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.1, margin: "8px 0 0" }}>
-        Tell us what RegCheck got wrong
+        Help us make RegCheck better
       </h1>
       <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 640, margin: "12px 0 0" }}>
-        A wrong result, a course or section that's missing, something confusing: it all helps us fix it.
+        Report a wrong result or a missing course, share feedback, or tell us what you wish RegCheck could do.
+        It all shapes what we fix and build next.
       </p>
 
       <RedactStep reportPdfUrl={reportPdfUrl} />

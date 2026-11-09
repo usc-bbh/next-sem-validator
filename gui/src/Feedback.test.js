@@ -41,6 +41,14 @@ test("Report an issue opens the real form in a new tab, with no popup", () => {
   assert.doesNotMatch(html, /<iframe|role="dialog"/);
 });
 
+// The form takes feedback and wishlist ideas too, not only problems.
+test("the title covers feedback and ideas, not only what went wrong", () => {
+  const html = render();
+  assert.match(html, /<h1[^>]*>Help us make RegCheck better<\/h1>/);
+  assert.doesNotMatch(html, /got wrong/);
+  assert.match(html, /share feedback, or tell us what you wish RegCheck could do/);
+});
+
 test("both steps say to attach the redacted copy", () => {
   const html = render();
   assert.match(html, /attach the redacted\s+copy in step 2/);
