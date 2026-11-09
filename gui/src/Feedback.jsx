@@ -122,10 +122,6 @@ export default function Feedback({ onBack, reportPdfUrl = null, formUrl = FEEDBA
           style={{ ...primaryButton, display: "inline-block", marginTop: 16, textDecoration: "none" }}>
           Report an issue ↗
         </a>
-        <p style={{ fontSize: 12.5, color: C.muted, lineHeight: 1.6, margin: "12px 0 0" }}>
-          The form is a Google Form, so what you send goes to Google, and it asks you to sign in with Google (your
-          USC account works). Attach only the redacted copy, never the original.
-        </p>
       </section>
     </main>
   );

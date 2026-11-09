@@ -41,13 +41,16 @@ test("Report an issue opens the real form in a new tab, with no popup", () => {
   assert.doesNotMatch(html, /<iframe|role="dialog"/);
 });
 
-test("both steps say to attach the redacted copy, never the original", () => {
+test("both steps say to attach the redacted copy", () => {
   const html = render();
   assert.match(html, /attach the redacted\s+copy in step 2/);
   assert.match(html, /attach your redacted report from step 1/);
-  assert.match(html, /Attach only the redacted copy, never the original\./);
 });
 
-test("the page says the form goes to Google", () => {
-  assert.match(render(), /The form is a Google Form, so what you send goes to Google/);
+// The note under the button about Google sign-in and attaching only the
+// redacted copy was taken out.
+test("there's no Google Form note under the Report an issue button", () => {
+  const html = render();
+  assert.doesNotMatch(html, /The form is a Google Form/);
+  assert.doesNotMatch(html, /never the original/);
 });
