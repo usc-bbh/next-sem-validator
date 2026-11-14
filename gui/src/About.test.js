@@ -19,7 +19,8 @@ const hrefs = [...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]);
 
 // Pages someone has opened and confirmed exist. A new link in About goes here
 // only after that check.
-const CHECKED_LINKS = [];
+// "#/d-clearance" is RegCheck's own D-clearance page.
+const CHECKED_LINKS = ["#/d-clearance"];
 
 // About linked the registrar's D-clearance page and an advising page, and
 // neither existed.
@@ -33,8 +34,7 @@ test("About no longer links the dead registrar pages", () => {
 });
 
 test("About still says where to go for D-clearance and advising", () => {
-  assert.match(html, /Need D-clearance\?<\/b> Reach out to your department\./);
-  assert.match(html, />See how each department handles it →<\/button>/); // opens the D-clearance page
+  assert.match(html, /Need <a href="#\/d-clearance"[^>]*>D-clearance<\/a>\?<\/b> Reach out to your department\./);
   assert.match(html, /For advising, reach out to your academic advisor\./);
 });
 
@@ -76,4 +76,12 @@ test("About sets what's checked against what isn't, row by row", () => {
   assert.match(html, /<table class="about-compare"/);
   assert.equal((html.match(/<th class="topic" scope="row"/g) ?? []).length, COMPARISON.length);
   for (const row of COMPARISON) assert.ok(row.yes.length > 0 && row.no.length > 0, `${row.topic} needs both columns`);
+});
+
+// "D-clearance" on About was plain text; each mention now opens the D-clearance page.
+test("every mention of D-clearance links to the D-clearance page", () => {
+  const mentions = html.replace(/<[^>]+>/g, (tag) => (tag.startsWith('<a href="#/d-clearance"') ? "[" : tag === "</a>" ? "]" : ""));
+  const all = mentions.match(/\[?D-clearance\]?/g);
+  assert.ok(all.length >= 2, `found ${all.length}`);
+  for (const m of all) assert.equal(m, "[D-clearance]");
 });

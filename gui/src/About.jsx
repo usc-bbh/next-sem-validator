@@ -1,10 +1,28 @@
-import React from "react";
+import React, { createContext, useContext } from "react";
 import { C, HEAD, eyebrow, card, primaryButton } from "./theme";
 
 // The About page (#/about), from the nav. What
 // RegCheck checks set against what it doesn't, topic by topic, and where to go
 // for help. Every link here must be a page someone has opened and checked
 // (About.test.js).
+
+// "D-clearance" on About links to the D-clearance page. COMPARISON is static,
+// so the click handler comes from About through context. A modified click (new
+// tab or window) follows the real link.
+const OpenClearance = createContext(null);
+function DClearanceLink() {
+  const onOpen = useContext(OpenClearance);
+  const onClick = (e) => {
+    if (!onOpen || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    e.preventDefault();
+    onOpen();
+  };
+  return (
+    <a href="#/d-clearance" onClick={onClick} style={{ color: C.cardinal, fontWeight: 600, textDecoration: "underline", textUnderlineOffset: 2 }}>
+      D-clearance
+    </a>
+  );
+}
 
 // One row per topic: `yes` is what the validator checks, `no` is what a pass
 // doesn't cover. Keep `yes` in step with validate_next_semester.py's checks.
@@ -36,7 +54,7 @@ export const COMPARISON = [
   {
     topic: "Permissions",
     yes: [
-      <>D-clearance sections, with how that department gives clearance</>,
+      <><DClearanceLink /> sections, with how that department gives clearance</>,
       <>Sections reserved for certain majors or programs</>,
     ],
     no: [
@@ -97,64 +115,63 @@ const colHead = (yes) => ({ ...eyebrow, color: yes ? C.ok : C.faint, letterSpaci
 
 export default function About({ onBack, onOpenClearance }) {
   return (
-    <main style={{ maxWidth: 1000, margin: "0 auto", padding: "28px 28px 0" }}>
-      <style>{css}</style>
-      <button onClick={onBack} style={{ background: "none", border: "none", padding: 0, color: C.muted, fontFamily: HEAD, fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
-        ← Back to RegCheck
-      </button>
+    <OpenClearance.Provider value={onOpenClearance}>
+      <main style={{ maxWidth: 1000, margin: "0 auto", padding: "28px 28px 0" }}>
+        <style>{css}</style>
+        <button onClick={onBack} style={{ background: "none", border: "none", padding: 0, color: C.muted, fontFamily: HEAD, fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
+          ← Back to RegCheck
+        </button>
 
-      <div style={{ ...eyebrow, color: C.cardinal, marginTop: 26 }}>About RegCheck</div>
-      <h1 id="about-title" style={{ fontSize: "clamp(28px, 4.5vw, 40px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.1, margin: "8px 0 0", maxWidth: 720 }}>
-        What RegCheck checks, and what it doesn't
-      </h1>
-      <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 680, margin: "12px 0 0" }}>
-        RegCheck reads your STARS report and next semester's course catalog, then checks the sections you pick for the
-        things that stop a registration. It's a best guess, not an official check, so confirm with your advisor and on
-        WebReg before you register.
-      </p>
+        <div style={{ ...eyebrow, color: C.cardinal, marginTop: 26 }}>About RegCheck</div>
+        <h1 id="about-title" style={{ fontSize: "clamp(28px, 4.5vw, 40px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.1, margin: "8px 0 0", maxWidth: 720 }}>
+          What RegCheck checks, and what it doesn't
+        </h1>
+        <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 680, margin: "12px 0 0" }}>
+          RegCheck reads your STARS report and next semester's course catalog, then checks the sections you pick for the
+          things that stop a registration. It's a best guess, not an official check, so confirm with your advisor and on
+          WebReg before you register.
+        </p>
 
-      <div style={{ ...card, marginTop: 28, overflow: "hidden", padding: 0 }}>
-        <table className="about-compare" aria-labelledby="about-title">
-          <thead>
-            <tr style={{ background: "#FAFAF9" }}>
-              <th className="topic" scope="col"><span style={colHead(false)}>Topic</span></th>
-              <th scope="col" style={{ background: "rgba(22,163,74,0.05)" }}><span style={colHead(true)}>✓ RegCheck checks</span></th>
-              <th scope="col"><span style={colHead(false)}>✕ RegCheck doesn't check</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            {COMPARISON.map((row) => (
-              <tr key={row.topic}>
-                <th className="topic" scope="row" style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 14.5, color: C.ink }}>{row.topic}</th>
-                <td data-col="yes" style={{ background: "rgba(22,163,74,0.05)", fontSize: 13.5, color: C.ink, lineHeight: 1.55 }}>
-                  <div className="col-label" style={colHead(true)}>Checks</div>
-                  <Items items={row.yes} yes />
-                </td>
-                <td data-col="no" style={{ fontSize: 13.5, color: C.body, lineHeight: 1.55 }}>
-                  <div className="col-label" style={colHead(false)}>Doesn't check</div>
-                  <Items items={row.no} yes={false} />
-                </td>
+        <div style={{ ...card, marginTop: 28, overflow: "hidden", padding: 0 }}>
+          <table className="about-compare" aria-labelledby="about-title">
+            <thead>
+              <tr style={{ background: "#FAFAF9" }}>
+                <th className="topic" scope="col"><span style={colHead(false)}>Topic</span></th>
+                <th scope="col" style={{ background: "rgba(22,163,74,0.05)" }}><span style={colHead(true)}>✓ RegCheck checks</span></th>
+                <th scope="col"><span style={colHead(false)}>✕ RegCheck doesn't check</span></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginTop: 18 }}>
-        <div style={{ padding: "16px 18px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 12, fontSize: 13.5, color: C.body, lineHeight: 1.6 }}>
-          <b>Need D-clearance?</b> Reach out to your department.{" "}
-          <button onClick={onOpenClearance} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit", color: C.cardinal, fontWeight: 600 }}>
-            See how each department handles it →
-          </button>
+            </thead>
+            <tbody>
+              {COMPARISON.map((row) => (
+                <tr key={row.topic}>
+                  <th className="topic" scope="row" style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 14.5, color: C.ink }}>{row.topic}</th>
+                  <td data-col="yes" style={{ background: "rgba(22,163,74,0.05)", fontSize: 13.5, color: C.ink, lineHeight: 1.55 }}>
+                    <div className="col-label" style={colHead(true)}>Checks</div>
+                    <Items items={row.yes} yes />
+                  </td>
+                  <td data-col="no" style={{ fontSize: 13.5, color: C.body, lineHeight: 1.55 }}>
+                    <div className="col-label" style={colHead(false)}>Doesn't check</div>
+                    <Items items={row.no} yes={false} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <div style={{ ...card, padding: "16px 18px", fontSize: 13.5, color: C.body, lineHeight: 1.6 }}>
-          For advising, reach out to your academic advisor.
-        </div>
-      </div>
 
-      <div style={{ marginTop: 28 }}>
-        <button onClick={onBack} style={primaryButton}>Back to RegCheck</button>
-      </div>
-    </main>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginTop: 18 }}>
+          <div style={{ padding: "16px 18px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 12, fontSize: 13.5, color: C.body, lineHeight: 1.6 }}>
+            <b>Need <DClearanceLink />?</b> Reach out to your department.
+          </div>
+          <div style={{ ...card, padding: "16px 18px", fontSize: 13.5, color: C.body, lineHeight: 1.6 }}>
+            For advising, reach out to your academic advisor.
+          </div>
+        </div>
+
+        <div style={{ marginTop: 28 }}>
+          <button onClick={onBack} style={primaryButton}>Back to RegCheck</button>
+        </div>
+      </main>
+    </OpenClearance.Provider>
   );
 }
