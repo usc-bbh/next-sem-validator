@@ -15,6 +15,19 @@ export const anchorId = (code) => `dc-${code}`;
 // is a reference list of departments with their own entries, so it isn't shown.
 export const prefixesOf = (dept) => [dept.dept_code, ...(dept.also_covers_prefixes ?? [])];
 
+// The name without its trailing "(Dornsife)" or "(Marshall — BUCO, …)": the
+// page already groups by school and shows the prefixes. The school-wide
+// fallback ("Dornsife (all departments not separately listed)") would be left
+// as just the school, so it reads "Other Dornsife departments".
+export const displayName = (dept) => {
+  const name = dept.dept_name.replace(/\s*\([^()]*\)\s*$/, "");
+  return name === dept.school ? `Other ${dept.school} departments` : name;
+};
+
+// A school's section starts closed, except the one holding the department a
+// notice linked to, or any that a search matches.
+export const startsOpen = (school, focusSchool, query) => Boolean(query.trim()) || school === focusSchool;
+
 export const matchesQuery = (dept, query) => {
   const q = query.trim().toLowerCase();
   if (!q) return true;
@@ -33,6 +46,11 @@ const longDate = (iso) => new Date(`${iso}T12:00:00`).toLocaleDateString("en-US"
 
 const css = `
   .dc-dept { scroll-margin-top: 84px; }
+  .dc-school > summary { cursor: pointer; list-style: none; }
+  .dc-school > summary::-webkit-details-marker { display: none; }
+  .dc-school > summary::before { content: "▸"; color: ${C.muted}; transition: transform .15s ease; }
+  .dc-school[open] > summary::before { transform: rotate(90deg); }
+  .dc-school > summary:hover { background: #FAFAF9; }
   .dc-dept details > summary { cursor: pointer; list-style: none; }
   .dc-dept details > summary::-webkit-details-marker { display: none; }
   .dc-dept details > summary::before { content: "▸"; display: inline-block; width: 14px; transition: transform .15s ease; }
@@ -57,7 +75,7 @@ function Department({ dept, focused }) {
     <section id={anchorId(dept.dept_code)} className="dc-dept" aria-current={focused ? "true" : undefined}
       style={{ ...card, padding: "16px 18px", border: `1px solid ${focused ? C.cardinal : C.line}`, boxShadow: focused ? `0 0 0 3px ${C.cardinalTint}` : card.boxShadow }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
-        <h3 style={{ margin: 0, fontSize: 15.5, fontFamily: HEAD, fontWeight: 700, color: C.ink }}>{dept.dept_name}</h3>
+        <h3 style={{ margin: 0, fontSize: 15.5, fontFamily: HEAD, fontWeight: 700, color: C.ink }}>{displayName(dept)}</h3>
         {!dept.verified && <span style={{ ...eyebrow, fontSize: 9.5, letterSpacing: 1, color: C.warn }}>Not confirmed</span>}
       </div>
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
@@ -87,11 +105,15 @@ function Department({ dept, focused }) {
 // The page, given the parsed dept_clearance.json (null while it loads).
 export function DClearanceView({ rules, error = false, focus = null, onBack }) {
   const [query, setQuery] = useState("");
-  useEffect(() => setQuery(""), [focus]);
+  // Schools the student opened or closed themselves; the rest follow startsOpen.
+  const [toggled, setToggled] = useState({});
+  useEffect(() => { setQuery(""); setToggled({}); }, [focus]);
+  useEffect(() => setToggled({}), [query]);
   useEffect(() => {
     if (rules && focus) document.getElementById(anchorId(focus))?.scrollIntoView({ block: "start" });
   }, [rules, focus]);
   const groups = useMemo(() => bySchool((rules?.departments ?? []).filter((d) => matchesQuery(d, query))), [rules, query]);
+  const focusSchool = rules?.departments.find((d) => d.dept_code === focus)?.school ?? null;
 
   return (
     <main style={{ maxWidth: 860, margin: "0 auto", padding: "28px 28px 0" }}>
@@ -129,14 +151,30 @@ export function DClearanceView({ rules, error = false, focus = null, onBack }) {
               No department matches "{query.trim()}". Ask the department that offers the course how to get D-clearance.
             </p>
           )}
-          {groups.map(([school, depts]) => (
-            <div key={school} style={{ marginTop: 28 }}>
-              <h2 style={{ ...eyebrow, fontSize: 11, margin: "0 0 10px" }}>{school}</h2>
-              <div style={{ display: "grid", gap: 10 }}>
-                {depts.map((d) => <Department key={d.dept_code} dept={d} focused={d.dept_code === focus} />)}
-              </div>
-            </div>
-          ))}
+          <div style={{ display: "grid", gap: 10, marginTop: 18 }}>
+            {groups.map(([school, depts]) => {
+              const open = toggled[school] ?? startsOpen(school, focusSchool, query);
+              return (
+                <details key={school} className="dc-school" open={open}
+                  // Only a student's click is recorded; the browser also fires toggle when `open` is set from here.
+                  onToggle={(e) => {
+                    const now = e.currentTarget.open; // read here: React clears currentTarget before the updater runs
+                    if (now !== open) setToggled((t) => ({ ...t, [school]: now }));
+                  }}
+                  style={{ ...card, padding: 0, overflow: "hidden" }}>
+                  <summary style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 18px" }}>
+                    <h2 style={{ margin: 0, fontSize: 16, fontFamily: HEAD, fontWeight: 700, color: C.ink }}>{school}</h2>
+                    <span style={{ marginLeft: "auto", fontSize: 12.5, color: C.muted }}>
+                      {depts.length} {depts.length === 1 ? "department" : "departments"}
+                    </span>
+                  </summary>
+                  <div style={{ display: "grid", gap: 10, padding: 14, background: C.page, borderTop: `1px solid ${C.line}` }}>
+                    {depts.map((d) => <Department key={d.dept_code} dept={d} focused={d.dept_code === focus} />)}
+                  </div>
+                </details>
+              );
+            })}
+          </div>
         </>
       )}
 

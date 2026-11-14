@@ -13,12 +13,13 @@ const server = await createServer({
   logLevel: "silent",
 });
 after(() => server.close());
-const { DClearanceView, ClearanceLink, anchorId, matchesQuery } = await server.ssrLoadModule("/src/DClearance.jsx");
+const { DClearanceView, ClearanceLink, anchorId, matchesQuery, displayName, startsOpen } = await server.ssrLoadModule("/src/DClearance.jsx");
 const rules = JSON.parse(readFileSync(new URL("../../analytics/data/dept_clearance.json", import.meta.url), "utf8"));
 const render = (props = {}) => renderToStaticMarkup(createElement(DClearanceView, { rules, onBack() {}, ...props }));
 const dept = (code) => rules.departments.find((d) => d.dept_code === code);
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const html_ = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
+const schoolOf = (html, school) => html.match(new RegExp(`<details class="dc-school"[^>]*><summary[^>]*><h2[^>]*>${school}</h2>`))[0];
 const sectionOf = (html, code) => html.match(new RegExp(`<section id="${anchorId(code)}"[\\s\\S]*?</section>`))[0];
 
 // The D-clearance notice used to carry each department's whole entry. It's now
@@ -68,4 +69,34 @@ test("a notice links to its department's steps, or to the whole page with none",
   const link = (dept) => renderToStaticMarkup(createElement(ClearanceLink, { course: "DSO 488", dept, onOpen() {} }));
   assert.match(link("BUCO"), /<a href="#\/d-clearance\/BUCO"[^>]*>See the full steps →<\/a>/);
   assert.match(link(null), /<a href="#\/d-clearance"[^>]*>See every department&#x27;s steps →<\/a>/);
+});
+
+// Every school's departments sat open in one long page.
+test("each school's section starts closed", () => {
+  const html = render();
+  for (const school of ["Dornsife", "Viterbi", "Marshall"]) assert.doesNotMatch(schoolOf(html, school), /open=""/, school);
+});
+
+test("the school holding the department a notice links to starts open", () => {
+  const html = render({ focus: "BUCO" });
+  assert.match(schoolOf(html, "Marshall"), /<details class="dc-school" open=""/);
+  assert.doesNotMatch(schoolOf(html, "Dornsife"), /open=""/);
+});
+
+test("a search opens every school it matches", () => {
+  assert.equal(startsOpen("Dornsife", null, "engl"), true);
+  assert.equal(startsOpen("Dornsife", null, "  "), false);
+  assert.equal(startsOpen("Marshall", "Marshall", ""), true);
+});
+
+// Names repeated the school ("English (Dornsife)") under the school's own heading.
+test("department names drop the school in parentheses", () => {
+  assert.equal(displayName(dept("ENGL")), "English");
+  assert.equal(displayName(dept("BUCO")), "Business Communication");
+  assert.equal(displayName(dept("ACCT")), "Accounting");
+  assert.equal(displayName(dept("CSCI")), "Computer Science");
+  assert.equal(displayName(dept("DORN")), "Other Dornsife departments"); // not just "Dornsife"
+  const html = render();
+  assert.match(sectionOf(html, "ENGL"), /<h3[^>]*>English<\/h3>/);
+  for (const d of rules.departments) assert.doesNotMatch(displayName(d), new RegExp(`\\(${d.school}`), d.dept_code);
 });
