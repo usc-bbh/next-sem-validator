@@ -1,5 +1,5 @@
 {
-  "_schema_version": "1.4",
+  "_schema_version": "1.5",
   "_lookup_logic": "Match on dept_code (course prefix) first. If no match, fall back to entries where type='school_fallback' and school matches the course's school. dept_code entries have no 'type' field; fallback entries have type='school_fallback' and a covers_prefixes array for reference.",
   "_description": "USC Department Clearance dataset for PlanSC Module 4B. Surfaces plain-language instructions to undergraduate students when a course requires departmental clearance (D-clearance) to enroll. Graduate D-clearance processes are out of scope.",
   "_last_updated": "2026-08-10",
@@ -10,6 +10,7 @@
     {
       "dept_code": "CSCI",
       "dept_name": "Computer Science",
+      "summary": "CSCI majors request it on myViterbi. Other majors get a Microsoft Form from their home department advisor.",
       "school": "Viterbi",
       "priority_note": "Declared CSCI majors get first priority and are processed starting March 23. BUAI and partner/joint program students are processed later starting April 20. Students outside these programs cannot request undergraduate CSCI D-clearance.",
       "clearance_required_for": "Only specific CSCI courses require undergraduate D-clearance — not all CSCI courses. For Fall 2026, only CSCI 426 and CSCI 491A require D-clearance for the entire registration period. Always check the 'D' suffix on the 5-digit section number in Schedule of Classes and WebReg to confirm.",
@@ -26,6 +27,7 @@
     {
       "dept_code": "BUAD",
       "dept_name": "Business Administration (Marshall General — BUAD, BAEP, BUCO, FBE, DSO, MOR, MKT)",
+      "summary": "Email Marshall undergraduate advising at undergrad.advising@marshall.usc.edu. After Week 1, ask the instructor first.",
       "school": "Marshall",
       "priority_note": "Declared Marshall students get priority. Non-Marshall students may enroll in up to 3 Marshall courses before being admitted to a Marshall major or minor.",
       "clearance_required_for": "Most Marshall courses are open enrollment (R-clearance) through the first week of class. Courses switch to D-clearance at the end of Week 1. ACCT 370 and ACCT 371 (Leventhal) are D-clearance for the entire registration period.",
@@ -43,6 +45,7 @@
     {
       "dept_code": "COMM",
       "dept_name": "Communication / Journalism / Public Relations (Annenberg — COMM, JOUR, PREL, ASCJ)",
+      "summary": "Majors get it at their advisement appointment. Non-majors use Annenberg's online form; ask ascjadv@usc.edu when it opens.",
       "school": "Annenberg",
       "priority_note": "Declared Annenberg majors get priority and are cleared during mandatory advisement before registration opens. Non-majors can only request D-clearance after the mandatory advisement period ends.",
       "clearance_required_for": "COMM courses require D-clearance starting Week 3 of the semester. JOUR and PREL courses require D-clearance starting Week 2.",
@@ -60,6 +63,7 @@
     {
       "dept_code": "CTPR",
       "dept_name": "Film & Television Production / Cinema & Media Studies / Interactive Media (SCA — CTPR, CTCS, CTIN, CTAN)",
+      "summary": "Email SCA Student Affairs at studentaffairs@cinema.usc.edu. Non-majors can ask only after a date SCA announces each semester.",
       "school": "Cinematic Arts",
       "priority_note": "Declared SCA students get priority. Non-SCA students can request but enrollment is very competitive and not guaranteed — non-major D-clearance requests only open after a date announced each semester.",
       "clearance_required_for": "Almost all SCA undergraduate courses require D-clearance. Use the course prefix to find the right contact.",
@@ -76,6 +80,7 @@
     {
       "dept_code": "MUSC",
       "dept_name": "Music (Thornton — MUS, MUIN, MPFM, etc.)",
+      "summary": "Majors get it at advisement. Minors email thornton.studentaffairs@usc.edu; individual instruction uses Thornton's request forms.",
       "school": "Thornton",
       "priority_note": "Declared Thornton majors and minors get priority through their assigned advisor. Non-Thornton students are not listed as eligible for most courses — contact thornton.studentaffairs@usc.edu to ask about availability.",
       "clearance_required_for": "Most Thornton undergraduate courses require D-clearance. Look for the 'D' suffix on the 5-digit section number in Schedule of Classes.",
@@ -93,6 +98,7 @@
     {
       "dept_code": "PPD",
       "dept_name": "Public Policy & Development (Price — PPD)",
+      "summary": "Submit the Price School's online undergraduate D-clearance request.",
       "school": "Price",
       "priority_note": "Courses are typically restricted to BSPP degree program students. Non-Price students are generally not eligible.",
       "clearance_required_for": "Price undergraduate courses that require D-clearance are typically restricted to students in the BSPP degree program. PPD 301 (Internship Seminar) requires D-clearance only after your internship is approved by the Office of Career Services.",
@@ -110,6 +116,7 @@
     {
       "dept_code": "PSYC",
       "dept_name": "Psychology (Dornsife)",
+      "summary": "Depends on the course: research courses (PSYC 290, 490) need an application; most others go through Zoe Lo at zhaolo@usc.edu.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any eligible student can submit the form or request approval. PSYC 290 and PSYC 490 are application-based.",
       "clearance_required_for": "Specific PSYC sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: PSYC 290, 314, 316, 339, 490, 499.",
@@ -127,6 +134,7 @@
     {
       "dept_code": "BISC",
       "dept_name": "Biological Sciences (Dornsife)",
+      "summary": "Depends on the course: most use the BISC D-clearance form; some need the instructor's approval or an application first.",
       "school": "Dornsife",
       "priority_note": "BISC 121 is restricted to students admitted into the Freshman Science Honors Program — contact Dornsife First-Year Advising. BISC 290 and BISC 490 require a separate application. No explicit priority tiers listed for other courses.",
       "clearance_required_for": "Undergraduate BISC courses (100–400 level) with a 'D' suffix in Schedule of Classes. For Fall 2026: BISC 108, 109, 121, 290, 325, 403, 406, 460, 461, 462, 473, 490, 493, 494.",
@@ -143,6 +151,7 @@
     {
       "dept_code": "GESM",
       "dept_name": "GE Seminars & GE Departmental Courses",
+      "summary": "Email the GE office at gened@usc.edu with your USC ID and the section numbers you want.",
       "school": "Dornsife",
       "also_covers_prefixes": ["FESM"],
       "priority_note": "Freshmen (31 units or fewer) can register directly on WebReg without clearance if a seat is available. Sophomores and above must request D-clearance via email and are not guaranteed a seat in their first-choice section.",
@@ -175,6 +184,7 @@
     {
       "dept_code": "AMST",
       "dept_name": "American Studies and Ethnicity (Dornsife)",
+      "summary": "Fill out the AMST D-clearance Google Form.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance.",
       "clearance_required_for": "Specific AMST sections listed on the Dornsife D-clearance hub each semester. Check the 'D' suffix on the section number in Schedule of Classes to confirm. For Fall 2026, D-clearance is required for sections of: AMST 204, 206, 211, 215, 230, 337, 340, 342, 343, 345, 348, 350, 365, 378, 392, 395, 448, 449, 452, 466, 490, 492.",
@@ -191,6 +201,7 @@
     {
       "dept_code": "ARCG",
       "dept_name": "Archaeology (Dornsife)",
+      "summary": "Fill out the ARCG D-clearance Google Form.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance.",
       "clearance_required_for": "Specific ARCG sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: ARCG 308, 490 (multiple sections).",
@@ -207,6 +218,7 @@
     {
       "dept_code": "AHIS",
       "dept_name": "Art History (Dornsife)",
+      "summary": "Email Professor Samantha Burton at burtons@usc.edu.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can email to request D-clearance.",
       "clearance_required_for": "Specific AHIS sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: AHIS 381, 400, 490, 495A, 495B.",
@@ -223,6 +235,7 @@
     {
       "dept_code": "CLAS",
       "dept_name": "Classics (Dornsife)",
+      "summary": "Fill out the CLAS D-clearance Google Form.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance.",
       "clearance_required_for": "Specific CLAS sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: CLAS 490 (Directed Research).",
@@ -239,6 +252,7 @@
     {
       "dept_code": "COLT",
       "dept_name": "Comparative Literature (Dornsife)",
+      "summary": "Email complit@usc.edu.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can email to request D-clearance.",
       "clearance_required_for": "Specific COLT sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: COLT 490 (Directed Research), COLT 495 (Senior Honors Thesis).",
@@ -255,6 +269,7 @@
     {
       "dept_code": "EALC",
       "dept_name": "East Asian Languages and Cultures (Dornsife)",
+      "summary": "Language courses use the Dornsife language D-clearance form; other courses go through the instructor or ealc@dornsife.usc.edu.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form or email to request D-clearance.",
       "clearance_required_for": "Specific EALC sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: EALC 104 (Chinese I), 115 (Korean I), 120 (Japanese I), 366 (Chinese Professional Internship), 399 (Korean Studies Research Seminar), 494A/B (Honors Thesis).",
@@ -271,6 +286,7 @@
     {
       "dept_code": "ENGL",
       "dept_name": "English (Dornsife)",
+      "summary": "Fill out the ENGL D-clearance Google Form.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance.",
       "clearance_required_for": "Specific ENGL sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: ENGL 105, 240, 261, 302, 303, 304, 305, 405, 420, 490, 491, 492.",
@@ -287,6 +303,7 @@
     {
       "dept_code": "FREN",
       "dept_name": "French and Italian (Dornsife — FREN, ITAL)",
+      "summary": "Most courses use the Dornsife language D-clearance form; language practicums go through the program director.",
       "also_covers_prefixes": ["ITAL"],
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form or email to request D-clearance. Students with prior language experience are required by university policy to take a placement exam before requesting Level 1 D-clearance.",
@@ -304,6 +321,7 @@
     {
       "dept_code": "SWMS",
       "dept_name": "Gender and Sexuality Studies (Dornsife)",
+      "summary": "Fill out the SWMS D-clearance Google Form.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance.",
       "clearance_required_for": "Specific SWMS sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: SWMS 308, 311, 490. Note: SWMS 210, 215, and 219 are managed by the GE office — use gened@usc.edu for those instead.",
@@ -320,6 +338,7 @@
     {
       "dept_code": "GERM",
       "dept_name": "German (Dornsife)",
+      "summary": "GERM 101 uses the Dornsife language D-clearance form; GERM 470 goes through Professor Britta Bothe at bothe@usc.edu.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form or email to request D-clearance. Students with prior language experience are required by university policy to take a placement exam before requesting Level 1 D-clearance.",
       "clearance_required_for": "Specific GERM sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: GERM 101, 470.",
@@ -336,6 +355,7 @@
     {
       "dept_code": "HEBR",
       "dept_name": "Hebrew (Dornsife)",
+      "summary": "Email hebrew@usc.edu, or ask in person at HUC 203.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can visit in person or email to request D-clearance.",
       "clearance_required_for": "Specific HEBR sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: HEBR 121 (Hebrew for Business, Technology and Media). Note: Ancient Hebrew does not require D-clearance to register.",
@@ -352,6 +372,7 @@
     {
       "dept_code": "JS",
       "dept_name": "Jewish Studies (Dornsife)",
+      "summary": "Email jewishstudies@usc.edu.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can email to request D-clearance.",
       "clearance_required_for": "Specific JS sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: JS 490 (Directed Research). Note: JS 100, 180, and 211 are managed by the GE office — use gened@usc.edu for those instead.",
@@ -368,6 +389,7 @@
     {
       "dept_code": "LAT",
       "dept_name": "Latin (Dornsife)",
+      "summary": "Fill out the LAT D-clearance Google Form.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance.",
       "clearance_required_for": "Specific LAT sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: LAT 385 (Late and Medieval Latin), LAT 490 (Directed Research). Note: Latin Level 1 courses do not require D-clearance to register.",
@@ -384,6 +406,7 @@
     {
       "dept_code": "PHIL",
       "dept_name": "Philosophy (Dornsife)",
+      "summary": "Fill out the PHIL D-clearance Google Form.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance.",
       "clearance_required_for": "Specific PHIL sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: PHIL 490 (Directed Research, multiple sections), PHIL 494 (Senior Thesis, multiple sections). Note: PHIL 166, 176, 260, and 284 are managed by the GE office — use gened@usc.edu for those instead.",
@@ -400,6 +423,7 @@
     {
       "dept_code": "PORT",
       "dept_name": "Portuguese (Dornsife)",
+      "summary": "Fill out the PORT D-clearance Google Form.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance.",
       "clearance_required_for": "Specific PORT sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: PORT 120 (Portuguese I).",
@@ -416,6 +440,7 @@
     {
       "dept_code": "REL",
       "dept_name": "Religion (Dornsife)",
+      "summary": "Fill out the REL D-clearance Google Form.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance.",
       "clearance_required_for": "Specific REL sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: REL 490 (Directed Research), REL 491 (Undergraduate Honors Research).",
@@ -432,6 +457,7 @@
     {
       "dept_code": "RUSS",
       "dept_name": "Russian (Dornsife)",
+      "summary": "Submit the Dornsife language D-clearance form. After Week 1, the instructor has to approve first.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance. Students with prior language experience are required by university policy to take a placement exam before requesting Level 1 D-clearance.",
       "clearance_required_for": "Specific RUSS sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: RUSS 120 (Beginning Russian I, multiple sections).",
@@ -448,6 +474,7 @@
     {
       "dept_code": "SPAN",
       "dept_name": "Spanish (Dornsife)",
+      "summary": "Submit the Dornsife language D-clearance form. After Week 1, the instructor has to approve first.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance. Students with prior language experience are required by university policy to take a placement exam before requesting Level 1 D-clearance.",
       "clearance_required_for": "Specific SPAN sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: SPAN 120 (Spanish I, multiple sections), SPAN 490 (Directed Research).",
@@ -464,6 +491,7 @@
     {
       "dept_code": "WRIT",
       "dept_name": "Writing (Dornsife)",
+      "summary": "Email the instructor for the section you want; each section has its own contact.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — contact the instructor for the specific section you want.",
       "clearance_required_for": "Specific WRIT sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: WRIT 320, WRIT 340 (multiple sections with different topics), WRIT 440.",
@@ -480,6 +508,7 @@
     {
       "dept_code": "ANTH",
       "dept_name": "Anthropology (Dornsife)",
+      "summary": "Email anthro@usc.edu.",
       "school": "Dornsife",
       "priority_note": "For ANTH 205, priority is given to declared ANTH and GLOS (Global Studies) majors. No explicit priority tiers listed for other courses.",
       "clearance_required_for": "Specific ANTH sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: ANTH 205, 393, 491. Note: ANTH 101, 140, 201, 202, 203, 205, 263, and 316 are managed by the GE office for specific sections — use gened@usc.edu for those instead.",
@@ -496,6 +525,7 @@
     {
       "dept_code": "ECON",
       "dept_name": "Economics (Dornsife)",
+      "summary": "Email econ@usc.edu.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can email to request D-clearance.",
       "clearance_required_for": "Specific ECON sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: ECON 490 (Directed Research), ECON 495 (Honors Thesis).",
@@ -512,6 +542,7 @@
     {
       "dept_code": "ENST",
       "dept_name": "Environmental Studies (Dornsife)",
+      "summary": "Depends on the course: most go by email to the course's contact; ENST 495 uses a Google Form.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — contact the instructor or submit the form for the specific section you want.",
       "clearance_required_for": "Specific ENST sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: ENST 443, 490, 492 (two sections), 495. Note: Environmental Studies D-clearance is listed under the Social Sciences section of the Dornsife hub, not Life Sciences.",
@@ -528,6 +559,7 @@
     {
       "dept_code": "HIST",
       "dept_name": "History (Dornsife)",
+      "summary": "Depends on the course: HIST 490 goes to history@usc.edu; honors and special topics go to their instructors.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — contact the appropriate instructor or department email for your specific section.",
       "clearance_required_for": "Specific HIST sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: HIST 490, 492, 493, 499.",
@@ -544,6 +576,7 @@
     {
       "dept_code": "IR",
       "dept_name": "International Relations (Dornsife)",
+      "summary": "Most IR courses use the IR D-clearance Google Form; field study and honors go by email.",
       "school": "Dornsife",
       "priority_note": "Priority varies by course: IR 210 — priority given to IR and INCO students, and students for whom it is a major requirement (BAIR, HSGI) until after transfer registrations in July. IR 304 and IR 320 — priority given to INCO seniors and juniors until April 20th, then opened to IR and HSGI students by class standing (Seniors → Juniors → Sophomores) until transfer registrations in July. IR 339 — priority given to IR and HHSC students until after transfer registrations in July. IR 431 — priority given to INCO students until April 20th. All 400-level IR courses — priority given to IR students; students must have completed a minimum of 64 credits at time of request. IR 494 — application-only through the Honors Program.",
       "clearance_required_for": "Specific IR sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: IR 210, 304, 320, 339, 391, 412, 431, 436, 437, 455, 462, 490 (two sections), 494. Note: IR 101 is managed by the GE office — use gened@usc.edu for that instead.",
@@ -560,6 +593,7 @@
     {
       "dept_code": "LING",
       "dept_name": "Linguistics (Dornsife)",
+      "summary": "Fill out the LING D-clearance form.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance.",
       "clearance_required_for": "Specific LING sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: LING 490 (Directed Research), LING 497 (Honors Thesis). Note: LING 115 is managed by the GE office — use gened@usc.edu for that instead.",
@@ -576,6 +610,7 @@
     {
       "dept_code": "MDES",
       "dept_name": "Middle East Studies (Dornsife — MDES, ARAB)",
+      "summary": "Depends on the course: ARAB 333 goes to Professor Suzanne Wali at walis@usc.edu; MDES 490 needs a signed form.",
       "also_covers_prefixes": ["ARAB"],
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — email the appropriate contact for your specific section.",
@@ -593,6 +628,7 @@
     {
       "dept_code": "POSC",
       "dept_name": "Political Science (Dornsife)",
+      "summary": "Depends on the course: most go by email to the program contact; POSC 490 uses a form.",
       "school": "Dornsife",
       "priority_note": "POSC 391 (Honors) is application-only — a form submission alone will not secure enrollment. POSC 398 (Trial Advocacy/Mock Trial) requires an audition during the first two weeks of classes. No explicit priority tiers listed for other courses.",
       "clearance_required_for": "Specific POSC sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: POSC 391, 396, 398 (three sections), 490 (three sections). Note: POSC 100, 130, 248, and 265 are managed by the GE office — use gened@usc.edu for those instead.",
@@ -609,6 +645,7 @@
     {
       "dept_code": "SOCI",
       "dept_name": "Sociology (Dornsife)",
+      "summary": "SOCI 475 uses a Google Form; SOCI 490 needs a signed form sent to soci@usc.edu.",
       "school": "Dornsife",
       "priority_note": "For SOCI 475: priority given to SOCI and HHSC SOCI Module seniors first, then Pre-Health seniors. Juniors may need to wait until senior priority windows close. No explicit priority tiers for SOCI 490.",
       "clearance_required_for": "Specific SOCI sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: SOCI 475, SOCI 490 (two sections). Note: SOCI 150, 155, 169, 235, 250, and 255 are managed by the GE office — use gened@usc.edu for those instead.",
@@ -625,6 +662,7 @@
     {
       "dept_code": "SSCI",
       "dept_name": "Spatial Sciences (Dornsife)",
+      "summary": "Email Stephanie Tran at transtep@usc.edu.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can email to request D-clearance.",
       "clearance_required_for": "Specific SSCI sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: SSCI 397 (Spatial Sciences Internship), SSCI 490 (Directed Research).",
@@ -641,6 +679,7 @@
     {
       "dept_code": "CGSC",
       "dept_name": "Cognitive Science (Dornsife)",
+      "summary": "Email the instructor, Toby Mintz, at tmintz@usc.edu.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can request approval from the instructor.",
       "clearance_required_for": "Specific CGSC sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: CGSC 490 (Directed Research), CGSC 498 (Honors Thesis).",
@@ -657,6 +696,7 @@
     {
       "dept_code": "HBIO",
       "dept_name": "Human Biology (Dornsife)",
+      "summary": "Most HBIO courses use the HBIO D-clearance form; HBIO 120 and 491 go through Zoe Lo at zhaolo@usc.edu.",
       "school": "Dornsife",
       "priority_note": "Priority is given to HBIO juniors and seniors. All other students are added to a waitlist and contacted when a spot becomes available. Exact waitlist positions cannot be provided due to the priority-based system.",
       "clearance_required_for": "Specific HBIO sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: HBIO 120, 301, 302, 360, 420, 491.",
@@ -673,6 +713,7 @@
     {
       "dept_code": "NEUR",
       "dept_name": "Neurobiology / Neuroscience (Dornsife)",
+      "summary": "NEUR 490 needs a faculty sponsor and an application; NEUR 493 goes through Zoe Lo at zhaolo@usc.edu.",
       "school": "Dornsife",
       "priority_note": "NEUR 490 requires junior or senior standing and a minimum 3.0 GPA (both major and cumulative). The application process is not competitive — any eligible student whose proposal meets the criteria will be accepted. No explicit priority tiers for NEUR 493.",
       "clearance_required_for": "Specific NEUR sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: NEUR 490 (Directed Research), NEUR 493 (Neuroscience Honors Seminar, two sections).",
@@ -689,6 +730,7 @@
     {
       "dept_code": "QBIO",
       "dept_name": "Quantitative and Computational Biology (Dornsife)",
+      "summary": "Email Director Peter Calabrese at petercal@usc.edu; QBIO majors in section 12988 email zhaolo@usc.edu.",
       "school": "Dornsife",
       "priority_note": "QBIO majors contact Zoe Lo directly. Non-QBIO students must contact Director Peter Calabrese — approval is not guaranteed. QBIO 493 (Honors Seminar) requires admission to the QBIO Honors program via Calabrese.",
       "clearance_required_for": "Specific QBIO sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: QBIO 490 (two sections), QBIO 493.",
@@ -705,6 +747,7 @@
     {
       "dept_code": "CHEM",
       "dept_name": "Chemistry (Dornsife)",
+      "summary": "CHEM 107 goes to coord105@usc.edu; research and the other listed courses go to judyhom@usc.edu.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — email the appropriate contact for your specific course.",
       "clearance_required_for": "Specific CHEM sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: CHEM 107, 292, 300, 490, 494.",
@@ -721,6 +764,7 @@
     {
       "dept_code": "GEOL",
       "dept_name": "Earth Sciences (Dornsife)",
+      "summary": "Fill out the Earth Sciences D-clearance Google Form.",
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance.",
       "clearance_required_for": "Specific GEOL sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: GEOL 290, 490, 494.",
@@ -737,6 +781,7 @@
     {
       "dept_code": "MATH",
       "dept_name": "Mathematics (Dornsife)",
+      "summary": "Fill out the MATH D-clearance Google Form; Viterbi students in MATH 245 email viterbi.studentservices@usc.edu.",
       "school": "Dornsife",
       "priority_note": "For MATH 245, Viterbi students use a different process than non-Viterbi students — make sure you follow the correct path for your school.",
       "clearance_required_for": "Specific MATH sections listed on the Dornsife D-clearance hub each semester. For Fall 2026: MATH 245 (three sections), MATH 490.",
@@ -753,6 +798,7 @@
     {
       "dept_code": "PHYS",
       "dept_name": "Physics and Astronomy (Dornsife — PHYS, ASTR)",
+      "summary": "Fill out the Physics and Astronomy D-clearance Google Form.",
       "also_covers_prefixes": ["ASTR"],
       "school": "Dornsife",
       "priority_note": "No explicit priority tiers listed — any student can submit the form to request D-clearance.",
@@ -770,6 +816,7 @@
     {
       "dept_code": "EE",
       "dept_name": "Electrical and Computer Engineering (Viterbi — EE, ECE)",
+      "summary": "Request it on myViterbi. EE 490 directed research uses the department's online application.",
       "also_covers_prefixes": ["ECE"],
       "school": "Viterbi",
       "priority_note": "No explicit priority tiers listed — any student can request via myViterbi. Home department students are typically given priority over non-majors.",
@@ -787,6 +834,7 @@
     {
       "dept_code": "BME",
       "dept_name": "Biomedical Engineering (Viterbi)",
+      "summary": "Request it on myViterbi. BME 490 needs a signed directed research contract.",
       "school": "Viterbi",
       "priority_note": "BME students have a Mandatory Advisement Hold each semester — you must meet with your advisor before your registration window opens. Non-BME students can request D-clearance by contacting the department.",
       "clearance_required_for": "BME courses with a 'D' suffix on the section number in Schedule of Classes and WebReg. BME 490 (Directed Research) always requires D-clearance via a signed contract.",
@@ -804,6 +852,7 @@
     {
       "dept_code": "AME",
       "dept_name": "Aerospace and Mechanical Engineering (Viterbi)",
+      "summary": "Request it on myViterbi if the course is listed there; otherwise email ameugrad@usc.edu.",
       "school": "Viterbi",
       "priority_note": "No explicit priority tiers listed — any student can request via myViterbi or email. Home department students are typically given priority over non-majors.",
       "clearance_required_for": "AME courses with a section number ending in 'D' require D-clearance. Courses ending in 'R' are open enrollment — register directly via Web Registration once prerequisites are met.",
@@ -820,6 +869,7 @@
     {
       "dept_code": "CIVL",
       "dept_name": "Civil and Environmental Engineering (Viterbi — CIVL, CEE)",
+      "summary": "Request it on myViterbi. Directed research needs faculty approval, then an email to ceedept@usc.edu.",
       "also_covers_prefixes": ["CEE"],
       "school": "Viterbi",
       "priority_note": "No explicit priority tiers listed — any student can request via myViterbi or email. Home department students are typically given priority over non-majors.",
@@ -838,6 +888,7 @@
     {
       "dept_code": "ISE",
       "dept_name": "Industrial and Systems Engineering (Viterbi)",
+      "summary": "ISE majors get it at advising; everyone else emails isedept@usc.edu.",
       "school": "Viterbi",
       "priority_note": "ISE majors receive D-clearance automatically during their advising appointment — no separate request needed. Non-ISE students must email the department and are lower priority.",
       "clearance_required_for": "ISE courses with a 'D' suffix on the section number in Schedule of Classes and WebReg.",
@@ -854,6 +905,7 @@
     {
       "dept_code": "ASTE",
       "dept_name": "Astronautical Engineering (Viterbi)",
+      "summary": "Email the ASTE advisor at lsaballo@usc.edu.",
       "school": "Viterbi",
       "priority_note": "No explicit priority tiers listed — any student can email the advisor to request D-clearance.",
       "clearance_required_for": "ASTE courses with a section number ending in 'D' require D-clearance. Courses ending in 'R' are open enrollment — register directly via Web Registration once prerequisites are met.",
@@ -870,6 +922,7 @@
     {
       "dept_code": "CHEE",
       "dept_name": "Chemical Engineering (Viterbi — Mork Family Department)",
+      "summary": "Majors in the department get it at advising; everyone else requests it on myViterbi.",
       "school": "Viterbi",
       "priority_note": "Declared MFD (Mork Family Department) undergraduate students receive D-clearance during mandatory advising — no separate request needed. Non-MFD students must submit via myViterbi and are lower priority.",
       "clearance_required_for": "CHE courses with a section number ending in 'D' require D-clearance. Courses ending in 'R' are open enrollment.",
@@ -886,6 +939,7 @@
     {
       "dept_code": "JOUR",
       "dept_name": "Journalism / Public Relations (Annenberg — JOUR, PREL, ASCJ)",
+      "summary": "Majors get it at their advisement appointment; non-majors use Annenberg's online form once it opens.",
       "also_covers_prefixes": ["PREL", "ASCJ"],
       "school": "Annenberg",
       "priority_note": "Declared JOUR and PREL majors get priority and are cleared during mandatory advisement before registration opens. Non-majors can only request via the online form after the mandatory advisement period ends (historically mid-April for fall, mid-November for spring). Non-majors are capped at 20 JOUR units and 20 COMM units total.",
@@ -904,6 +958,7 @@
     {
       "dept_code": "ACCT",
       "dept_name": "Accounting (Leventhal School of Accounting — ACCT)",
+      "summary": "Email your Leventhal advisor or leventhalug@marshall.usc.edu.",
       "school": "Marshall",
       "priority_note": "Declared Leventhal accounting majors and minors get priority. Non-Leventhal students may take a maximum of 12 units from Marshall/Leventhal before being admitted to a major or minor. ACCT 370 and ACCT 371 are D-clearance for the entire registration period.",
       "clearance_required_for": "ACCT 370 and ACCT 371 are D-clearance at all times. Most other ACCT courses switch to D-clearance at the end of Week 2. Directed research and special courses are D-clearance at all times.",
@@ -921,6 +976,7 @@
     {
       "dept_code": "BAEP",
       "dept_name": "Business of Entertainment, Media and Technology / Entrepreneurship (Marshall — BAEP)",
+      "summary": "Email the Greif Center at entrepreneur@marshall.usc.edu.",
       "school": "Marshall",
       "priority_note": "Declared Marshall Entrepreneurship and Innovation (BEI) majors get priority. BAEP 495 is D-clearance at all times. Most BAEP electives switch to D-clearance after Week 1.",
       "clearance_required_for": "BAEP 495 (Entrepreneurship Practicum) is D-clearance at all times. BAEP 451, 452, 453, 454, and 460 have their own D-clearance process. Most other BAEP electives switch to D-clearance at the end of Week 1.",
@@ -937,6 +993,7 @@
     {
       "dept_code": "BUCO",
       "dept_name": "Business Communication (Marshall — BUCO, and BUAD 302)",
+      "summary": "Email Marshall undergraduate advising at undergrad.advising@marshall.usc.edu with your USC ID and the course.",
       "also_covers_prefixes": ["FBE", "DSO", "MOR", "MKT"],
       "school": "Marshall",
       "priority_note": "Declared Marshall students get priority. BUCO electives (and BUAD 302, WRIT 340) switch to D-clearance at the end of Week 1 — earlier than most other Marshall prefixes which stay open through Week 2–3.",
@@ -955,6 +1012,7 @@
     {
       "dept_code": "ARCH",
       "dept_name": "Architecture (USC School of Architecture)",
+      "summary": "Submit the online request form at arch.usc.edu/d-clearance.",
       "school": "Architecture",
       "priority_note": "Architecture majors get priority. D-clearances are granted on a first-come, first-served basis. Non-Architecture students can request but enrollment in major-restricted studios is very limited.",
       "clearance_required_for": "ARCH courses with a 'D' suffix on the 5-digit section number require D-clearance. Courses with an 'R' suffix are open enrollment. Each semester, students receive a Permit to Register with an assigned date and time for the following semester.",
@@ -971,6 +1029,7 @@
     {
       "dept_code": "DANC",
       "dept_name": "Dance (USC Glorya Kaufman School of Dance)",
+      "summary": "Email Kaufman Student Affairs at uscdance@usc.edu; DANC 490 needs a proposal.",
       "school": "Kaufman",
       "priority_note": "Declared Kaufman BFA students get priority. Non-Kaufman students can take select open courses but technique course placement levels restrict access — students with prior experience who have not taken DANC 103 must contact uscdance@usc.edu for both a prerequisite waiver and D-clearance.",
       "clearance_required_for": "DANC courses with a 'D' suffix on the section number. DANC 490 (Directed Research) always requires a separate proposal/approval process.",
@@ -988,6 +1047,7 @@
     {
       "dept_code": "THTR",
       "dept_name": "Dramatic Arts (USC School of Dramatic Arts — THTR)",
+      "summary": "Request it online at sdastudents.usc.edu before classes start; after that, use the paper form with the instructor's signature.",
       "school": "Dramatic Arts",
       "priority_note": "Declared SDA students (BFA and BA) get priority and many courses carry explicit restrictions (e.g. 'Registration open to: School of Dramatic Arts'). Non-SDA students can request for courses without major restrictions but clearance is not guaranteed. Some courses require an instructor interview.",
       "clearance_required_for": "THTR courses with a 'D' suffix on the section number. Many THTR sections carry school or major restrictions in Schedule of Classes.",
@@ -1005,6 +1065,7 @@
     {
       "dept_code": "ARLT",
       "dept_name": "Art (USC Roski School of Art and Design — ARLT, RADS, FINE)",
+      "summary": "Use Roski's D-clearance webform: majors and minors during advising, everyone else once the non-major form opens.",
       "also_covers_prefixes": ["RADS", "FINE"],
       "school": "Roski",
       "priority_note": "Declared Roski majors and minors get priority and use password-protected webforms during mandatory advising. Non-Roski students use a separate public form that opens weeks later. After Week 3 all sections switch to D-clearance and most non-major requests will not be approved.",
@@ -1023,6 +1084,7 @@
     {
       "dept_code": "SOWK",
       "dept_name": "Social Work (USC Suzanne Dworak-Peck School of Social Work — SOWK)",
+      "summary": "Email Enrollment Services at sdp.enroll@usc.edu.",
       "school": "Social Work",
       "priority_note": "Registration is first-come, first-served within appointment times. Program Director must review and approve all D-clearance requests before clearance is issued. Schedule changes after the first week of classes are not likely to be approved.",
       "clearance_required_for": "SOWK courses with a 'D' suffix on the section number. Schedule changes after Week 1 must be processed through Enrollment Services and are unlikely to be approved.",
@@ -1039,6 +1101,7 @@
     {
       "dept_code": "GERO",
       "dept_name": "Gerontology (USC Leonard Davis School of Gerontology — GERO)",
+      "summary": "Email ldsgero@usc.edu with your USC ID, course and section number.",
       "school": "Gerontology",
       "priority_note": "No explicit priority tiers documented publicly — contact the school directly.",
       "clearance_required_for": "GERO courses with a 'D' suffix on the section number. GERO 490x and 491/495 (directed research and practicum) always require advisor and faculty approval.",
@@ -1056,6 +1119,7 @@
     {
       "dept_code": "MDA",
       "dept_name": "Media Arts / Interdisciplinary Studies (GE Office — MDA, INDS, FESM)",
+      "summary": "Email the GE office at gened@usc.edu with your USC ID and section numbers.",
       "also_covers_prefixes": ["INDS", "FESM"],
       "school": "Dornsife",
       "priority_note": "Sophomores and above must request via email. Freshmen (31 units or fewer) can register directly on WebReg for GESM if a seat is available — same policy applies to MDA and INDS GE sections.",
@@ -1073,6 +1137,7 @@
     {
       "dept_code": "MASC",
       "dept_name": "Materials Science (Viterbi — Mork Family Department — MASC)",
+      "summary": "Majors in the department get it at advising; everyone else requests it on myViterbi.",
       "school": "Viterbi",
       "priority_note": "Declared MFD (Mork Family Department) students receive D-clearance during mandatory advising. Non-MFD students submit via myViterbi and are lower priority. Pay attention to departmental announcements indicating when non-major requests open.",
       "clearance_required_for": "MASC courses with a 'D' suffix on the section number. Courses with 'R' are open enrollment.",
@@ -1089,6 +1154,7 @@
     {
       "dept_code": "ENE",
       "dept_name": "Energy Resources Engineering (Viterbi — ENE)",
+      "summary": "Request it on myViterbi.",
       "school": "Viterbi",
       "priority_note": "Home department students get priority. Non-ENE students can request via myViterbi but are lower priority. Pay attention to departmental announcements on myViterbi indicating when non-major requests open.",
       "clearance_required_for": "ENE courses with a 'D' suffix on the section number. Courses with 'R' are open enrollment.",
@@ -1105,6 +1171,7 @@
     {
       "dept_code": "ENGR",
       "dept_name": "General Engineering (Viterbi — ENGR)",
+      "summary": "Request it on myViterbi.",
       "school": "Viterbi",
       "priority_note": "No explicit priority tiers — home department students and pre-engineering students generally get priority. Non-Viterbi students should contact viterbi.studentservices@usc.edu.",
       "clearance_required_for": "ENGR courses with a 'D' suffix on the section number. Confirmed for ENGR 100 and ENGR 400; always check the current Schedule of Classes note for any ENGR section.",
@@ -1121,6 +1188,7 @@
     {
       "dept_code": "HP",
       "dept_name": "Health Promotion and Disease Prevention Studies (Keck — HP, Global Health)",
+      "summary": "Ask your academic advisor; this program doesn't publish a D-clearance process.",
       "also_covers_prefixes": ["GHTH", "PREV"],
       "school": "Keck",
       "priority_note": "Declared HP/Global Health majors get priority. HP 290/490 directed research requires both advisor and faculty approval before D-clearance is issued.",
@@ -1137,6 +1205,7 @@
     {
       "dept_code": "MEDS",
       "dept_name": "Minor in Health Care Studies (Keck — MEDS)",
+      "summary": "Fill out the Health Care Studies D-clearance request form.",
       "school": "Keck",
       "priority_note": "No explicit priority tiers listed — any student can submit the D-Clearance Request Form.",
       "clearance_required_for": "MEDS 320, MEDS 490, and MEDS 495 require D-clearance.",
@@ -1153,6 +1222,7 @@
     {
       "dept_code": "BKPH",
       "dept_name": "Biokinesiology and Physical Therapy (USC Chan — BKPH, BKN, PT)",
+      "summary": "Ask your academic advisor; this division doesn't publish a D-clearance process.",
       "also_covers_prefixes": ["BKN", "PT"],
       "school": "Chan",
       "priority_note": "Most BKN and PT courses are graduate-level with major restrictions. Undergraduate access is very limited. Contact the department directly to confirm eligibility.",
@@ -1169,6 +1239,7 @@
     {
       "dept_code": "OT",
       "dept_name": "Occupational Science and Occupational Therapy (USC Chan — OT, OCTH)",
+      "summary": "Ask your academic advisor; the D-clearance contact for OT changes each term.",
       "also_covers_prefixes": ["OCTH"],
       "school": "Chan",
       "priority_note": "No explicit priority tiers — any student can contact the department. The Occupational Science minor is open to all undergraduates. The specific staff contact for D-clearance changes each term.",
@@ -1185,6 +1256,7 @@
     {
       "dept_code": "PRE-E",
       "dept_name": "Pre-Engineering / Pre-CS (Viterbi)",
+      "summary": "CSCI courses use a Microsoft Form from your advisor; other Viterbi courses are requested on myViterbi.",
       "school": "Viterbi",
       "priority_note": "Pre-Engineering and Pre-CS students are lower priority than declared majors for all Viterbi D-clearance courses. For CSCI courses, Pre-E/Pre-CS requests are not processed until April 20 — after declared CSCI and BUAI students. For all other Viterbi departments, home department students are prioritized first.",
       "clearance_required_for": "Any Viterbi course with a 'D' suffix on the section number in Schedule of Classes and WebReg.",
@@ -1202,6 +1274,7 @@
       "dept_code": "DORN",
       "type": "school_fallback",
       "dept_name": "Dornsife (all departments not separately listed)",
+      "summary": "Find the department on Dornsife's D-clearance hub; each one lists its own form or contact.",
       "school": "Dornsife",
       "priority_note": "Varies by department — check the Dornsife hub for your specific course.",
       "covers_prefixes": ["AMST", "ANTH", "ARCH", "ARHI", "CLAS", "COLT", "EASC", "ENGL", "FREN", "GEND", "GERM", "HEBR", "HIST", "INTL", "ITAL", "JWST", "LATS", "LING", "MATH", "MDES", "PHIL", "PHYS", "POLS", "PORT", "RELI", "RUSS", "SOCI", "SPAN", "WRIT", "CHEM", "ASTR", "GEOL", "SSCI", "IR"],
@@ -1219,6 +1292,7 @@
     {
       "dept_code": "IYA",
       "dept_name": "Iovine and Young Academy",
+      "summary": "Email iyadvise@usc.edu with your USC ID, course and section number.",
       "school": "Iovine and Young Academy",
       "priority_note": "Most ACAD courses are restricted to enrolled IYA students, but the Academy opens a set of its most popular courses to non-majors each semester.",
       "clearance_required_for": "ACAD sections with a 'D' designation require departmental D-clearance before registering. For Fall 2026, non-majors can request the following ACAD courses: ACAD 176 (Rapid Visualization — section 10203 only), ACAD 177 (Digital Toolbox: Design), ACAD 182 (Disruptive Validation), ACAD 189 (3D Tools for Product Design), ACAD 190 (Making with Materials), ACAD 191 (Python for Machine Intelligence), ACAD 217 (Extended Reality Design), ACAD 230 (Introduction to Interactive Physical Computing), ACAD 245 (Fundamentals of Product Design), ACAD 261 (Human Health and Technology), ACAD 274 (Designing Interactive Data Systems), ACAD 276 (Dev II), ACAD 309 (Dreams and Madness: The Art of Japan's Golden Age of Animation), ACAD 325 (Human Technology Interaction and the User Experience), ACAD 406 (Purpose-Driven Innovation Incubator), ACAD 444 (Designing Products for Industry), ACAD 499 (Designing Human Technology Interaction Systems and Applications), ACAD 499 (Understanding AI). The list of non-major offerings changes each semester.",

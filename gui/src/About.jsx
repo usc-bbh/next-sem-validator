@@ -95,7 +95,7 @@ function Items({ items, yes }) {
 
 const colHead = (yes) => ({ ...eyebrow, color: yes ? C.ok : C.faint, letterSpacing: 1.5 });
 
-export default function About({ onBack }) {
+export default function About({ onBack, onOpenClearance }) {
   return (
     <main style={{ maxWidth: 1000, margin: "0 auto", padding: "28px 28px 0" }}>
       <style>{css}</style>
@@ -142,7 +142,10 @@ export default function About({ onBack }) {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginTop: 18 }}>
         <div style={{ padding: "16px 18px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 12, fontSize: 13.5, color: C.body, lineHeight: 1.6 }}>
-          <b>Need D-clearance?</b> Reach out to your department.
+          <b>Need D-clearance?</b> Reach out to your department.{" "}
+          <button onClick={onOpenClearance} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit", color: C.cardinal, fontWeight: 600 }}>
+            See how each department handles it →
+          </button>
         </div>
         <div style={{ ...card, padding: "16px 18px", fontSize: 13.5, color: C.body, lineHeight: 1.6 }}>
           For advising, reach out to your academic advisor.

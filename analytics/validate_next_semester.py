@@ -42,7 +42,7 @@ from pathlib import Path
 
 MAX_RECOMMENDED_UNITS = 18
 CLASS_LEVEL_ORDER = {"Freshman": 1, "Sophomore": 2, "Junior": 3, "Senior": 4}
-EXPECTED_DEPT_CLEARANCE_SCHEMA_VERSION = "1.4"
+EXPECTED_DEPT_CLEARANCE_SCHEMA_VERSION = "1.5"
 
 
 @dataclass
@@ -50,6 +50,10 @@ class CourseResult:
     course: str
     status: str  # "pass" | "fail" | "warning"
     reasons: list[str] = field(default_factory=list)
+    # Set when a picked section needs D-clearance. clearance_dept is the dept_clearance.json
+    # entry that covers the course (None when no entry does), so the GUI can link to its steps.
+    d_clearance: bool = False
+    clearance_dept: str | None = None
 
 
 @dataclass
@@ -269,18 +273,17 @@ def _check_d_clearance(
         needs = [s["section_id"] for s in picked if s["has_d_clearance"]]
         if not needs:
             return None
-        verb = "requires" if len(needs) == 1 else "require"
-        first = f"{course} section{'s' if len(needs) > 1 else ''} {', '.join(needs)} {verb} departmental clearance (D-clearance) to enroll this term."
+        verb = "needs" if len(needs) == 1 else "need"
+        first = f"{course} section{'s' if len(needs) > 1 else ''} {', '.join(needs)} {verb} D-clearance from the department."
     elif catalog_entry.get("has_d_clearance"):
-        first = f"{course} requires departmental clearance (D-clearance) to enroll this term."
+        first = f"{course} needs D-clearance from the department."
     else:
         return None
-    reasons = [first]
+    # The notice stays short: the department's one-line summary, with the full steps on the
+    # GUI's D-clearance page (linked by clearance_dept).
     dept = dept_clearance_by_prefix.get(_course_prefix(course))
-    if dept:
-        reasons.append(dept["clearance_required_for"])
-        reasons.append(f"How to get clearance: {dept['how_to_get_clearance']}")
-    return CourseResult(course, "warning", reasons)
+    second = dept["summary"] if dept else "Ask the department that offers the course how to get it."
+    return CourseResult(course, "warning", [first, second], d_clearance=True, clearance_dept=dept and dept["dept_code"])
 
 
 # "3.0 GPA", "cumulative 3.0 GPA", "2.5 overall GPA", "GPA of at least 3.0", "minimum GPA: 3.0".
@@ -714,7 +717,6 @@ def validate_next_semester(
         checks = [
             _check_already_taken(course, stars_summary, catalog_entry),
             _check_standing(course, stars_summary),
-            _check_d_clearance(course, catalog_entry, dept_clearance_by_prefix, selected_section_ids),
             _check_prereq(course, catalog_entry, stars_summary),
             _check_gpa(course, catalog_entry, stars_summary),
             _check_in_catalog(course, catalog),
@@ -722,6 +724,8 @@ def validate_next_semester(
             _check_major_restrictions(course, catalog_entry, stars_summary, selected_section_ids),
             _check_unresolved_time_sections(course, unresolved_time_sections),
             *time_conflicts.get(course, []),
+            # Last, so its two lines end the card, right above the GUI's link to the full steps.
+            _check_d_clearance(course, catalog_entry, dept_clearance_by_prefix, selected_section_ids),
         ]
         results = [r for r in checks if r]
 
@@ -738,7 +742,11 @@ def validate_next_semester(
         else:
             missing_from_catalog.append(course)
 
-        course_results.append(CourseResult(course, status, reasons))
+        clearance = next((r for r in results if r.d_clearance), None)
+        course_results.append(CourseResult(
+            course, status, reasons,
+            d_clearance=bool(clearance), clearance_dept=clearance.clearance_dept if clearance else None,
+        ))
 
     summary_warnings = []
     if total_units > MAX_RECOMMENDED_UNITS:

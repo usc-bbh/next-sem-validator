@@ -10,7 +10,7 @@ import { syncValidator } from "../scripts/sync-validator.mjs";
 // department's D-clearance warning had no instructions.
 test("the checker gets the real D-clearance rules, every department", () => {
   const rules = JSON.parse(readFileSync(VALIDATOR_ASSETS.deptClearance.from, "utf8"));
-  assert.equal(rules._schema_version, "1.4"); // what the validator accepts
+  assert.equal(rules._schema_version, "1.5"); // what the validator accepts
   const codes = rules.departments.map((d) => d.dept_code);
   assert.ok(codes.length > 50, `only ${codes.length} departments`);
   for (const code of ["CSCI", "ECON", "PSYC", "ACCT", "BUCO"]) assert.ok(codes.includes(code), `${code} missing`);

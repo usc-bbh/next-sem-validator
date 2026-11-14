@@ -1,4 +1,5 @@
 import sys
+from dataclasses import asdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -235,7 +236,7 @@ def test_d_clearance_warns_and_names_the_picked_section_that_needs_it(dept_clear
     by_prefix = _dept_clearance_by_prefix(dept_clearance)
     result = _check_d_clearance("AME 420", AME_420, by_prefix, {"29014"})
     assert result.status == "warning"
-    assert result.reasons[0] == "AME 420 section 29014 requires departmental clearance (D-clearance) to enroll this term."
+    assert result.reasons[0] == "AME 420 section 29014 needs D-clearance from the department."
 
 
 def test_d_clearance_section_fix_reaches_the_validator_result(dept_clearance):
@@ -248,7 +249,11 @@ def test_d_clearance_warns_generically_for_unknown_department(dept_clearance):
     by_prefix = _dept_clearance_by_prefix(dept_clearance)
     result = _check_d_clearance("ZZZZ 100", {"has_d_clearance": True}, by_prefix)
     assert result.status == "warning"
-    assert len(result.reasons) == 1  # only the generic reason, no dept-specific text found
+    assert result.reasons == [
+        "ZZZZ 100 needs D-clearance from the department.",
+        "Ask the department that offers the course how to get it.",
+    ]
+    assert result.d_clearance and result.clearance_dept is None  # links to the page, not a department
 
 
 def test_d_clearance_warns_with_department_text_for_also_covers_prefix(dept_clearance):
@@ -260,6 +265,46 @@ def test_d_clearance_warns_with_department_text_for_also_covers_prefix(dept_clea
     result = _check_d_clearance("ECE 201", entry, by_prefix)
     assert result.status == "warning"
     assert any("myviterbi" in r.lower() for r in result.reasons)
+
+
+# The notice used to carry the department's whole entry: which courses need clearance (for
+# ENGL, last term's list) and every step of the process. It's now the section and one line on
+# what to do, and the GUI links to the full steps by clearance_dept.
+def test_d_clearance_notice_is_the_section_and_a_one_line_summary(dept_clearance):
+    by_prefix = _dept_clearance_by_prefix(dept_clearance)
+    engl = {"has_d_clearance": True, "sections": {"lectures": [{"section_id": "32613", "has_d_clearance": True}]}}
+    result = _check_d_clearance("ENGL 174", engl, by_prefix, {"32613"})
+    assert result.reasons == [
+        "ENGL 174 section 32613 needs D-clearance from the department.",
+        "Fill out the ENGL D-clearance Google Form.",
+    ]
+    assert result.d_clearance and result.clearance_dept == "ENGL"
+
+
+def test_d_clearance_links_a_covered_prefix_to_the_entry_that_covers_it(dept_clearance):
+    by_prefix = _dept_clearance_by_prefix(dept_clearance)
+    result = _check_d_clearance("DSO 488", {"has_d_clearance": True}, by_prefix)
+    assert result.clearance_dept == "BUCO"  # DSO is in BUCO's also_covers_prefixes
+    assert result.reasons[1].startswith("Email Marshall undergraduate advising")
+
+
+def test_every_department_has_a_short_summary(dept_clearance):
+    for entry in dept_clearance["departments"]:
+        summary = entry["summary"]
+        assert summary.strip() and summary.endswith("."), entry["dept_code"]
+        assert len(summary) <= 140, entry["dept_code"]
+
+
+def test_d_clearance_link_reaches_the_validator_result(dept_clearance):
+    stars = {"completedCourses": [], "inProgressCourses": [], "classLevel": "Senior"}
+    ame310 = {"units": 3, "has_d_clearance": False, "sections": {"lectures": [{"section_id": "28700", "has_d_clearance": False}]}}
+    catalog = {"AME 420": {**AME_420, "units": 3}, "AME 310": ame310}
+    result = validate_next_semester(
+        [{"course": "AME 420", "sections": ["29014"]}, {"course": "AME 310", "sections": ["28700"]}], stars, catalog, dept_clearance
+    )
+    ame420, ame310 = (asdict(c) for c in result.course_results)
+    assert ame420["d_clearance"] is True and ame420["clearance_dept"] == "AME"
+    assert ame310["d_clearance"] is False and ame310["clearance_dept"] is None
 
 
 def test_d_clearance_schema_version_guard_raises(dept_clearance):
@@ -935,3 +980,17 @@ def test_real_sample_transfer_counts_only_through_its_equivalence():
     summary = load_shared_stars("aibiz_jr_doubledegree.json")
     assert _check_prereq("CSCI 201", {"description": "Prereq: CSCI 113"}, summary) is None
     assert _check_prereq("ANTH 301", {"description": "Prereq: ANTH 101"}, summary).status == "fail"
+
+
+# The GUI puts its "See the full steps" link at the end of the course's card, so the
+# D-clearance lines come last; otherwise another check's reason sat between them and the link.
+def test_d_clearance_lines_come_last_in_the_course_result(dept_clearance):
+    stars = {"completedCourses": [], "inProgressCourses": [], "classLevel": "Senior"}
+    engl = {"units": 4, "has_d_clearance": True, "has_discussion": True, "sections": {
+        "lectures": [{"section_id": "32613", "has_d_clearance": True, "mode": "Lecture", "link_code": None}],
+        "discussions": [{"section_id": "32614", "has_d_clearance": True, "mode": "Discussion", "link_code": None}],
+    }}
+    result = validate_next_semester([{"course": "ENGL 174", "sections": ["32613"]}], stars, {"ENGL 174": engl}, dept_clearance)
+    reasons = result.course_results[0].reasons
+    assert len(reasons) > 2, reasons  # the missing discussion is reported too
+    assert reasons[-2:] == ["ENGL 174 section 32613 needs D-clearance from the department.", "Fill out the ENGL D-clearance Google Form."]

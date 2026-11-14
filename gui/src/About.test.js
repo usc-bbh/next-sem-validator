@@ -34,6 +34,7 @@ test("About no longer links the dead registrar pages", () => {
 
 test("About still says where to go for D-clearance and advising", () => {
   assert.match(html, /Need D-clearance\?<\/b> Reach out to your department\./);
+  assert.match(html, />See how each department handles it →<\/button>/); // opens the D-clearance page
   assert.match(html, /For advising, reach out to your academic advisor\./);
 });
 

@@ -128,7 +128,7 @@ table below is only what the validator reads from it today.
 
 The exact shape of `data/dept_clearance.json` (in this module) — passed in
 explicitly rather than read from a hardcoded path. The validator requires
-`_schema_version == "1.4"` and raises `ValueError` immediately if it doesn't
+`_schema_version == "1.5"` and raises `ValueError` immediately if it doesn't
 match, rather than silently misreading an unfamiliar shape.
 
 ## Output schema
@@ -140,7 +140,9 @@ match, rather than silently misreading an unfamiliar shape.
     {
       "course": "CSCI 104",
       "status": "pass | fail | warning",
-      "reasons": ["CSCI 104 is already completed."]
+      "reasons": ["CSCI 104 is already completed."],
+      "d_clearance": false,
+      "clearance_dept": null
     }
   ],
   "summary": {
@@ -163,7 +165,7 @@ flagging here instead of changing unilaterally.
 | Already completed | fail, or warning for a repeatable course | `stars_summary.completedCourses` + `course_catalog.description` ("may be repeated", or a Special Topics / Directed Research / Internship / thesis / MUEN ensemble title) | — |
 | Already in progress | warning | `stars_summary.inProgressCourses` | — |
 | Class standing (400+ level vs. Freshman/Sophomore) | warning | `stars_summary.classLevel` + course number | [USC Registrar glossary](https://esdcomm.usc.edu/arr/glossary/c.html): 300/400-level is "primarily for" juniors/seniors — guidance, not a blanket rule. Actual enforcement is per-course (e.g. CSCI 442/445 require junior standing themselves), which this validator can't see, so this is a `warning` rather than a `fail`. |
-| D-clearance | warning (never a hard fail — see below) | selected sections' `has_d_clearance` (else the course's) + `dept_clearance.json` | per-department `source_url` field already inside `dept_clearance.json` |
+| D-clearance | warning (never a hard fail — see below) | selected sections' `has_d_clearance` (else the course's) + `dept_clearance.json`'s `summary`. The result sets `d_clearance` and `clearance_dept` (the covering entry's `dept_code`, or null) so the GUI links to that department's full steps | per-department `source_url` field already inside `dept_clearance.json` |
 | Prerequisites | fail / warning | `course_catalog.description`'s prerequisite clause (best-effort "and"/"or" parsing) against `stars_summary`'s completed and in-progress courses | — |
 | Not found in catalog | warning | `course_catalog` presence | — |
 | Lab/discussion pairing | fail | a lecture picked when the course has lectures; `course_catalog.has_lab` / `has_discussion`; selected sections' `link_code` and `mode` | — |

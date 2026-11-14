@@ -2,7 +2,7 @@
 
 Documents what's in [`dept_clearance.json`](dept_clearance.json): a 74-department dataset of undergraduate D-clearance information for PlanSC Module 4B, and where each entry's information came from.
 
-- **Schema version:** 1.4
+- **Schema version:** 1.5 (1.5 added `summary`: one sentence on what to do, shown in RegCheck's D-clearance notice. The full entry is on the GUI's D-clearance page. Keep it in step with `how_to_get_clearance`.)
 - **Last updated:** 2026-08-10
 - **Scope:** Undergraduate D-clearance only (graduate processes out of scope)
 - **Lookup logic:** Match on `dept_code` (course prefix) first; if no match, fall back to `type: "school_fallback"` entries where `school` matches the course's school

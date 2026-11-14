@@ -5,7 +5,8 @@ import Tour from "./Tour";
 import About from "./About";
 import Feedback from "./Feedback";
 import NavBrand from "./NavBrand";
-import { pageFromHash, hashForPage } from "./route";
+import DClearance, { ClearanceLink } from "./DClearance";
+import { pageFromHash, deptFromHash, hashForPage } from "./route";
 import { calendarRange, hasTime, toMin } from "./calendarRange";
 import { resultSummary, isLowUnits, lowUnitsMessage } from "./resultSummary";
 import { INITIAL_STARS, hasUsableReport, canValidate as validateAllowed, reportHint } from "./validateGate";
@@ -211,18 +212,36 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState(null);
   const [validating, setValidating] = useState(false);
-  // "home", "about" or "feedback", kept in the URL hash so the back button moves between them.
+  // "home", "about", "feedback" or "d-clearance", kept in the URL hash so the back button moves
+  // between them. clearanceDept is the department the D-clearance page opens at.
   const [page, setPage] = useState(() => pageFromHash(window.location.hash));
+  const [clearanceDept, setClearanceDept] = useState(() => deptFromHash(window.location.hash));
+  // The result card a D-clearance link was followed from, to land back on it.
+  const [returnTo, setReturnTo] = useState(null);
   useEffect(() => {
-    const onPop = () => setPage(pageFromHash(window.location.hash));
+    const onPop = () => {
+      setPage(pageFromHash(window.location.hash));
+      setClearanceDept(deptFromHash(window.location.hash));
+    };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
-  const goTo = (next) => {
-    if (next !== page) window.history.pushState(null, "", hashForPage(next) || window.location.pathname + window.location.search);
+  const goTo = (next, dept = null) => {
+    const hash = hashForPage(next, dept);
+    if (hash !== window.location.hash) window.history.pushState(null, "", hash || window.location.pathname + window.location.search);
     setPage(next);
+    setClearanceDept(dept);
     window.scrollTo(0, 0);
   };
+  const openClearance = (course, dept) => {
+    setReturnTo(course);
+    goTo("d-clearance", dept);
+  };
+  useEffect(() => {
+    if (page !== "home" || !returnTo) return;
+    document.getElementById(`result-${returnTo}`)?.scrollIntoView({ block: "center" });
+    setReturnTo(null);
+  }, [page, returnTo]);
 
   // ── STARS upload state ──
   // There's no report until the student uploads one. A parsed report is used as read
@@ -565,7 +584,8 @@ export default function App() {
         </div>
       </nav>
 
-      {page === "about" ? <About onBack={() => goTo("home")} />
+      {page === "about" ? <About onBack={() => goTo("home")} onOpenClearance={() => goTo("d-clearance")} />
+        : page === "d-clearance" ? <DClearance focus={clearanceDept} onBack={() => goTo("home")} />
         : page === "feedback" ? <Feedback onBack={() => goTo("home")} reportPdfUrl={hasReport ? pdfUrl : null} />
         : (<>
 
@@ -813,7 +833,7 @@ export default function App() {
                 {result.course_results.map((cr, i) => {
                   const s = STATUS[cr.status];
                   return (
-                    <div key={i} style={{ background: s.bg, border: `1px solid ${s.border}`, borderRadius: 10, padding: "11px 13px", marginBottom: 8 }}>
+                    <div key={i} id={`result-${cr.course}`} style={{ background: s.bg, border: `1px solid ${s.border}`, borderRadius: 10, padding: "11px 13px", marginBottom: 8, scrollMarginTop: 84 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
                         <span style={{ width: 18, height: 18, borderRadius: "50%", background: s.dot, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "#fff", flexShrink: 0 }}>{s.icon}</span>
                         <span style={{ fontWeight: 700, fontSize: 14, color: C.ink, fontFamily: HEAD }}>{cr.course}</span>
@@ -822,6 +842,7 @@ export default function App() {
                       {cr.reasons.map((r, j) => (
                         <div key={j} style={{ fontSize: 12.5, color: C.body, lineHeight: 1.5, paddingLeft: 27, marginTop: 4 }}>{r}</div>
                       ))}
+                      {cr.d_clearance && <ClearanceLink course={cr.course} dept={cr.clearance_dept} onOpen={openClearance} />}
                     </div>
                   );
                 })}
