@@ -28,14 +28,15 @@ test("the page lists every department with its summary and full steps", () => {
   const html = render();
   for (const d of rules.departments) {
     const section = sectionOf(html, d.dept_code);
-    assert.ok(section.includes(`>${html_(d.summary)}<`), `${d.dept_code} summary`);
+    const text = section.replace(/<[^>]+>/g, "");
+    assert.ok(text.includes(html_(d.summary)), `${d.dept_code} summary`);
     assert.match(section, />Full steps</, d.dept_code);
   }
 });
 
 test("a department's section shows how to get it and links to where to request it", () => {
   const section = sectionOf(render(), "ENGL");
-  assert.match(section, />Fill out the ENGL D-clearance Google Form\. All listed sections use the same form\.</);
+  assert.match(section, /<dt>How to get it<\/dt><dd><ul><li>Fill out the ENGL D-clearance Google Form\.<\/li><li>All listed sections use the same form\.<\/li><\/ul>/);
   assert.match(section, new RegExp(`href="${esc(dept("ENGL").form_link)}"[^>]*>Where to request it ↗<`));
   assert.match(section, new RegExp(`href="${esc(dept("ENGL").source_url)}"[^>]*>Department&#x27;s page ↗<`));
 });
@@ -96,6 +97,7 @@ test("department names drop the school in parentheses", () => {
   assert.equal(displayName(dept("ACCT")), "Accounting");
   assert.equal(displayName(dept("CSCI")), "Computer Science");
   assert.equal(displayName(dept("DORN")), "Other Dornsife departments"); // not just "Dornsife"
+  assert.equal(displayName(dept("IYA")), "Iovine and Young Academy"); // its name is its school's, but it isn't a fallback
   const html = render();
   assert.match(sectionOf(html, "ENGL"), /<h3[^>]*>English<\/h3>/);
   for (const d of rules.departments) assert.doesNotMatch(displayName(d), new RegExp(`\\(${d.school}`), d.dept_code);
@@ -118,4 +120,24 @@ test("the page explains how D-clearance works, step by step", () => {
   assert.match(html, /doesn&#x27;t hold a seat/);
   assert.match(html, /isn&#x27;t a prerequisite waiver/);
   assert.ok(html.indexOf("How it works") < html.indexOf('class="dc-school"'), "steps come before the departments");
+});
+
+// The full steps were one paragraph per field, and the addresses in them were plain text.
+test("full steps break each case into its own point, with the case in bold", () => {
+  const section = sectionOf(render(), "CSCI");
+  assert.match(section, /<dd><div[^>]*>The process depends on your major:<\/div><ul><li><b[^>]*>Declared CSCI majors: <\/b>/);
+  assert.match(section, /<b[^>]*>BUAI majors, partner\/joint program majors, Pre-Engineering, and Pre-CS students: <\/b>[^<]*<ul><li>/); // its other sentences are sub-points
+});
+
+test("emails, web addresses and phone numbers in the steps are links", () => {
+  const section = sectionOf(render(), "BUCO");
+  assert.match(section, /<a href="mailto:undergrad\.advising@marshall\.usc\.edu">undergrad\.advising@marshall\.usc\.edu<\/a>/);
+  assert.match(section, /<a href="tel:2137400690">213-740-0690<\/a>/);
+  const csci = sectionOf(render(), "CSCI");
+  assert.match(csci, /<a href="https:\/\/myviterbi\.usc\.edu" title="https:\/\/myviterbi\.usc\.edu" target="_blank" rel="noopener noreferrer">myviterbi\.usc\.edu<\/a>/);
+});
+
+test("the most useful rows come first", () => {
+  const labels = [...sectionOf(render(), "BUCO").matchAll(/<dt>([^<]+)<\/dt>/g)].map((m) => m[1]);
+  assert.deepEqual(labels, ["How to get it", "Contact", "Turnaround", "Which courses", "Priority", "Tips"]);
 });

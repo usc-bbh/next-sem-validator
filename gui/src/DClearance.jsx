@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { C, HEAD, eyebrow, card, primaryButton } from "./theme";
 import { VALIDATOR_ASSETS } from "./validatorAssets";
 import { hashForPage } from "./route";
+import { toPoints, splitLabel, sentences, listItems, linkify, shortUrl } from "./richText";
 
 // The D-clearance page (#/d-clearance). Each D-clearance notice in the results
 // shows a department's one-line `summary` and links here, to
@@ -21,7 +22,7 @@ export const prefixesOf = (dept) => [dept.dept_code, ...(dept.also_covers_prefix
 // as just the school, so it reads "Other Dornsife departments".
 export const displayName = (dept) => {
   const name = dept.dept_name.replace(/\s*\([^()]*\)\s*$/, "");
-  return name === dept.school ? `Other ${dept.school} departments` : name;
+  return dept.type === "school_fallback" && name === dept.school ? `Other ${dept.school} departments` : name;
 };
 
 // A school's section starts closed, except the one holding the department a
@@ -83,18 +84,65 @@ const css = `
   .dc-dept dl { display: grid; grid-template-columns: 130px 1fr; gap: 10px 16px; margin: 12px 0 0; }
   .dc-dept dt { font-family: ${HEAD}; font-weight: 600; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: ${C.faint}; padding-top: 2px; }
   .dc-dept dd { margin: 0; }
+  .dc-dept dd ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+  .dc-dept dd ul ul { margin-top: 4px; gap: 3px; list-style: circle; }
+  .dc-rich a { color: ${C.cardinal}; text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere; }
   @media (max-width: 560px) { .dc-dept dl { grid-template-columns: 1fr; gap: 2px; } .dc-dept dd { margin-bottom: 10px; } }
 `;
 
+// Text with its emails, web addresses and phone numbers as links.
+function Rich({ text }) {
+  return linkify(text).map((t, i) => (t.href
+    ? <a key={i} href={t.href} title={t.href.startsWith("http") ? t.href : undefined}
+        {...(t.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+        {t.href.startsWith("http") ? shortUrl(t.text) : t.text}
+      </a>
+    : <React.Fragment key={i}>{t.text}</React.Fragment>));
+}
+
+// One point: its case in bold ("Declared CSCI majors:"), its first sentence,
+// and any further sentences or a long list as sub-points.
+function Point({ text, as: Tag = "li" }) {
+  const [label, body] = splitLabel(text);
+  const [lead, ...more] = sentences(body);
+  const items = listItems(lead);
+  const sub = [...(items ?? []), ...more];
+  return (
+    <Tag>
+      {label && <b style={{ color: C.ink }}>{label} </b>}
+      {!items && <Rich text={lead} />}
+      {sub.length > 0 && <ul>{sub.map((s, i) => <li key={i}><Rich text={s} /></li>)}</ul>}
+    </Tag>
+  );
+}
+
+// A field as a lead-in plus points; a one-point field without a lead-in stays a line.
+function Points({ text }) {
+  const { intro, points } = toPoints(text);
+  if (!intro && points.length === 1) return <Point text={points[0]} as="div" />;
+  return (
+    <>
+      {intro && <div style={{ marginBottom: 4 }}><Rich text={intro} /></div>}
+      <ul>{points.map((p, i) => <Point key={i} text={p} />)}</ul>
+    </>
+  );
+}
+
+function Contact({ dept }) {
+  const lines = [dept.contact_office, ...(dept.contact_email ?? "").split(/;\s*/), dept.contact_phone].filter((l) => l && l.trim());
+  if (lines.length === 1) return <Rich text={lines[0]} />;
+  return <ul>{lines.map((l, i) => <li key={i}><Rich text={l} /></li>)}</ul>;
+}
+
 function Department({ dept, focused }) {
-  const contact = [dept.contact_office, dept.contact_email, dept.contact_phone].filter(Boolean).join(" · ");
+  // Most useful first: how to get it and who to ask, then the background.
   const rows = [
-    ["How to get it", dept.how_to_get_clearance],
-    ["Which courses", dept.clearance_required_for],
-    ["Priority", dept.priority_note],
-    ["Turnaround", dept.typical_turnaround],
-    ["Contact", contact],
-    ["Tips", dept.tips],
+    ["How to get it", dept.how_to_get_clearance && <Points text={dept.how_to_get_clearance} />],
+    ["Contact", (dept.contact_office || dept.contact_email || dept.contact_phone) && <Contact dept={dept} />],
+    ["Turnaround", dept.typical_turnaround && <Points text={dept.typical_turnaround} />],
+    ["Which courses", dept.clearance_required_for && <Points text={dept.clearance_required_for} />],
+    ["Priority", dept.priority_note && <Points text={dept.priority_note} />],
+    ["Tips", dept.tips && <Points text={dept.tips} />],
   ].filter(([, v]) => v);
   return (
     <section id={anchorId(dept.dept_code)} className="dc-dept" aria-current={focused ? "true" : undefined}
@@ -108,7 +156,7 @@ function Department({ dept, focused }) {
           <span key={p} className="mono" style={{ fontSize: 11, color: C.body, background: "#FAFAF9", border: `1px solid ${C.line}`, borderRadius: 5, padding: "1px 6px" }}>{p}</span>
         ))}
       </div>
-      <p style={{ margin: "10px 0 0", fontSize: 14, color: C.ink, lineHeight: 1.55 }}>{dept.summary}</p>
+      <p className="dc-rich" style={{ margin: "10px 0 0", fontSize: 14, color: C.ink, lineHeight: 1.55 }}><Rich text={dept.summary} /></p>
       {(isUrl(dept.form_link) || isUrl(dept.source_url)) && (
         <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 10, fontSize: 13, fontFamily: HEAD, fontWeight: 600 }}>
           {isUrl(dept.form_link) && <a href={dept.form_link} target="_blank" rel="noopener noreferrer" style={{ color: C.cardinal, textDecoration: "none" }}>Where to request it ↗</a>}
@@ -117,7 +165,7 @@ function Department({ dept, focused }) {
       )}
       <details open={focused || undefined} style={{ marginTop: 12, borderTop: `1px solid ${C.line}`, paddingTop: 10 }}>
         <summary style={{ fontSize: 12.5, fontFamily: HEAD, fontWeight: 600, color: C.body }}>Full steps</summary>
-        <dl style={{ fontSize: 13.5, color: C.body, lineHeight: 1.6 }}>
+        <dl className="dc-rich" style={{ fontSize: 13.5, color: C.body, lineHeight: 1.6 }}>
           {rows.map(([label, value]) => (
             <React.Fragment key={label}><dt>{label}</dt><dd>{value}</dd></React.Fragment>
           ))}
