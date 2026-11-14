@@ -100,3 +100,22 @@ test("department names drop the school in parentheses", () => {
   assert.match(sectionOf(html, "ENGL"), /<h3[^>]*>English<\/h3>/);
   for (const d of rules.departments) assert.doesNotMatch(displayName(d), new RegExp(`\\(${d.school}`), d.dept_code);
 });
+
+// The page said only that departments differ. It now walks through the process
+// every department shares, before the department list.
+test("the page explains how D-clearance works, step by step", () => {
+  const html = render();
+  assert.match(html, /<h2 id="dc-how"[^>]*>How it works<\/h2>/);
+  const steps = [...html.matchAll(/<li><span><b[^>]*>([^<]+)<\/b>/g)].map((m) => m[1]);
+  assert.deepEqual(steps, [
+    "Find the sections that need it.",
+    "Request it from the department.",
+    "Wait for approval.",
+    "Register in WebReg yourself.",
+  ]);
+  assert.match(html, /five-digit section number and your USC ID/);
+  assert.match(html, /My Info &gt; Cleared Sections/);
+  assert.match(html, /doesn&#x27;t hold a seat/);
+  assert.match(html, /isn&#x27;t a prerequisite waiver/);
+  assert.ok(html.indexOf("How it works") < html.indexOf('class="dc-school"'), "steps come before the departments");
+});

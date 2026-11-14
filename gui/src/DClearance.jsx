@@ -41,10 +41,35 @@ export const bySchool = (departments) => {
   return [...groups];
 };
 
+// The general process, above the departments. Each point is backed by
+// dept_clearance.json or its DEPT_CLEARANCE_SOURCES.md, not assumed: a
+// department's own steps (below) win where they differ.
+export const HOW_IT_WORKS = [
+  ["Find the sections that need it.",
+    "Look for the D after the section number. When you validate your schedule, RegCheck flags the sections you picked that need it."],
+  ["Request it from the department.",
+    "Find the department below by its course prefix and follow its steps. Include the course, the five-digit section number and your USC ID. In some departments, majors get D-clearance at their advisement appointment instead."],
+  ["Wait for approval.",
+    "Most departments take a few business days. Once you're cleared, the section shows in WebReg under My Info > Cleared Sections."],
+  ["Register in WebReg yourself.",
+    "D-clearance only lets you register. It doesn't enroll you, so add the section in WebReg once you're cleared."],
+];
+
+export const GOOD_TO_KNOW = [
+  "D-clearance doesn't hold a seat. If the section fills before you register, you can't get in. GE office clearances for GE seminars are the exception: they come with a seat.",
+  "It isn't a prerequisite waiver. If you're missing a prerequisite, that's a separate request.",
+  "Many departments clear their majors first and open requests to other students later, so ask early.",
+];
+
 const isUrl = (s) => typeof s === "string" && /^https?:\/\//.test(s);
 const longDate = (iso) => new Date(`${iso}T12:00:00`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
 const css = `
+  .dc-steps { counter-reset: dc-step; list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 12px; }
+  .dc-steps li { counter-increment: dc-step; display: grid; grid-template-columns: 26px 1fr; gap: 10px; font-size: 14px; color: ${C.body}; line-height: 1.6; }
+  .dc-steps li::before { content: counter(dc-step); width: 24px; height: 24px; border-radius: 50%; background: ${C.cardinal}; color: #fff;
+    font-family: ${HEAD}; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .dc-notes { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 13.5px; color: ${C.body}; line-height: 1.6; }
   .dc-dept { scroll-margin-top: 84px; }
   .dc-school > summary { cursor: pointer; list-style: none; }
   .dc-school > summary::-webkit-details-marker { display: none; }
@@ -127,12 +152,27 @@ export function DClearanceView({ rules, error = false, focus = null, onBack }) {
         How to get D-clearance
       </h1>
       <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 680, margin: "12px 0 0" }}>
-        Some sections need permission from the department before WebReg lets you register. They have a D after the
-        section number. Each department runs its own process, so find yours below.
+        D-clearance is permission from the department that offers a course. Sections that need it have a D after the
+        five-digit section number in the Schedule of Classes and WebReg, and WebReg won't let you register for one until
+        the department clears you. Each department runs its own process, so find yours below.
       </p>
-      <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6, maxWidth: 680, margin: "8px 0 0" }}>
-        These steps come from each department's advising page and change every semester, so check the department's page
-        before you apply.{rules?._last_updated && <> Last checked {longDate(rules._last_updated)}.</>}
+
+      <section aria-labelledby="dc-how" style={{ ...card, marginTop: 24, padding: "20px 22px" }}>
+        <h2 id="dc-how" style={{ margin: 0, fontSize: 17, fontFamily: HEAD, fontWeight: 700, color: C.ink }}>How it works</h2>
+        <ol className="dc-steps">
+          {HOW_IT_WORKS.map(([title, body]) => (
+            <li key={title}><span><b style={{ color: C.ink }}>{title}</b> {body}</span></li>
+          ))}
+        </ol>
+        <h3 style={{ ...eyebrow, margin: "18px 0 8px" }}>Good to know</h3>
+        <ul className="dc-notes">
+          {GOOD_TO_KNOW.map((note) => <li key={note}>{note}</li>)}
+        </ul>
+      </section>
+
+      <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6, maxWidth: 680, margin: "16px 0 0" }}>
+        Each department's steps come from its advising page and can change every semester, so check the department's
+        page before you apply.{rules?._last_updated && <> Last checked {longDate(rules._last_updated)}.</>}
       </p>
 
       {error ? (
