@@ -67,6 +67,10 @@ def main() -> None:
     names = sorted(json.loads(CATALOGS[0].read_text(encoding="utf-8")))
     with ThreadPoolExecutor(max_workers=8) as pool:
         live = dict(zip(names, pool.map(fetch_flags, names)))
+    # USC's API starts timing out and dropping connections after a few thousand requests, so the
+    # courses that got no answer get a slower second pass, one at a time.
+    for name in [n for n, flags in live.items() if flags is None]:
+        live[name] = fetch_flags(name, attempts=2)
     print(f"fetched {sum(v is not None for v in live.values())} of {len(names)} courses")
 
     for path in CATALOGS:
