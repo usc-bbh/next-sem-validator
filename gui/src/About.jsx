@@ -24,6 +24,10 @@ function DClearanceLink() {
   );
 }
 
+// USC's advising hub, which links every school's advising office (checked
+// November 17, 2026; the registrar's old advisement page is gone).
+export const ADVISING_URL = "https://www.usc.edu/advising-support/";
+
 // One row per topic: `yes` is what the validator checks, `no` is what a pass
 // doesn't cover. Keep `yes` in step with validate_next_semester.py's checks.
 export const COMPARISON = [
@@ -161,10 +165,14 @@ export default function About({ onBack, onOpenClearance }) {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginTop: 18 }}>
           <div style={{ padding: "16px 18px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 12, fontSize: 13.5, color: C.body, lineHeight: 1.6 }}>
-            <b>Need <DClearanceLink />?</b> Reach out to your department.
+            <b>Need <DClearanceLink />?</b>
           </div>
           <div style={{ ...card, padding: "16px 18px", fontSize: 13.5, color: C.body, lineHeight: 1.6 }}>
-            For advising, reach out to your academic advisor.
+            For advising, reach out to your{" "}
+            <a href={ADVISING_URL} target="_blank" rel="noopener noreferrer" style={{ color: C.cardinal, fontWeight: 600, textDecoration: "underline", textUnderlineOffset: 2 }}>
+              academic advisor
+            </a>
+            .
           </div>
         </div>
 

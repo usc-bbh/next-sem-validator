@@ -20,8 +20,9 @@ const hrefs = [...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]);
 
 // Pages someone has opened and confirmed exist. A new link in About goes here
 // only after that check.
-// "#/d-clearance" is RegCheck's own D-clearance page.
-const CHECKED_LINKS = ["#/d-clearance"];
+// "#/d-clearance" is RegCheck's own D-clearance page. USC's Advising & Support
+// page, which lists every school's advising office, was checked November 17, 2026.
+const CHECKED_LINKS = ["#/d-clearance", "https://www.usc.edu/advising-support/"];
 
 // About linked the registrar's D-clearance page and an advising page, and
 // neither existed.
@@ -35,8 +36,9 @@ test("About no longer links the dead registrar pages", () => {
 });
 
 test("About still says where to go for D-clearance and advising", () => {
-  assert.match(html, /Need <a href="#\/d-clearance"[^>]*>D-clearance<\/a>\?<\/b> Reach out to your department\./);
-  assert.match(html, /For advising, reach out to your academic advisor\./);
+  assert.match(html, /Need <a href="#\/d-clearance"[^>]*>D-clearance<\/a>\?<\/b><\/div>/); // the question alone, no "Reach out to your department."
+  assert.doesNotMatch(html, /Reach out to your department/);
+  assert.match(html, /For advising, reach out to your <a href="https:\/\/www\.usc\.edu\/advising-support\/" target="_blank" rel="noopener noreferrer"[^>]*>academic advisor<\/a>\./);
 });
 
 // The limits list left out two things the checker can't do, so a student
