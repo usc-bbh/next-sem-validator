@@ -52,7 +52,9 @@ const markSeen = (key) => {
 };
 
 const fmt = (t) => {
+  if (!t || t === "TBD" || t === "TBA" || t.includes("TBA")) return "TBA";
   const [h, m] = t.split(":").map(Number);
+  if (isNaN(h)) return "TBA";
   const ampm = h < 12 ? "am" : "pm";
   const hh = h % 12 || 12;
   return m === 0 ? `${hh}${ampm}` : `${hh}:${String(m).padStart(2, "0")}${ampm}`;
@@ -762,7 +764,7 @@ export default function App() {
                               <span style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
                                 <span className="mono" style={{ fontSize: 11, color: on ? color : C.faint, width: 44, flexShrink: 0, fontWeight: 500 }}>{s.section_id}</span>
                                 <span className="mono" style={{ fontSize: 11.5, color: C.body, whiteSpace: "nowrap" }}>
-                                  {s.days.join("/")} {fmt(s.start_time)}–{fmt(s.end_time)}
+                                  {s.days.length ? `${s.days.join("/")} ${fmt(s.start_time)}–${fmt(s.end_time)}` : "TBA"}
                                 </span>
                                 {s.instructor && s.instructor !== "TBD" && (
                                   <span title={s.instructor} style={{ fontSize: 11, color: C.body, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0 }}>{s.instructor}</span>
