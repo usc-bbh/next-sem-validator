@@ -42,13 +42,14 @@ test("a department's section shows how to get it and links to where to request i
 });
 
 test("the department a notice links to opens with its steps showing", () => {
-  const html = render({ focus: "BUCO" });
-  assert.match(sectionOf(html, "BUCO"), /aria-current="true"[\s\S]*<details open=""/);
+  const html = render({ focus: "BUAD" });
+  assert.match(sectionOf(html, "BUAD"), /aria-current="true"[\s\S]*<details open=""/);
   assert.doesNotMatch(sectionOf(html, "ENGL"), /aria-current|<details open/);
 });
 
 test("finding a department matches its course prefixes and name", () => {
-  assert.ok(matchesQuery(dept("BUCO"), "dso")); // BUCO covers DSO
+  assert.ok(matchesQuery(dept("BUAD"), "dso")); // the Marshall entry covers DSO
+  assert.ok(!matchesQuery(dept("BUCO"), "dso")); // Business Communication doesn't
   assert.ok(matchesQuery(dept("CSCI"), " CSCI "));
   assert.ok(matchesQuery(dept("ENGL"), "english"));
   assert.ok(!matchesQuery(dept("ENGL"), "csci"));
@@ -79,7 +80,7 @@ test("each school's section starts closed", () => {
 });
 
 test("the school holding the department a notice links to starts open", () => {
-  const html = render({ focus: "BUCO" });
+  const html = render({ focus: "BUAD" });
   assert.match(schoolOf(html, "Marshall"), /<details class="dc-school" open=""/);
   assert.doesNotMatch(schoolOf(html, "Dornsife"), /open=""/);
 });
@@ -94,6 +95,7 @@ test("a search opens every school it matches", () => {
 test("department names drop the school in parentheses", () => {
   assert.equal(displayName(dept("ENGL")), "English");
   assert.equal(displayName(dept("BUCO")), "Business Communication");
+  assert.equal(displayName(dept("BUAD")), "Marshall School of Business");
   assert.equal(displayName(dept("ACCT")), "Accounting");
   assert.equal(displayName(dept("CSCI")), "Computer Science");
   assert.equal(displayName(dept("DORN")), "Other Dornsife departments"); // not just "Dornsife"
@@ -130,7 +132,7 @@ test("full steps break each case into its own point, with the case in bold", () 
 });
 
 test("emails, web addresses and phone numbers in the steps are links", () => {
-  const section = sectionOf(render(), "BUCO");
+  const section = sectionOf(render(), "BUAD");
   assert.match(section, /<a href="mailto:undergrad\.advising@marshall\.usc\.edu">undergrad\.advising@marshall\.usc\.edu<\/a>/);
   assert.match(section, /<a href="tel:2137400690">213-740-0690<\/a>/);
   const csci = sectionOf(render(), "CSCI");
@@ -138,6 +140,15 @@ test("emails, web addresses and phone numbers in the steps are links", () => {
 });
 
 test("the most useful rows come first", () => {
-  const labels = [...sectionOf(render(), "BUCO").matchAll(/<dt>([^<]+)<\/dt>/g)].map((m) => m[1]);
+  const labels = [...sectionOf(render(), "BUAD").matchAll(/<dt>([^<]+)<\/dt>/g)].map((m) => m[1]);
   assert.deepEqual(labels, ["How to get it", "Contact", "Turnaround", "Which courses", "Priority", "Tips"]);
+});
+
+// The Business Communication card listed FBE, DSO, MOR and MKT. They're Marshall-wide.
+test("Marshall's prefixes sit on the Marshall card, and Business Communication shows only BUCO", () => {
+  const chips = (code) => [...sectionOf(render(), code).matchAll(/<span class="mono"[^>]*>([A-Z]+)<\/span>/g)].map((m) => m[1]);
+  assert.deepEqual(chips("BUCO"), ["BUCO"]);
+  assert.deepEqual(chips("BUAD"), ["BUAD", "FBE", "DSO", "MOR", "MKT"]);
+  assert.match(sectionOf(render(), "BUAD"), /<h3[^>]*>Marshall School of Business<\/h3>/);
+  assert.match(sectionOf(render(), "BUAD"), /DSO 488 \(BUAI students only\)/);
 });

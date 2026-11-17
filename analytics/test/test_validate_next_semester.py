@@ -284,8 +284,18 @@ def test_d_clearance_notice_is_the_section_and_a_one_line_summary(dept_clearance
 def test_d_clearance_links_a_covered_prefix_to_the_entry_that_covers_it(dept_clearance):
     by_prefix = _dept_clearance_by_prefix(dept_clearance)
     result = _check_d_clearance("DSO 488", {"has_d_clearance": True}, by_prefix)
-    assert result.clearance_dept == "BUCO"  # DSO is in BUCO's also_covers_prefixes
+    assert result.clearance_dept == "BUAD"  # DSO is in the Marshall-wide entry's also_covers_prefixes
     assert result.reasons[1].startswith("Email Marshall undergraduate advising")
+
+
+# FBE, DSO, MOR and MKT sat under Business Communication. One Marshall office
+# handles them all, so they belong to the Marshall-wide entry; BUCO is just BUCO.
+def test_marshall_prefixes_link_to_the_marshall_entry_not_business_communication(dept_clearance):
+    by_prefix = _dept_clearance_by_prefix(dept_clearance)
+    for prefix in ["BUAD", "FBE", "DSO", "MOR", "MKT"]:
+        assert by_prefix[prefix]["dept_code"] == "BUAD", prefix
+    assert by_prefix["BUCO"]["dept_code"] == "BUCO"
+    assert "also_covers_prefixes" not in by_prefix["BUCO"]
 
 
 def test_every_department_has_a_short_summary(dept_clearance):

@@ -42,10 +42,10 @@ Key process notes: most Viterbi departments route through the **myViterbi D-Clea
 
 | Dept Code | Name | Source URL | Verified |
 |---|---|---|---|
-| BUAD (+BAEP, BUCO, FBE, DSO, MOR, MKT) | Business Administration (Marshall General) | students.marshall.usc.edu/.../registration-information-interest-lists | ✅ |
+| BUAD (+FBE, DSO, MOR, MKT) | Marshall School of Business (one advising office for these prefixes) | students.marshall.usc.edu/.../registration-information-interest-lists | ✅ |
 | ACCT | Accounting (Leventhal) | students.marshall.usc.edu/.../registration-information-interest-lists | ✅ |
 | BAEP | Entrepreneurship (Lloyd Greif Center) | students.marshall.usc.edu/.../registration-information-interest-lists | ✅ |
-| BUCO (+FBE, DSO, MOR, MKT) | Business Communication | students.marshall.usc.edu/.../registration-information-interest-lists | ✅ |
+| BUCO | Business Communication | students.marshall.usc.edu/.../registration-information-interest-lists | ✅ |
 
 ### Annenberg School for Communication and Journalism
 
