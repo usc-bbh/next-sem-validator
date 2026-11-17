@@ -229,7 +229,7 @@ def test_one_courses_own_sections_overlapping_block():
 
 def test_a_section_with_no_set_time_is_flagged_as_unchecked():
     _, by = check(plan(("ECON 596", ["26305"])))  # TBD
-    assert "have a TBA/unlisted meeting time and couldn't be checked for time conflicts" in text(by["ECON 596"])
+    assert "TBA/unlisted meeting time and couldn't be checked for time conflicts" in text(by["ECON 596"])
 
 
 # ---- "Missing labs or discussions a course needs" ---------------------------------

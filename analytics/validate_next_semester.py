@@ -607,9 +607,14 @@ def _check_major_restrictions(
         return None
     notes = list(dict.fromkeys(s["notes"] for s in _all_sections(catalog_entry, selected_section_ids) if s.get("notes")))
     if not notes:
-        return CourseResult(
-            course, "warning", [f"{course} has registration restrictions — check section notes on WebReg to confirm eligibility."]
-        )
+        # Fall back to course-level restriction_text if section notes weren't scraped
+        rt = catalog_entry.get("restriction_text")
+        if rt:
+            notes = [rt]
+        else:
+            return CourseResult(
+                course, "warning", [f"{course} has registration restrictions — check section notes on WebReg to confirm eligibility."]
+            )
 
     student_major = (stars_summary.get("major") or "").lower()
     is_undergrad = stars_summary.get("classLevel") in CLASS_LEVEL_ORDER
@@ -675,8 +680,8 @@ def _check_major_restrictions(
 
 def _section_time_options(
     catalog_entry: dict | None, selected_section_ids: set[str]
-) -> tuple[list[tuple[frozenset, int, int]], list[str]]:
-    """Returns (usable time options, section_ids skipped for TBA/malformed times)."""
+) -> tuple[list[tuple[frozenset, int, int]], list[tuple[str, str]]]:
+    """Returns (usable time options, [(section_id, mode)] skipped for TBA/malformed times)."""
     if not catalog_entry:
         return [], []
     options = []
@@ -684,7 +689,7 @@ def _section_time_options(
     for section in _all_sections(catalog_entry, selected_section_ids):
         time = _section_time(section)
         if time is None:
-            unresolved.append(section["section_id"])
+            unresolved.append((section["section_id"], section.get("mode") or section.get("section_type") or "section"))
             continue
         options.append(time)
     return options, unresolved
@@ -736,13 +741,14 @@ def _own_overlap(catalog_entry: dict | None, selected_section_ids: set[str]) -> 
     return None
 
 
-def _check_unresolved_time_sections(course: str, unresolved: list[str]) -> CourseResult | None:
+def _check_unresolved_time_sections(course: str, unresolved: list[tuple[str, str]]) -> CourseResult | None:
     """Warns (instead of silently skipping) when a considered section has a TBA/malformed time."""
     if not unresolved:
         return None
-    ids = ", ".join(unresolved)
+    labels = ", ".join(f"{mode} {sid}" for sid, mode in unresolved)
+    verb = "has" if len(unresolved) == 1 else "have"
     return CourseResult(
-        course, "warning", [f"{course} section(s) {ids} have a TBA/unlisted meeting time and couldn't be checked for time conflicts."]
+        course, "warning", [f"{course}'s {labels} {verb} a TBA/unlisted meeting time and couldn't be checked for time conflicts."]
     )
 
 

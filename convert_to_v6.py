@@ -51,6 +51,56 @@ def convert_days(days_list):
             result.append(mapped)
     return result
 
+def format_prereqs(raw):
+    """Convert the API's structured prereq list into a human-readable string.
+
+    Structure from the USC API:
+      [ { order, requiredCourses, courseOptions: [ { courseSpace, ands: [...] }, ... ] }, ... ]
+
+    Each top-level element is a requirement group.  Groups are ANDed.
+    Within a group:
+      - requiredCourses == len(courseOptions)  → all required (AND)
+      - requiredCourses == 1                  → pick one (OR)
+      - otherwise                             → "N of: A, B, C"
+    An option's `ands` list means that option is itself "X and Y".
+    """
+    if not raw:
+        return None
+
+    parts = []
+    for grp in raw:
+        opts = grp.get("courseOptions", [])
+        req = grp.get("requiredCourses", 1)
+        if not opts:
+            continue
+
+        # Format each option (possibly with co-requirements via 'ands')
+        formatted = []
+        for opt in opts:
+            name = opt.get("courseSpace") or f"{opt.get('prefix', '')} {opt.get('number', '')}{opt.get('suffix', '')}".strip()
+            ands = opt.get("ands") or []
+            if ands:
+                and_names = [a.get("courseSpace") or f"{a.get('prefix', '')} {a.get('number', '')}{a.get('suffix', '')}".strip() for a in ands]
+                name = " + ".join([name] + and_names)
+            formatted.append(name)
+
+        if len(formatted) == 1:
+            parts.append(formatted[0])
+        elif req >= len(formatted):
+            # All required
+            parts.append(" and ".join(formatted))
+        elif req == 1:
+            inner = " or ".join(formatted)
+            # Wrap in parens if this group will be ANDed with others
+            if len(raw) > 1:
+                inner = f"({inner})"
+            parts.append(inner)
+        else:
+            parts.append(f"{req} of: {', '.join(formatted)}")
+
+    return " and ".join(parts) if parts else None
+
+
 def convert_section(sec, course_has_d_clearance):
     """Convert a scraper section to v6 section format."""
     mode = sec.get("type") or "Other"
@@ -66,7 +116,7 @@ def convert_section(sec, course_has_d_clearance):
         "has_d_clearance": bool(sec.get("has_d_clearance", False)),
         "link_code": sec.get("link_code") or None,
         "instructor": sec.get("instructor") or "TBD",
-        "notes": None,
+        "notes": sec.get("notes") or sec.get("spaceReservation") or None,
         "days": convert_days(sec.get("days", [])),
         "start_time": sec.get("start_time") or "TBD",
         "end_time": sec.get("end_time") or "TBD",
@@ -131,15 +181,33 @@ def convert_course(course, term_code):
     elif units is None:
         units = 0
 
+    # Prerequisites and corequisites → human-readable strings
+    prereqs = format_prereqs(course.get("prereqs"))
+    coreqs = format_prereqs(course.get("coreqs"))
+
+    # Course-level restriction text (from USC API's course_restrictions,
+    # major_restrictions, school_restrictions).  Stored so the validator can
+    # tell students WHO a section is reserved for even when section-level
+    # notes (spaceReservation) weren't captured by the scrape.
+    restriction_parts = []
+    for key in ("course_restrictions", "major_restrictions", "school_restrictions"):
+        val = course.get(key)
+        if val:
+            restriction_parts.append(val if isinstance(val, str) else json.dumps(val))
+    restriction_text = "; ".join(restriction_parts) if restriction_parts else None
+
     return {
         "course_name": course.get("course_name") or "",
         "units": units,
         "description": description,
+        "prereqs": prereqs,
+        "coreqs": coreqs,
         "term_code": term_code,
         "has_lab": has_lab,
         "has_discussion": has_discussion,
         "has_d_clearance": has_d_clearance,
         "has_restrictions": has_restrictions,
+        "restriction_text": restriction_text,
         "section_counts": section_counts,
         "sections": sections_by_type,
     }
