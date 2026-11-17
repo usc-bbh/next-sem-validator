@@ -380,8 +380,76 @@ def _prereq_groups(clause: str) -> tuple[list[tuple[list[str], bool]], list[str]
     return groups, unchecked, len(parts) > 1 and any(has_or)
 
 
-def _describe_group(codes: list[str]) -> str:
-    return codes[0] if len(codes) == 1 else f"one of {', '.join(codes[:-1])} or {codes[-1]}"
+# The catalog's structured `prereqs` field: course codes joined by "and", "or" and "+" (both
+# together: "ARCH 214a + ARCH 214b"), with parentheses. "+" binds tightest, then "or", then "and".
+_FIELD_TOKEN = re.compile(r"\(|\)|\+|\band\b|\bor\b|[A-Z]{2,5}[ -]?\d{3}[A-Za-z]{0,3}")
+
+
+def _field_groups(field: str) -> list[list[tuple[str, ...]]] | None:
+    """Reads the catalog's `prereqs` field ("(CSCI 104 or CSCI 114) and CSCI 170") as "all of
+    these groups, each met by any one of its alternatives", an alternative being every code in
+    it. None when the field holds anything else, so the description is read instead."""
+    tokens = _FIELD_TOKEN.findall(field)
+    if re.sub(r"\s+", "", "".join(tokens)) != re.sub(r"\s+", "", field):
+        return None
+    pos = 0
+
+    def peek():
+        return tokens[pos] if pos < len(tokens) else None
+
+    def take():
+        nonlocal pos
+        pos += 1
+        return tokens[pos - 1]
+
+    # Each returns the alternatives (any one will do) as tuples of codes (all needed).
+    def atom():
+        token = take()
+        if token == "(":
+            alternatives = all_of()
+            if take() != ")":
+                raise ValueError
+            return alternatives
+        if token in ("(", ")", "+", "and", "or"):
+            raise ValueError
+        return [(token,)]
+
+    def together():
+        alternatives = atom()
+        while peek() == "+":
+            take()
+            right = atom()
+            alternatives = [a + b for a in alternatives for b in right]
+        return alternatives
+
+    def any_of():
+        alternatives = together()
+        while peek() == "or":
+            take()
+            alternatives += together()
+        return alternatives
+
+    def all_of():
+        alternatives = any_of()
+        while peek() == "and":
+            take()
+            right = any_of()
+            alternatives = [a + b for a in alternatives for b in right]
+        return alternatives
+
+    try:
+        groups = [any_of()]
+        while peek() == "and":
+            take()
+            groups.append(any_of())
+    except (ValueError, IndexError):
+        return None
+    return groups if pos == len(tokens) else None
+
+
+def _describe_group(alternatives: list[tuple[str, ...]]) -> str:
+    names = [" + ".join(alt) for alt in alternatives]
+    return names[0] if len(names) == 1 else f"one of {', '.join(names[:-1])} or {names[-1]}"
 
 
 def _check_prereq(course: str, catalog_entry: dict | None, stars_summary: dict) -> CourseResult | None:
@@ -393,8 +461,20 @@ def _check_prereq(course: str, catalog_entry: dict | None, stars_summary: dict) 
     be read two ways. GPA minimums are _check_gpa's."""
     if not catalog_entry:
         return None
-    description = catalog_entry.get("description") or ""
-    clauses = [re.sub(r"\s+", " ", c).strip() for c in _PREREQ_CLAUSE.findall(description) if c.strip()]
+    # The catalog's structured field when it has one (most courses' descriptions no longer state
+    # their prerequisites), else the description's prerequisite clause.
+    field = catalog_entry.get("prereqs")
+    field_groups = _field_groups(field) if isinstance(field, str) and field.strip() else None
+    if field_groups is not None:
+        clauses = [field.strip()]
+        parsed = [([(alts, False) for alts in field_groups], [], False)]
+    else:
+        description = catalog_entry.get("description") or ""
+        clauses = [re.sub(r"\s+", " ", c).strip() for c in _PREREQ_CLAUSE.findall(description) if c.strip()]
+        parsed = []
+        for clause in clauses:
+            groups, clause_unchecked, clause_ambiguous = _prereq_groups(clause)
+            parsed.append(([([(c,) for c in codes], other) for codes, other in groups], clause_unchecked, clause_ambiguous))
     if not clauses:
         return None
 
@@ -410,23 +490,23 @@ def _check_prereq(course: str, catalog_entry: dict | None, stars_summary: dict) 
     own = _prereq_key(course)
     missing, maybe_missing, credited, unchecked = [], [], [], []
     ambiguous = False
-    for clause in clauses:
-        groups, clause_unchecked, clause_ambiguous = _prereq_groups(clause)
+    for clause, (groups, clause_unchecked, clause_ambiguous) in zip(clauses, parsed):
         ambiguous |= clause_ambiguous
         # A GPA minimum is recognised, just checked elsewhere, so it isn't an unverified note.
         if any(_gpa_minimum(u) is None for u in clause_unchecked):
             unchecked.append(clause)
-        for codes, other in groups:
-            codes = [c for c in dict.fromkeys(_prereq_key(c) for c in codes) if c != own]
-            if not codes:
+        for alternatives, other in groups:
+            keyed = (tuple(dict.fromkeys(_prereq_key(c) for c in alt)) for alt in alternatives)
+            alternatives = [alt for alt in dict.fromkeys(keyed) if own not in alt]
+            if not alternatives:
                 continue
-            met = [c for c in codes if c in evidence]
+            met = [alt for alt in alternatives if all(c in evidence for c in alt)]
             if met:
-                credited.append(min(met, key=lambda c: rank[evidence[c]]))
+                credited.extend(min(met, key=lambda alt: max(rank[evidence[c]] for c in alt)))
             elif other:
-                maybe_missing.append(codes)
+                maybe_missing.append(alternatives)
             else:
-                missing.append(codes)
+                missing.append(alternatives)
 
     reasons = []
     failed = False
@@ -446,19 +526,19 @@ def _check_prereq(course: str, catalog_entry: dict | None, stars_summary: dict) 
             f"{course} lists {'; '.join(_describe_group(g) for g in maybe_missing)} as a prerequisite, which isn't on your report. "
             f"The catalog allows another way to qualify, so check with the department: \"{'; '.join(clauses)}\""
         )
-    in_progress = sorted(c for c in credited if evidence[c] == PROVEN_BY_IN_PROGRESS)
+    in_progress = sorted({c for c in credited if evidence[c] == PROVEN_BY_IN_PROGRESS})
     if in_progress:
         reasons.append(
             f"{', '.join(in_progress)} {'is' if len(in_progress) == 1 else 'are'} in progress, which counts toward "
             f"{course}'s prerequisites. You'll need to pass {'it' if len(in_progress) == 1 else 'them'}."
         )
-    by_student = sorted(c for c in credited if evidence[c] == PROVEN_BY_STUDENT)
+    by_student = sorted({c for c in credited if evidence[c] == PROVEN_BY_STUDENT})
     if by_student:
         unconfirmed = True
         reasons.append(
             f"You added {', '.join(by_student)} yourself; we couldn't confirm it from your report, so check it before relying on it."
         )
-    by_waiver = sorted(c for c in credited if evidence[c] == PROVEN_BY_WAIVER)
+    by_waiver = sorted({c for c in credited if evidence[c] == PROVEN_BY_WAIVER})
     if by_waiver:
         unconfirmed = True
         reasons.append(

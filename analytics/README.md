@@ -166,7 +166,7 @@ flagging here instead of changing unilaterally.
 | Already in progress | warning | `stars_summary.inProgressCourses` | — |
 | Class standing (400+ level vs. Freshman/Sophomore) | warning | `stars_summary.classLevel` + course number | [USC Registrar glossary](https://esdcomm.usc.edu/arr/glossary/c.html): 300/400-level is "primarily for" juniors/seniors — guidance, not a blanket rule. Actual enforcement is per-course (e.g. CSCI 442/445 require junior standing themselves), which this validator can't see, so this is a `warning` rather than a `fail`. |
 | D-clearance | warning (never a hard fail — see below) | selected sections' `has_d_clearance` (else the course's) + `dept_clearance.json`'s `summary`. The result sets `d_clearance` and `clearance_dept` (the covering entry's `dept_code`, or null) so the GUI links to that department's full steps | per-department `source_url` field already inside `dept_clearance.json` |
-| Prerequisites | fail / warning | `course_catalog.description`'s prerequisite clause (best-effort "and"/"or" parsing) against `stars_summary`'s completed and in-progress courses | — |
+| Prerequisites | fail / warning | `course_catalog.prereqs` (the structured field: codes joined by `and`, `or`, `+` for "both together", and parentheses, parsed exactly), else the description's prerequisite clause (best-effort "and"/"or" parsing), against `stars_summary`'s completed and in-progress courses | — |
 | Not found in catalog | warning | `course_catalog` presence | — |
 | Lab/discussion pairing | fail | a lecture picked when the course has lectures; `course_catalog.has_lab` / `has_discussion`; selected sections' `link_code` and `mode` | — |
 | Major restrictions | fail / warning ("reserved for X" only ever warns: a program name can't be matched reliably against the report's major) | `course_catalog.has_restrictions` + selected sections' `notes` (best-effort keyword match) | — |
@@ -218,3 +218,10 @@ python3 -m pytest analytics/test/
 ```bash
 python3 analytics/validate_next_semester.py
 ```
+
+## About-page claims
+
+`test/test_about_claims.py` tests every claim on the GUI's About page end to end, on the real
+Spring 2027 catalog (`gui/public/catalog.json`), the real department rules and a parsed STARS
+report. `test/about_claims.json` maps each claim to its tests, and `gui/src/About.test.js` fails
+when a claim on the page has no entry there. Change a claim on About, and name its tests here.

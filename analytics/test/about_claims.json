@@ -1,0 +1,90 @@
+{
+  "_about": "Every claim on the About page (gui/src/About.jsx COMPARISON), with the tests that prove it. About.test.js fails if a claim on the page is missing here or has no test; test_about_claims.py fails if a named Python test doesn't exist. References are python:<test in analytics/test/test_about_claims.py> or js:<file in gui/src>:<test title>.",
+  "checks": {
+    "Prerequisites, counting courses you've finished and ones you're taking now": [
+      "python:test_prereqs_met_by_finished_courses_pass",
+      "python:test_a_missing_prereq_blocks",
+      "python:test_a_prereq_taken_now_counts_and_says_so",
+      "python:test_any_one_alternative_meets_an_or_group",
+      "python:test_courses_taken_together_count_only_as_a_pair",
+      "python:test_a_failed_or_withdrawn_prereq_doesnt_count",
+      "python:test_prereqs_are_read_from_the_catalogs_prereq_field",
+      "python:test_every_prereq_field_in_the_catalog_can_be_read"
+    ],
+    "GPA minimums, when your GPA is on your report or you add it": [
+      "python:test_a_gpa_under_the_minimum_blocks",
+      "python:test_a_gpa_at_or_over_the_minimum_passes",
+      "python:test_a_gpa_missing_from_the_report_is_flagged_not_failed",
+      "python:test_a_non_major_gpa_minimum_only_warns"
+    ],
+    "Time conflicts between your picked sections": [
+      "python:test_overlapping_sections_of_two_courses_block_both",
+      "python:test_back_to_back_sections_dont_conflict",
+      "python:test_one_courses_own_sections_overlapping_block",
+      "python:test_a_section_with_no_set_time_is_flagged_as_unchecked"
+    ],
+    "Missing labs or discussions a course needs": [
+      "python:test_a_missing_discussion_blocks",
+      "python:test_a_missing_lab_blocks",
+      "python:test_a_lecture_and_its_discussion_pass",
+      "python:test_a_discussion_tied_to_another_lecture_blocks",
+      "python:test_a_lab_without_its_lecture_blocks"
+    ],
+    "Courses that aren't offered next semester": [
+      "python:test_a_course_not_offered_next_semester_is_flagged",
+      "python:test_an_offered_course_isnt_flagged"
+    ],
+    "Unit totals under 12 or over 18": [
+      "python:test_over_18_units_is_flagged",
+      "python:test_18_units_is_not_flagged",
+      "js:resultSummary.test.js:under 12 units is flagged, 12 isn't",
+      "js:resultSummary.test.js:the low unit count joins the validator's warnings, first"
+    ],
+    "D-clearance sections, with how that department gives clearance": [
+      "python:test_a_d_clearance_section_gets_the_departments_steps",
+      "python:test_the_open_section_of_the_same_course_needs_no_clearance",
+      "python:test_engl_174_doesnt_need_d_clearance_in_spring_2027",
+      "js:DClearance.test.js:a notice links to its department's steps, or to the whole page with none",
+      "js:DClearance.test.js:the department a notice links to opens with its steps showing"
+    ],
+    "Sections reserved for certain majors or programs": [
+      "python:test_a_restricted_course_is_flagged",
+      "python:test_an_unrestricted_course_isnt",
+      "python:test_a_section_reserved_for_your_major_passes_and_another_major_is_flagged",
+      "python:test_a_section_closed_to_your_major_blocks",
+      "python:test_a_graduate_only_section_blocks_an_undergrad",
+      "python:test_the_catalog_carries_section_notes"
+    ],
+    "Courses you've already taken (repeatable ones only warn)": [
+      "python:test_a_course_you_finished_blocks",
+      "python:test_a_repeatable_course_you_finished_only_warns",
+      "python:test_a_course_youre_taking_now_warns",
+      "python:test_a_course_you_failed_or_withdrew_from_isnt_taken"
+    ],
+    "Whether your class standing fits 400-level courses": [
+      "python:test_a_400_level_course_warns_a_sophomore",
+      "python:test_a_400_level_course_doesnt_warn_a_junior_or_senior",
+      "python:test_a_300_level_course_doesnt_warn_a_freshman"
+    ]
+  },
+  "does_not_check": {
+    "Minimum grades in prerequisites (like \"C or better\"): any passing grade counts": [
+      "python:test_any_passing_grade_meets_a_prereq"
+    ],
+    "Co-requisites, for every course": [
+      "python:test_corequisites_arent_checked"
+    ],
+    "Open seats: a section you pick may be full when you register, so check WebReg": [
+      "python:test_a_full_section_isnt_flagged"
+    ],
+    "Graduation requirements or degree progress": [
+      "python:test_degree_progress_isnt_checked"
+    ],
+    "Holds, registration appointments, or WebReg issues": [
+      "python:test_holds_and_registration_appointments_arent_checked"
+    ],
+    "A second STARS report: double majors get one per major, and only the one you upload is checked": [
+      "python:test_only_one_stars_report_is_checked"
+    ]
+  }
+}

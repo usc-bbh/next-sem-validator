@@ -32,3 +32,13 @@ test("low units needs a course with units", () => {
   assert.equal(isLowUnits(11.5, 3), true);
   assert.equal(isLowUnits(12, 3), false);
 });
+
+// About says RegCheck flags unit totals under 12; 12 is the full-time minimum.
+test("under 12 units is flagged, 12 isn't", () => {
+  assert.equal(isLowUnits(11, 3), true);
+  assert.equal(isLowUnits(11.5, 3), true);
+  assert.equal(isLowUnits(12, 3), false);
+  assert.equal(isLowUnits(18, 5), false);
+  assert.equal(resultSummary(result("valid"), 11, 3).status, "warning");
+  assert.equal(resultSummary(result("valid"), 12, 3).status, "valid");
+});

@@ -1,5 +1,6 @@
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -84,4 +85,37 @@ test("every mention of D-clearance links to the D-clearance page", () => {
   const all = mentions.match(/\[?D-clearance\]?/g);
   assert.ok(all.length >= 2, `found ${all.length}`);
   for (const m of all) assert.equal(m, "[D-clearance]");
+});
+
+// Every claim About makes is tested end to end in analytics/test/test_about_claims.py
+// (and, for what only the page does, here in gui/src). about_claims.json maps each claim to
+// its tests; a new or reworded claim fails here until its tests are named.
+const claimsFile = new URL("../../analytics/test/about_claims.json", import.meta.url);
+const claims = JSON.parse(readFileSync(claimsFile, "utf8"));
+const plain = (node) => renderToStaticMarkup(createElement("span", null, node))
+  .replace(/<[^>]+>/g, "")
+  .replace(/&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+
+test("every claim on About is tested, and every tested claim is on About", () => {
+  const onPage = { checks: COMPARISON.flatMap((r) => r.yes).map(plain), does_not_check: COMPARISON.flatMap((r) => r.no).map(plain) };
+  for (const side of ["checks", "does_not_check"]) {
+    assert.deepEqual([...onPage[side]].sort(), Object.keys(claims[side]).sort(), `About's "${side}" column and about_claims.json differ`);
+    for (const [claim, refs] of Object.entries(claims[side])) assert.ok(refs.length > 0, `no test for: ${claim}`);
+  }
+});
+
+test("each test a claim names exists", () => {
+  const python = readFileSync(new URL("../../analytics/test/test_about_claims.py", import.meta.url), "utf8");
+  for (const refs of [...Object.values(claims.checks), ...Object.values(claims.does_not_check)]) {
+    for (const ref of refs) {
+      if (ref.startsWith("python:")) {
+        assert.ok(python.includes(`def ${ref.slice(7)}(`), `missing Python test ${ref}`);
+      } else {
+        const [, file, title] = ref.match(/^js:([^:]+):(.+)$/) ?? [];
+        assert.ok(file, `bad reference ${ref}`);
+        const source = readFileSync(new URL(`./${file}`, import.meta.url), "utf8");
+        assert.ok(source.includes(`test(${JSON.stringify(title)}`) || source.includes(`test("${title}"`), `missing ${file} test "${title}"`);
+      }
+    }
+  }
 });
