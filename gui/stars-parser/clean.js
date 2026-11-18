@@ -5,14 +5,18 @@
 // middle of a block. Everything else is left exactly as printed, including
 // redacted values (X.XXX), which later stages need to recognise.
 
-// The browser's print header, in either locale's date format:
+// The browser's print header, in either locale's date format, with the date
+// first or (Safari) last. Layout can split the time at its colon.
 //   7/2/26, 7:26 PM          USC STARS Report
 //   28/09/2026, 18:42        USC STARS Report
-const PAGE_HEADER = /^\d{1,2}\/\d{1,2}\/\d{2,4}, \d{1,2}:\d{2}(?: [AP]M)? +USC STARS Report$/;
+//   USC STARS Report         11/2/26, 12 : 41 AM
+const STAMP = String.raw`\d{1,2}\/\d{1,2}\/\d{2,4}, \d{1,2} ?: ?\d{2}(?: [AP]M)?`;
+const PAGE_HEADER = new RegExp(`^(?:${STAMP} +USC STARS Report|USC STARS Report +${STAMP})$`);
 
 // The browser's print footer: the page URL, or STARSRedacter's Xs over it,
-// then the page number.
-const PAGE_FOOTER = /^(?:X+|https?:\/\/\S+) +\d+\/\d+$/;
+// then the page number ("2/7" or "Page 2 of 7"), or the page number alone.
+const PAGE_NUMBER = String.raw`(?:\d+\/\d+|Page \d+ of \d+)`;
+const PAGE_FOOTER = new RegExp(String.raw`^(?:(?:X+|https?:\/\/\S+) +)?` + PAGE_NUMBER + "$");
 
 // The STARS web page's own footer, printed after the report ends.
 const WEB_BOILERPLATE = [/^Need help\?$/, /^Technical Issues:/, /^Privacy Notice \|/];

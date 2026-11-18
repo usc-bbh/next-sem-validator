@@ -154,6 +154,13 @@ export function titleCase(text) {
 
 const DEGREE_ABBREVIATIONS = { "BACHELOR OF SCIENCE": "BS", "BACHELOR OF ARTS": "BA" };
 
+// The degree code. The CURRENT POST row for this report's program has it for
+// every degree (BFA, BM, BARCH…); the title line is the fallback when there's
+// no such row.
+function degreeOf(header, posts) {
+  return posts.find((p) => p.program === header.programCode)?.degree ?? header.degree;
+}
+
 function readHeader(header) {
   const lines = header.lines.map((line) => line.trim());
   const title = lines.indexOf("STARS - DEGREE PROGRESS REPORT");
@@ -161,7 +168,8 @@ function readHeader(header) {
   const majorLine = title >= 0 ? lines[title + 2] ?? "" : "";
   return {
     prepared: inBlock(header, /^PREPARED: (\S+)/)?.[1] ?? null,
-    programCode: inBlock(header, /^PROGRAM: (\S+)/)?.[1] ?? null,
+    // "PROGRAM: 1915", or "PROGRAM CODE: 1381" in the single-column printout.
+    programCode: inBlock(header, /^PROGRAM(?: CODE)?: (\S+)/)?.[1] ?? null,
     catalogYear: inBlock(header, /CATALOG YEAR: (\d{5})/)?.[1] ?? null,
     degreeName: degreeLine,
     degree: DEGREE_ABBREVIATIONS[degreeLine.toUpperCase()] ?? null,
@@ -177,7 +185,7 @@ function readPosts(pertinent) {
       inPosts = true;
       continue;
     }
-    const m = line.match(/^ +(\d{1,5}) +([A-Z]{2,4}) +([A-Z]{2,5}) +([A-Z]{2,5}) +(\d{5})$/);
+    const m = line.match(/^ +(\d{1,5}) +([A-Z]{2,6}) +([A-Z]{2,6}) +([A-Z]{2,6}) +(\d{5})$/);
     if (inPosts && m) {
       posts.push({ program: m[1], degree: m[2], major: m[3], school: m[4], term: m[5] });
     } else if (inPosts) {
@@ -207,10 +215,11 @@ function readMinors(pertinent, bs) {
 }
 
 // A redacted GPA (STARSRedacter prints X.XXX, or x.xxx on one sample) and a
-// missing one both come back null.
+// missing one both come back null. Some reports print "3.166 AVE" for
+// "3.166 GPA".
 function readGpa(bs) {
   const block = bs.find((b) => b.label === "gpa" && /OF ALL USC BACCALAUREATE UNITS/.test(b.heading));
-  const m = inBlock(block, /^ *EARNED: +(\d\.\d{3}) GPA/);
+  const m = inBlock(block, /^ *EARNED: +(\d\.\d{3}) (?:GPA|AVE)\b/);
   return m ? Number(m[1]) : null;
 }
 
@@ -223,9 +232,12 @@ function readUnits(unitTotal) {
     required: Number(unitTotal.heading.match(/MINIMUM OF (\d+) UNITS/)[1]),
     // Three-digit totals fill the gap: "EARNED:103.00 UNITS".
     earned: number(/^ *EARNED: *(\d+\.\d+) UNITS/),
-    inProgress: number(/^ *IN-PROCESS: *(\d+\.\d+) UNITS/) ?? 0,
+    // null when the master list prints no IN-PROCESS line (fields() fills it in).
+    inProgress: number(IN_PROCESS),
   };
 }
+
+export const IN_PROCESS = /^ *IN-PROCESS: *(\d+\.\d+) UNITS/;
 
 // NOTE: RE - SUB CMPR120 FOR CSCI113 → { from: "CMPR 120", to: "CSCI 113" }
 function readEquivalents(bs) {
@@ -250,6 +262,9 @@ function readWaivers(bs) {
   }
   return dedupe(out, (code) => code);
 }
+
+// Sums to two decimals, since STARS prints third-units (3.3, 2.6).
+const sumUnits = (courses) => Math.round(courses.reduce((n, c) => n + c.units, 0) * 100) / 100;
 
 function dedupe(items, key) {
   const seen = new Set();
@@ -285,10 +300,16 @@ export function collectCourses(bs) {
 export function fields(bs) {
   const header = readHeader(find(bs, "header"));
   const pertinent = find(bs, "pertinentData");
+  const posts = readPosts(pertinent);
   const unitTotal = find(bs, "unitTotal");
 
   const transferRow = rowsOf(unitTotal).find((row) => row.term === TRANSFER_TOTAL_TERM);
   const courses = collectCourses(bs);
+  const inProgress = courses.filter((c) => c.passed === null);
+  // A report prepared between terms (the athlete's, in June) has no IN-PROCESS line in the
+  // master list, though its courses for next term are listed under "other courses". Their
+  // units stand in for it.
+  const units = readUnits(unitTotal);
   const redacted =
     courses.some((c) => REDACTION_TOKENS.has(c.grade)) ||
     bs.some((b) => b.lines.some((line) => /\bX\.XXX\b/i.test(line)));
@@ -301,17 +322,17 @@ export function fields(bs) {
       redacted,
       warnings: [],
     },
-    degree: header.degree,
+    degree: degreeOf(header, posts),
     major: header.major,
     classLevel: inBlock(pertinent, /Current Class Level (\w+)/)?.[1] ?? null,
     entryTerm: inBlock(pertinent, /Term of USC Entrance (\d{5})/)?.[1] ?? null,
     expectedGraduation: inBlock(pertinent, /USC Expected Graduation Date - (.+?)\s*$/)?.[1] ?? null,
     gpa: readGpa(bs),
-    posts: readPosts(pertinent),
+    posts,
     minors: readMinors(pertinent, bs),
-    units: { ...readUnits(unitTotal), transferTotal: transferRow ? transferRow.units : 0 },
+    units: { ...units, inProgress: units.inProgress ?? sumUnits(inProgress), transferTotal: transferRow ? transferRow.units : 0 },
     completedCourses: courses.filter((c) => c.passed !== null),
-    inProgressCourses: courses.filter((c) => c.passed === null),
+    inProgressCourses: inProgress,
     equivalents: readEquivalents(bs),
     waivedCourses: readWaivers(bs),
   };

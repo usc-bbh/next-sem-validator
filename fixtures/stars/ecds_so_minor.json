@@ -1,0 +1,238 @@
+{
+  "meta": {
+    "prepared": "10/19/26",
+    "programCode": "1824",
+    "catalogYear": "20263",
+    "redacted": true,
+    "warnings": []
+  },
+  "degree": "BS",
+  "major": "Economics and Data Science",
+  "classLevel": "Sophomore",
+  "entryTerm": "20263",
+  "expectedGraduation": null,
+  "gpa": null,
+  "posts": [
+    {
+      "program": "1824",
+      "degree": "BS",
+      "major": "ECDS",
+      "school": "LAS",
+      "term": "20263"
+    }
+  ],
+  "minors": [
+    {
+      "name": "Chinese for the Professions",
+      "effectiveTerm": "20263",
+      "catalogYear": "20263"
+    }
+  ],
+  "units": {
+    "required": 128,
+    "earned": 32,
+    "inProgress": 16,
+    "transferTotal": 32
+  },
+  "completedCourses": [
+    {
+      "term": "20232",
+      "code": "AP28:COMP",
+      "rawCode": "AP28:COMP",
+      "title": "AP CHINESE LANG AND CULTURE",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP07:COMP",
+      "rawCode": "AP07:COMP",
+      "title": "AP HISTORY AMERICA",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP20:COMP",
+      "rawCode": "AP20:COMP",
+      "title": "AP BIOLOGY",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP66:COMP",
+      "rawCode": "AP66:COMP",
+      "title": "AP CALCULUS AB",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "AP32:COMP",
+      "rawCode": "AP32:COMP",
+      "title": "AP COMPUTER SCI PRINCIPLES",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20262",
+      "code": "AP34:COMP",
+      "rawCode": "AP34:COMP",
+      "title": "AP MICROECONOMICS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20262",
+      "code": "AP35:COMP",
+      "rawCode": "AP35:COMP",
+      "title": "AP MACROECONOMICS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20262",
+      "code": "AP40:COMP",
+      "rawCode": "AP40:COMP",
+      "title": "AP ENVIRON SCIENCE",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20262",
+      "code": "AP68:COMP",
+      "rawCode": "AP68:COMP",
+      "title": "AP CALCULUS BC",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20262",
+      "code": "AP90:COMP",
+      "rawCode": "AP90:COMP",
+      "title": "AP STATISTICS",
+      "units": 4,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "exam",
+      "passed": true,
+      "origin": "parsed"
+    }
+  ],
+  "inProgressCourses": [
+    {
+      "term": "20263",
+      "code": "EALC 304",
+      "rawCode": "EALC304",
+      "title": "Advanced Modern Chinese I",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "GESM 120",
+      "rawCode": "GESM120",
+      "title": "Seminar in Humanistic Inquiry",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "LING 115",
+      "rawCode": "LING115",
+      "title": "Language and Society",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "G",
+        "W"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "MATH 225",
+      "rawCode": "MATH225",
+      "title": "Linear Algebra and Linear Dif",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    }
+  ],
+  "equivalents": [],
+  "waivedCourses": []
+}

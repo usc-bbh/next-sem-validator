@@ -22,7 +22,7 @@ one new sample student exercises both modules at once.
 
 ## Current contents
 
-Eleven redacted undergraduate reports, each a `.txt` / `.json` pair, plus:
+Thirteen redacted undergraduate reports, each a `.txt` / `.json` pair, plus:
 
 - `grad_apsy.txt`, a graduate report with no `.json`. The parser refuses it,
   and the test checks that it does.

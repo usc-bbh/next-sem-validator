@@ -14,72 +14,31 @@ export const COURSE_ROW = /^ *\d{5} (?!=)\S/;
 const DIVIDER = /^_{20,}$/;
 const BANNER = /^\*+$/;
 
-// Each block's label, matched against its heading: the first line that isn't
-// a row of asterisks, joined with the line after it, because some headings
-// wrap ("…UNIQUE TO THE APPLIED" / "ANALYTICS MINOR:"). First match wins, so
-// the more specific anchors come first.
+// Labels that later stages read, matched against a block's heading: the
+// first line that isn't a row of asterisks, joined with the line after it,
+// because some headings wrap ("…UNIQUE TO THE APPLIED" / "ANALYTICS MINOR:").
+// First match wins.
 //
 // `courses` says whether the block's course rows are the student's record
 // ("record") or a repeat of rows listed elsewhere ("repeat"). Blocks with
 // "none" aren't expected to hold course rows at all.
 //
-// A new variant is a one-line change here, plus a fixture that shows it.
+// Only blocks that fields.js or checks.js look up by name are here. Every
+// other block is labelled by its shape (see structuralLabel), so a major,
+// minor or school whose requirements are worded differently needs no entry.
+// The table used to list each requirement heading the samples showed, which
+// tied parsing to the majors in the sample set: an Environmental Studies
+// athlete's NCAA section and an IR major's "ADDITIONAL UNIT REQUIREMENT" both
+// failed the parse.
 export const LABELS = [
   { label: "header", courses: "none", anchors: [/^PREPARED:/] },
   { label: "graduateData", courses: "none", anchors: [/^GRADUATE PERTINENT DATA SECTION/] },
   { label: "pertinentData", courses: "none", anchors: [/^PERTINENT DATA SECTION/] },
-  { label: "summary", courses: "none", anchors: [/^AT LEAST ONE REQUIREMENT HAS NOT BEEN SATISFIED/, /^ALL REQUIREMENTS (?:HAVE BEEN|ARE) /] },
-  {
-    label: "notice",
-    courses: "none",
-    anchors: [
-      /^NOTE: The Legend to STARS/,
-      /YOU ARE IDENTIFIED AS A RENAISSANCE SCHOLAR/,
-      /Advisory information related to your Program of Study/,
-      /TIME TO DEGREE COMPLETION STATUS/,
-      /^YOUR PROGRAM REQUIRES A PRACTICUM/,
-      /^INTERNATIONAL STUDENTS WORKING TOWARD/,
-      /^PLEASE NOTE THE FOLLOWING GENERAL EDUCATION LIMITATIONS/,
-    ],
-  },
   { label: "unitTotal", courses: "record", anchors: [/MINIMUM OF \d+ UNITS (?:IS )?REQUIRED FOR (?:THE )?DEGREE/] },
-  { label: "residence", courses: "none", anchors: [/64-UNIT RESIDENCY/, /64 UNDERGRADUATE UNITS MUST/] },
-  { label: "upperDivision", courses: "none", anchors: [/32-UNIT UPPER DIVISION/, /32 UPPER DIVISION UNITS/] },
-  { label: "dornsife104", courses: "repeat", anchors: [/104 UNITS APPLICABLE/] },
-  { label: "renaissance", courses: "repeat", anchors: [/RENAISSANCE HONORS/] },
   { label: "gpa", courses: "repeat", anchors: [/CUMULATIVE GPA REQUIRED/] },
-  { label: "deptLimit", courses: "repeat", anchors: [/LIMIT OF 40 UPPER DIVISION UNITS/] },
-  { label: "unitCaps", courses: "repeat", anchors: [/PHYSICAL EDUCATION ACTIVITY/] },
-  { label: "writing", courses: "repeat", anchors: [/COMPOSITION\/WRITING REQUIREMENT/] },
-  { label: "foreignLanguage", courses: "repeat", anchors: [/FOREIGN LANGUAGE REQUIREMENT/] },
-  { label: "geCore", courses: "repeat", anchors: [/GENERAL EDUCATION CORE LITERACIES/] },
-  { label: "geGlobal", courses: "repeat", anchors: [/GENERAL EDUCATION GLOBAL PERSPECTIVES/] },
-  { label: "thematicOption", courses: "repeat", anchors: [/THEMATIC OPTION REQUIREMENTS/] },
-  { label: "minorUnique", courses: "repeat", anchors: [/MUST BE UNIQUE TO THE .*MINOR/] },
-  { label: "minor", courses: "repeat", anchors: [/MINOR REQUIREMENTS FOR/] },
-  {
-    label: "major",
-    courses: "repeat",
-    anchors: [
-      /MAJOR REQUIREMENTS/,
-      /PRE-MAJOR/,
-      /REQUIRED UPPER DIVISION BUSINESS/,
-      /UPPER DIVISION REQUIREMENTS FOR/,
-      /DEPARTMENT MAJOR UPPER DIVISION/,
-      /COMPUTATIONAL AREA/,
-      /QUANTITATIVE ELECTIVE/,
-    ],
-  },
-  { label: "math", courses: "repeat", anchors: [/MATH REQUIREMENT/] },
-  { label: "econ", courses: "repeat", anchors: [/ECONOMICS REQUIREMENT/] },
-  { label: "accounting", courses: "repeat", anchors: [/ACCOUNTING REQUIREMENT/] },
-  { label: "currentRegistration", courses: "repeat", anchors: [/^CURRENT REGISTRATION:/] },
+  { label: "minor", courses: "repeat", anchors: [/^MINOR REQUIREMENTS FOR/] },
   { label: "otherCourses", courses: "record", anchors: [/^OTHER COURSES IN YOUR ACADEMIC ACCOUNT/] },
   { label: "legend", courses: "none", anchors: [/^\*+ +LEGEND +\*+/] },
-  { label: "internalAudit", courses: "repeat", anchors: [/INTERNAL USE ONLY/, /FA INTERNAL AUDITING/, /^SACN:/] },
-  { label: "ncaa", courses: "repeat", anchors: [/\bNCAA\b/] },
-  { label: "disclaimer", courses: "none", anchors: [/Degree Progress Advisement report has been prepared/] },
-  { label: "end", courses: "none", anchors: [/END OF ANALYSIS/] },
 ];
 
 const STATUS = /^(OK|NO|IP)\s+/;
@@ -89,11 +48,25 @@ function headingOf(lines) {
   return content.slice(0, 2).join(" ").replace(STATUS, "");
 }
 
-function labelOf(heading) {
+// A sub-requirement line: "  - 2) …", "IP+ 3) …", "+R 8) …", "- OR) …".
+const SUB_REQUIREMENT = /^\s*(?:IP)?[+-]R?\s+(?:\d+|OR)\)/;
+
+// Everything that isn't in LABELS. A block that lists courses, carries an
+// OK / NO / IP status, or has sub-requirements is a requirement, and its rows
+// repeat the record (stage 6 checks that they do). Anything else is a notice:
+// a banner, an advisory paragraph, the disclaimer.
+function structuralLabel(lines, status) {
+  const requirement =
+    status !== null ||
+    lines.some((line) => COURSE_ROW.test(line) || SUB_REQUIREMENT.test(line) || /^\s*(?:NEEDS|SELECT FROM):/.test(line));
+  return requirement ? { label: "requirement", courses: "repeat" } : { label: "notice", courses: "none" };
+}
+
+function labelOf(heading, lines, status) {
   for (const entry of LABELS) {
     if (entry.anchors.some((re) => re.test(heading))) return entry;
   }
-  return { label: "unknown", courses: "none" };
+  return structuralLabel(lines, status);
 }
 
 // Returns [{ label, courses, status, heading, lines }], in report order.
@@ -117,11 +90,12 @@ export function blocks(text) {
     .map((lines) => {
       const heading = headingOf(lines);
       const first = lines.find((line) => line.trim() && !BANNER.test(line.trim())) ?? "";
-      const { label, courses } = labelOf(heading);
+      const status = first.trim().match(STATUS)?.[1] ?? null;
+      const { label, courses } = labelOf(heading, lines, status);
       return {
         label,
         courses,
-        status: first.trim().match(STATUS)?.[1] ?? null,
+        status,
         heading,
         lines,
       };

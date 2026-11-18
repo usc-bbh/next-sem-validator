@@ -617,7 +617,17 @@ def _check_major_restrictions(
             )
 
     student_major = (stars_summary.get("major") or "").lower()
+    major_words = [w for w in student_major.split() if len(w) > 3]
+    # A double major's report is titled with one major, but its CURRENT POST rows list every
+    # program the student is in (IR and BUAI), by code, and notes often name a program by code
+    # ("Open to BUAI students only").
+    post_codes = [p["major"].lower() for p in stars_summary.get("posts") or [] if p.get("major")]
     is_undergrad = stars_summary.get("classLevel") in CLASS_LEVEL_ORDER
+
+    def is_students_program(text: str) -> bool:
+        if student_major and (student_major in text or any(w in text for w in major_words)):
+            return True
+        return any(re.search(rf"\b{re.escape(code)}\b", text) for code in post_codes)
 
     reasons = []
     status = "pass"
@@ -638,11 +648,9 @@ def _check_major_restrictions(
                     end = boundary.start()
                     break
             allowed = remainder[:end]
-            allowed_text = allowed.lower()
-            major_words = [w for w in student_major.split() if len(w) > 3]
             # A warning, not a fail: the note's program name rarely matches the report's major
             # word for word, and a missing major on the report is unknown, not ineligible.
-            if not student_major or (student_major not in allowed_text and not any(w in allowed_text for w in major_words)):
+            if not is_students_program(allowed.lower()):
                 if status != "fail":
                     status = "warning"
                 reasons.append(
@@ -652,7 +660,7 @@ def _check_major_restrictions(
         for excluded in re.findall(r"not available for ([A-Za-z][A-Za-z &]*?) majors", note, re.IGNORECASE):
             matched = True
             excluded_norm = excluded.strip().lower()
-            if student_major and (excluded_norm in student_major or student_major in excluded_norm):
+            if (student_major and (excluded_norm in student_major or student_major in excluded_norm)) or excluded_norm in post_codes:
                 status = "fail"
                 reasons.append(f"{course} is not available for {excluded.strip()} majors.")
 

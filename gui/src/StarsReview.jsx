@@ -30,11 +30,11 @@ const FAILURE_TEXT = {
   landmarks: "Parts of your report we rely on are missing or unfamiliar.",
   masterListRows: "We couldn't read every row of your course list.",
   unitsEarned: "We couldn't match your unit totals, so we may have missed a course.",
-  unlabelledRows: "Your report has a section we don't recognise that lists courses.",
+  uncollectedRows: "Your report lists a course we couldn't place in your course list.",
 };
 
 // Failures whose message says more than the headline above, worth showing.
-const DETAIL_CHECKS = new Set(["layout", "landmarks", "masterListRows", "unitsEarned", "unlabelledRows"]);
+const DETAIL_CHECKS = new Set(["layout", "landmarks", "masterListRows", "unitsEarned", "uncollectedRows"]);
 
 // "csci104" / "CSCI  104" → "CSCI 104", the parser's spacing.
 function tidyCode(raw) {

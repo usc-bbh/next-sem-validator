@@ -21,8 +21,10 @@ const DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..
 const FIXTURES = fs.readdirSync(DIR).filter((f) => f.endsWith(".txt"));
 
 const PREAMBLE_ALLOWED = [
-  // The browser's print header: a timestamp, in either locale.
+  // The browser's print header: a timestamp, in either locale, before or
+  // (Safari) after the title.
   /^\d{1,2}\/\d{1,2}\/\d{2,4}, \d{1,2}:\d{2}( [AP]M)? +USC STARS Report$/,
+  /^USC STARS Report +\d{1,2}\/\d{1,2}\/\d{2,4}, \d{1,2} ?: ?\d{2}( [AP]M)?$/,
   // The student line, with only redaction Xs where the name and ID were.
   /^STARS Report for ?X+(?: X+)* +(?:ID#: ?X+|X{4} X+)$/,
   // The program code and title, e.g. "1915 Arti fi cial Intelligence for Business".
@@ -47,7 +49,7 @@ for (const name of FIXTURES) {
 
   test(`${name}: the preamble holds nothing but fixed text and Xs`, () => {
     const end = lines.findIndex((line) => line.startsWith("PREPARED:"));
-    assert.ok(end > 0, "no PREPARED: line");
+    assert.ok(end >= 0, "no PREPARED: line"); // 0 for the single-column printout, which has no preamble
     for (const line of lines.slice(0, end)) {
       const t = line.trim();
       if (t === "") continue;

@@ -789,6 +789,31 @@ def test_major_restrictions_none_when_reserved_for_students_major():
     assert result is None
 
 
+# A double major uploads one report, titled with one major. The other major is only in its
+# CURRENT POST rows, by code: an IR + BUAI student's IR report says "International Relations".
+IR_BUAI = {
+    "major": "International Relations",
+    "classLevel": "Junior",
+    "posts": [
+        {"program": "242", "degree": "BA", "major": "IR", "school": "LAS", "term": "20253"},
+        {"program": "1915", "degree": "BS", "major": "BUAI", "school": "BUAD", "term": "20253"},
+    ],
+}
+
+
+def _noted(note):
+    return {"has_restrictions": True, "sections": {"lectures": [{"section_id": "1", "is_cancelled": False, "notes": note}]}}
+
+
+def test_major_restrictions_count_a_double_majors_other_major():
+    assert _check_major_restrictions("DSO 488", _noted("This course is reserved for BUAI students."), IR_BUAI, {"1"}) is None
+    closed = _check_major_restrictions("DSO 488", _noted("Not available for BUAI majors."), IR_BUAI, {"1"})
+    assert closed.status == "fail"
+    # A program the student isn't in still warns.
+    other = _check_major_restrictions("BAEP 495", _noted("This course is reserved for BEI students."), IR_BUAI, {"1"})
+    assert other.status == "warning"
+
+
 def test_major_restrictions_fails_when_undergrad_only_but_student_is_grad():
     entry = {
         "has_restrictions": True,
@@ -953,7 +978,7 @@ REAL_SAMPLES = sorted(
 
 
 def test_real_samples_are_present():
-    assert len(REAL_SAMPLES) == 11
+    assert len(REAL_SAMPLES) == 13
 
 
 @pytest.mark.parametrize("name", REAL_SAMPLES)

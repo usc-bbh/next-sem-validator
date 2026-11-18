@@ -1,0 +1,508 @@
+{
+  "meta": {
+    "prepared": "06/18/26",
+    "programCode": "1381",
+    "catalogYear": "20243",
+    "redacted": true,
+    "warnings": []
+  },
+  "degree": "BS",
+  "major": "Environmental Studies",
+  "classLevel": "Senior",
+  "entryTerm": "20243",
+  "expectedGraduation": "14 MAY 2027",
+  "gpa": null,
+  "posts": [
+    {
+      "program": "1381",
+      "degree": "BS",
+      "major": "ENVS",
+      "school": "LAS",
+      "term": "20243"
+    }
+  ],
+  "minors": [],
+  "units": {
+    "required": 128,
+    "earned": 97,
+    "inProgress": 18,
+    "transferTotal": 28
+  },
+  "completedCourses": [
+    {
+      "term": "20233",
+      "code": "TR-COMP-1",
+      "rawCode": "TR-COMP-1",
+      "title": "READING AND COMPOSITION 1",
+      "units": 3.3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20233",
+      "code": "TR-PSYC",
+      "rawCode": "TR-PSYC",
+      "title": "INTRO TO PSYCH",
+      "units": 3.3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "ESRM 150",
+      "rawCode": "ESRM150",
+      "title": "WILDLIFE IN MODERN WORLD",
+      "units": 3.3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "OCEAN102",
+      "rawCode": "OCEAN102",
+      "title": "THE CHANGING OCEANS",
+      "units": 3.3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "RELIG120",
+      "rawCode": "RELIG120",
+      "title": "YOGA: PAST AND PRESENT",
+      "units": 3.3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "TR-ENVRNSTDS",
+      "rawCode": "TR-ENVRNSTDS",
+      "title": "INTRO TO ENVIRONMENTAL STUDIE",
+      "units": 3.3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "TR-NUTRITION",
+      "rawCode": "TR-NUTRITION",
+      "title": "NUTRITION",
+      "units": 2.6,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer_generic",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "ENVH 311",
+      "rawCode": "ENVH311",
+      "title": "INTRO TO ENVIRONMENTAL HEALTH",
+      "units": 2,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20241",
+      "code": "SOC 250",
+      "rawCode": "SOC250",
+      "title": "MEDIA AND SOCIETY",
+      "units": 3.3,
+      "grade": "TR",
+      "suffixes": [],
+      "flags": [],
+      "source": "transfer",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "CHEM 103",
+      "rawCode": "CHEM103",
+      "title": "General Chemistry for the Env",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "L",
+        "X",
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "DANC 302",
+      "rawCode": "DANC302",
+      "title": "Hip Hop Don't Stop: Black Soc",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "ENST 387",
+      "rawCode": "ENST387",
+      "title": "Economics for Natural Resourc",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "GEOL 160",
+      "rawCode": "GEOL160",
+      "title": "Introduction to Geosystems",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "L",
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20243",
+      "code": "PHED 165",
+      "rawCode": "PHED165",
+      "title": "Varsity Athletics",
+      "units": 1,
+      "grade": "CR",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "BISC 103",
+      "rawCode": "BISC103",
+      "title": "General Biology for the Envir",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "L",
+        "X",
+        "G"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "PPD 427",
+      "rawCode": "PPD 427",
+      "title": "Geographic Information System",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "L"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "SPAN 120",
+      "rawCode": "SPAN120",
+      "title": "Spanish I",
+      "units": 4,
+      "grade": "Pp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20251",
+      "code": "WRIT 150",
+      "rawCode": "WRIT150",
+      "title": "Writing and Critical Reasonin",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20252",
+      "code": "WRIT 340",
+      "rawCode": "WRIT340",
+      "title": "Advanced Writing",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "ENST 320A",
+      "rawCode": "ENST320A",
+      "title": "Water and Soil Sustainability",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "L"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "ENST 360",
+      "rawCode": "ENST360",
+      "title": "Public Policy for Sustainabil",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "FREN 270",
+      "rawCode": "FREN270",
+      "title": "Black Europe",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "G",
+        "W"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20253",
+      "code": "SPAN 150",
+      "rawCode": "SPAN150",
+      "title": "Spanish II",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "ENST 310",
+      "rawCode": "ENST310",
+      "title": "Sustainable Fisheries Managem",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "ENST 483",
+      "rawCode": "ENST483",
+      "title": "Coastal Zone Sustainability",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [
+        "L"
+      ],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "POSC 347",
+      "rawCode": "POSC347",
+      "title": "Environmental Law",
+      "units": 4,
+      "grade": "Lp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    },
+    {
+      "term": "20261",
+      "code": "SPAN 220",
+      "rawCode": "SPAN220",
+      "title": "Spanish III",
+      "units": 4,
+      "grade": "Pp",
+      "suffixes": [],
+      "flags": [],
+      "source": "usc",
+      "passed": true,
+      "origin": "parsed"
+    }
+  ],
+  "inProgressCourses": [
+    {
+      "term": "20262",
+      "code": "PSYC 274",
+      "rawCode": "PSYC274",
+      "title": "Statistics",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "L",
+        "G"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "ANTH 316",
+      "rawCode": "ANTH316",
+      "title": "Native Americans in American",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [
+        "G",
+        "P"
+      ],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "ENST 320B",
+      "rawCode": "ENST320B",
+      "title": "Water and Soil Sustainability",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "ENST 450",
+      "rawCode": "ENST450",
+      "title": "Sustainability in Practice",
+      "units": 4,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    },
+    {
+      "term": "20263",
+      "code": "ENST 492",
+      "rawCode": "ENST492",
+      "title": "Directed Environmental Policy",
+      "units": 2,
+      "grade": "RG",
+      "suffixes": [],
+      "flags": [
+        ">IP"
+      ],
+      "source": "usc",
+      "passed": null,
+      "origin": "parsed"
+    }
+  ],
+  "equivalents": [
+    {
+      "from": "TR-ENVRNSTDS",
+      "to": "ENST10"
+    },
+    {
+      "from": "ENST 360",
+      "to": "POSC 270"
+    },
+    {
+      "from": "POSC 347",
+      "to": "IR 323"
+    },
+    {
+      "from": "ENST 483",
+      "to": "ENST 495"
+    }
+  ],
+  "waivedCourses": []
+}

@@ -29,6 +29,11 @@ test("clean drops page headers and footers in both date formats", () => {
     "7/2/26, 7:26 PM                        USC STARS Report",
     "28/09/2026, 18:42                      USC STARS Report",
     "https://example.usc.edu/stars/report   2/7",
+    // Safari: the title first, the time split at its colon, "Page n of m".
+    "USC STARS Report                       11/2/26, 12 : 41 AM",
+    "XXXXXXXXXXXXXXXXXXXXXXX                Page 2 of 7",
+    // The single-column printout: the page number alone.
+    "                               Page 3 of 9",
     "      20251 CSCI103  L    4.0 Lp    Introduction",
   ].join("\n");
   assert.deepEqual(clean(text).trimEnd().split("\n"), [
@@ -62,8 +67,9 @@ test("every fixture loses its preamble and all page furniture", () => {
   for (const name of fs.readdirSync(DIR).filter((f) => f.endsWith(".txt"))) {
     const out = clean(fs.readFileSync(path.join(DIR, name), "utf8"));
     assert.ok(out.startsWith("PREPARED:"), name);
-    assert.doesNotMatch(out, /USC STARS Report$/m, name);
-    assert.doesNotMatch(out, /^X+ +\d+\/\d+$/m, name);
+    assert.doesNotMatch(out, /USC STARS Report/, name);
+    assert.doesNotMatch(out, /^(?:X+ +)?\d+\/\d+$/m, name);
+    assert.doesNotMatch(out, /Page \d+ of \d+/, name);
     assert.doesNotMatch(out, /STARS Report for|Need help\?/, name);
   }
 });
@@ -84,36 +90,49 @@ test("blocks split on dividers and read the status code", () => {
   );
   assert.deepEqual(
     bs.map((b) => [b.label, b.status]),
-    [["header", null], ["unitTotal", "NO"], ["math", "OK"]]
+    [["header", null], ["unitTotal", "NO"], ["requirement", "OK"]]
   );
 });
 
 test("a heading that wraps is labelled from both lines", () => {
-  const [b] = blocks(
-    "NO     A MINIMUM OF 16 UNITS MUST BE UNIQUE TO THE APPLIED\n       ANALYTICS MINOR:\n"
-  );
-  assert.equal(b.label, "minorUnique");
+  const [b] = blocks("NO     A MINIMUM OF 128 UNITS IS REQUIRED FOR\n       DEGREE COMPLETION:\n");
+  assert.equal(b.label, "unitTotal");
 });
 
-test("a block nobody has seen before is labelled unknown, not guessed", () => {
-  const [b] = blocks("NO     SOME REQUIREMENT NO SAMPLE HAS SHOWN US:\n");
-  assert.equal(b.label, "unknown");
+// Requirement headings used to be listed one by one, from the samples' majors.
+// A heading no sample had shown came out "unknown", and an unknown block with
+// courses failed the parse: an IR major's extra unit requirement and an
+// athlete's NCAA section both did. A block is now labelled by its shape.
+test("a block no sample has shown is labelled by its shape", () => {
+  const ir = blocks(
+    "NO     PLEASE NOTE THE FOLLOWING ADDITIONAL UNIT REQUIREMENT FOR\n       IR MAJORS:\n" +
+      "IP-  1) A MINIMUM OF 8 UPPER DIVISION COURSES (32 UNITS)\n      20261 IR  321       4.0 Lp    Civil War, Peace Building and\n"
+  )[0];
+  assert.deepEqual([ir.label, ir.courses, ir.status], ["requirement", "repeat", "NO"]);
+  const ncaa = blocks(
+    "      TOTAL ELECTIVE HOURS THAT MAY APPLY TO SATISFACTORY\n      PROGRESS REQUIREMENTS: 13.66.\n      20241 SOC250       3.3 TR    MEDIA AND SOCIETY\n"
+  )[0];
+  assert.deepEqual([ncaa.label, ncaa.courses], ["requirement", "repeat"]); // no status, but it lists courses
+  const track = blocks("YOU MUST COMPLETE ONE TRACK CHOSEN IN CONSULTATION WITH YOUR\nADVISOR.\n")[0];
+  assert.deepEqual([track.label, track.courses], ["notice", "none"]);
 });
 
-// The label table for every undergrad fixture. A change to the anchors that
-// moves any block shows up here.
+// The label table for every undergrad fixture. A change to the anchors or the
+// structural rule that moves any block shows up here.
 const EXPECTED = {
-  aibiz_jr_doubledegree: "header pertinentData summary notice notice notice unitTotal residence upperDivision gpa gpa writing notice thematicOption geGlobal math major notice major currentRegistration otherCourses legend internalAudit internalAudit internalAudit disclaimer end",
-  aibiz_so: "header pertinentData summary notice unitTotal residence upperDivision gpa gpa writing notice geCore geGlobal math major notice major notice currentRegistration otherCourses legend internalAudit internalAudit disclaimer end",
-  aibiz_sr_forgiveness: "header pertinentData summary notice notice unitTotal residence upperDivision gpa gpa writing notice geCore geGlobal math accounting notice major currentRegistration otherCourses unitCaps legend internalAudit internalAudit disclaimer end",
-  aibiz_sr_minor: "header pertinentData summary notice notice unitTotal residence upperDivision gpa gpa writing notice geCore geGlobal math accounting notice major minor minorUnique currentRegistration otherCourses legend internalAudit internalAudit internalAudit disclaimer end",
-  amcm_jr: "header pertinentData summary notice notice unitTotal gpa residence upperDivision gpa deptLimit dornsife104 writing foreignLanguage notice geCore geGlobal major major major currentRegistration otherCourses legend internalAudit internalAudit disclaimer end",
-  buad_fr: "header pertinentData summary notice unitTotal residence upperDivision gpa gpa writing notice geCore geGlobal math econ major major notice currentRegistration otherCourses legend internalAudit internalAudit disclaimer end",
-  buad_jr_ib: "header pertinentData summary notice notice unitTotal residence upperDivision gpa gpa writing notice geCore geGlobal math econ accounting major minor minorUnique currentRegistration otherCourses legend internalAudit internalAudit disclaimer end",
-  cpns_so: "header pertinentData summary notice notice unitTotal gpa residence upperDivision gpa deptLimit dornsife104 writing foreignLanguage notice geCore geGlobal major major currentRegistration otherCourses legend internalAudit internalAudit disclaimer end",
-  csci_sr_renaissance: "header pertinentData summary notice notice notice unitTotal residence upperDivision gpa gpa deptLimit writing geCore geGlobal math major major minor minorUnique unitCaps currentRegistration otherCourses legend renaissance internalAudit internalAudit disclaimer end",
-  ene_fr_withdrawals: "header pertinentData summary notice unitTotal residence upperDivision gpa gpa writing geCore geGlobal major math major major notice currentRegistration otherCourses legend internalAudit internalAudit disclaimer end",
-  psyc_so_thematic: "header pertinentData summary notice notice unitTotal gpa residence upperDivision gpa deptLimit dornsife104 writing foreignLanguage notice thematicOption geGlobal major major major currentRegistration otherCourses legend internalAudit internalAudit disclaimer end",
+  aibiz_jr_doubledegree: "header pertinentData notice notice notice notice unitTotal requirement requirement gpa gpa requirement notice requirement requirement requirement requirement notice requirement requirement otherCourses legend notice notice requirement notice notice",
+  aibiz_so: "header pertinentData notice notice unitTotal requirement requirement gpa gpa requirement notice requirement requirement requirement requirement notice requirement requirement requirement otherCourses legend notice requirement notice notice",
+  aibiz_sr_forgiveness: "header pertinentData notice notice notice unitTotal requirement requirement gpa gpa requirement notice requirement requirement requirement requirement notice requirement requirement otherCourses requirement legend notice requirement notice notice",
+  aibiz_sr_minor: "header pertinentData notice notice notice unitTotal requirement requirement gpa gpa requirement notice requirement requirement requirement requirement notice requirement minor requirement requirement otherCourses legend notice notice requirement notice notice",
+  amcm_jr: "header pertinentData notice notice notice unitTotal gpa requirement requirement gpa requirement requirement requirement requirement notice requirement requirement requirement requirement requirement requirement otherCourses legend notice requirement notice notice",
+  buad_fr: "header pertinentData notice notice unitTotal requirement requirement gpa gpa requirement notice requirement requirement requirement requirement requirement requirement requirement requirement otherCourses legend notice requirement notice notice",
+  buad_jr_ib: "header pertinentData notice notice notice unitTotal requirement requirement gpa gpa requirement notice requirement requirement requirement requirement requirement requirement minor requirement requirement otherCourses legend notice requirement notice notice",
+  cpns_so: "header pertinentData notice notice notice unitTotal gpa requirement requirement gpa requirement requirement requirement requirement notice requirement requirement requirement requirement requirement otherCourses legend notice requirement notice notice",
+  csci_sr_renaissance: "header pertinentData notice notice notice notice unitTotal requirement requirement gpa gpa requirement requirement requirement requirement requirement requirement requirement minor requirement requirement requirement otherCourses legend requirement notice requirement notice notice",
+  ecds_so_minor: "header pertinentData notice notice notice unitTotal gpa requirement requirement gpa requirement requirement requirement requirement notice requirement requirement requirement minor requirement requirement otherCourses legend notice requirement notice notice",
+  ene_fr_withdrawals: "header pertinentData notice notice unitTotal requirement requirement gpa gpa requirement requirement requirement requirement requirement requirement requirement requirement requirement otherCourses legend notice requirement notice notice",
+  envs_sr_athlete: "header pertinentData notice notice notice unitTotal gpa requirement requirement gpa requirement requirement requirement requirement notice requirement requirement requirement notice requirement notice requirement otherCourses legend notice requirement requirement requirement requirement requirement notice notice notice notice notice notice notice",
+  psyc_so_thematic: "header pertinentData notice notice notice unitTotal gpa requirement requirement gpa requirement requirement requirement requirement notice requirement requirement requirement requirement requirement requirement otherCourses legend notice requirement notice notice",
 };
 
 for (const [name, labels] of Object.entries(EXPECTED)) {

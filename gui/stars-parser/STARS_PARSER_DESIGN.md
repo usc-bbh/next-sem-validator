@@ -119,8 +119,8 @@ Stage 2's output is exactly what gets committed as `fixtures/stars/<name>.txt`. 
 
 1. Drop everything before the first `PREPARED:` line. That's the print preamble with the name and ID.
 2. Drop page furniture:
-   - The header: a date in either `M/D/YY, h:mm AM` or `DD/MM/YYYY, HH:mm` form, followed by `USC STARS Report`.
-   - The footer: a run of redaction `x`s or a URL, then `n/N`.
+   - The header: a date in either `M/D/YY, h:mm AM` or `DD/MM/YYYY, HH:mm` form, followed by `USC STARS Report`, or (Safari) `USC STARS Report` followed by the date, with the time sometimes split at its colon (`12 : 41 AM`).
+   - The footer: a run of redaction `x`s or a URL, then `n/N` or `Page n of N`; or the page number alone (the single-column printout).
    - Treat their absence as normal; three samples have none.
 3. Drop the web-page boilerplate at the end (`Need help?`, `Technical Issues:`, privacy links).
 4. Leave everything else alone. Redacted values (`X.XXX`) stay as printed so later stages can recognise them.
@@ -129,39 +129,30 @@ Stage 2's output is exactly what gets committed as `fixtures/stars/<name>.txt`. 
 
 ## 6. Stage 4 — split into labelled blocks
 
-Split on runs of underscores (divider rows). Asterisk runs frame banners. Then label each block from a **table of anchors** (`LABELS` in `blocks.js`), matching the block's heading with regexes. The heading is its first non-banner line joined with the next one, because some headings wrap (`…UNIQUE TO THE APPLIED` / `ANALYTICS MINOR:`). The table is data, not code scattered through the parser, so a new variant is a one-line change with a test.
+Split on runs of underscores (divider rows). Asterisk runs frame banners. Then label each block.
 
-| Label | Anchors (any of) | Course rows inside? |
-|---|---|---|
-| `header` | `PREPARED:` | no |
-| `pertinentData` | `PERTINENT DATA SECTION` (holds `CURRENT POST:`, class level, entry term, minors) | no |
-| `graduateData` | `GRADUATE PERTINENT DATA SECTION` | no; triggers the graduate refusal |
-| `summary` | `AT LEAST ONE REQUIREMENT HAS NOT BEEN SATISFIED` | no |
-| `notice` | the legend pointer, time-to-degree, practicum, Renaissance and international-student banners, GE limitations | no |
-| `unitTotal` (the master list) | `MINIMUM OF \d+ UNITS (IS )?REQUIRED` | **yes, authoritative** |
-| `residence` | `64-UNIT RESIDENCY`, `64 UNDERGRADUATE UNITS MUST` | no |
-| `upperDivision` | `32-UNIT UPPER DIVISION`, `32 UPPER DIVISION UNITS` | no |
-| `gpa*` | `CUMULATIVE GPA REQUIRED` | repeats |
-| `deptLimit` | `LIMIT OF 40 UPPER DIVISION UNITS` | repeats |
-| `dornsife104` | `104 UNITS APPLICABLE` | repeats, including transfers |
-| `writing`, `foreignLanguage`, `ge*`, `thematicOption`, `math`, `econ`, `accounting` | their headings | repeats |
-| `major*` | `MAJOR REQUIREMENTS`, `REQUIRED UPPER DIVISION BUSINESS`, `PRE-MAJOR`, `COMPUTATIONAL AREA`, … | repeats |
-| `minor`, `minorUnique` | `MINOR REQUIREMENTS FOR`, `MUST BE UNIQUE TO THE … MINOR` | repeats |
-| `unitCaps` | `PHYSICAL EDUCATION ACTIVITY` | repeats |
-| `currentRegistration` | `CURRENT REGISTRATION` | repeats |
-| `otherCourses` | `OTHER COURSES IN YOUR ACADEMIC ACCOUNT` | **yes, authoritative** |
-| `legend` | `\*\*\*\* LEGEND` | no |
-| `renaissance` | `RENAISSANCE HONORS` | repeats |
-| `internalAudit` | `INTERNAL USE ONLY`, `FA INTERNAL AUDITING` | repeats |
-| `ncaa` | `NCAA` | repeats |
-| `disclaimer` | `Degree Progress Advisement report has been prepared` | no |
-| `end` | `END OF ANALYSIS` | no |
+**Only the blocks a later stage reads are named**, from a short table of anchors (`LABELS` in `blocks.js`) matched against the block's heading. The heading is its first non-banner line joined with the next one, because some headings wrap.
+
+| Label | Anchor | Course rows inside? | Read by |
+|---|---|---|---|
+| `header` | `PREPARED:` | no | header fields, graduate refusal |
+| `pertinentData` | `PERTINENT DATA SECTION` (holds `CURRENT POST:`, class level, entry term, minors) | no | header fields |
+| `graduateData` | `GRADUATE PERTINENT DATA SECTION` | no | graduate refusal |
+| `unitTotal` (the master list) | `MINIMUM OF \d+ UNITS (IS )?REQUIRED FOR (THE )?DEGREE` | **yes, authoritative** | course list, checks 2–4 |
+| `gpa` | `CUMULATIVE GPA REQUIRED` | repeats | GPA |
+| `minor` | `MINOR REQUIREMENTS FOR` | repeats | minor catalog year |
+| `otherCourses` | `OTHER COURSES IN YOUR ACADEMIC ACCOUNT` | **yes, authoritative** | course list |
+| `legend` | `\*\*\*\* LEGEND` | no | landmark check |
+
+**Every other block is labelled by its shape.** A block that lists course rows, carries an `OK` / `NO` / `IP` status, or has sub-requirements (`- 2)`, `IP+ 3)`, `NEEDS:`, `SELECT FROM:`) is a `requirement`, and its rows repeat the record. Anything else is a `notice`: banners, advisory paragraphs, the disclaimer.
+
+The first version listed every requirement heading the samples showed (`REQUIRED UPPER DIVISION BUSINESS`, `ACCOUNTING REQUIREMENT`, `COMPUTATIONAL AREA`, …) and failed the parse on any block with courses that matched none of them. Nine of the first eleven samples were business or engineering majors, so the table fit them, and two real reports outside it failed: an IR double major (`PLEASE NOTE THE FOLLOWING ADDITIONAL UNIT REQUIREMENT FOR IR MAJORS`) and an Environmental Studies athlete (the NCAA section). A heading says what a requirement is, not whether its rows are the record, so it was the wrong thing to key on.
 
 Rules:
 
 - **Course rows are harvested only from `unitTotal` and `otherCourses`.** There's one exception, transfer rows (section 7). Every other block repeats rows.
-- **Unrecognised blocks are kept, labelled `unknown`, and reported in a `warnings` list.** They aren't errors: reports vary by school and program, and we've seen 11. But if a block labelled `unknown` contains course rows, the parse fails. That's exactly the "right pattern, wrong part of the document" bug the brief warned about.
-- **Missing sections are normal.** No minor, no NCAA, no time-to-degree banner (missing on all three first-semester samples), no diploma block. The only required landmarks are `header`, `pertinentData` (with its `CURRENT POST:` line), `unitTotal` and `legend`.
+- **That the other blocks only repeat is checked, not assumed** (check 6, section 9): a USC row anywhere in the report that isn't in the course list fails the parse. That catches the "right pattern, wrong part of the document" bug by what the report lists, whatever its headings say.
+- **Missing sections are normal.** No minor, no NCAA, no time-to-degree banner (missing on all three first-semester samples), no diploma block, no current registration (the athlete's report, prepared over the summer). The only required landmarks are `header`, `pertinentData` (with its `CURRENT POST:` line), `unitTotal` and `legend`.
 
 ---
 
@@ -213,14 +204,14 @@ Why this differs from the brief's three values:
 
 ### Header fields
 
-`prepared`, `programCode` and `catalogYear` come from the header. `degree` and `major` come from the title lines under `STARS - DEGREE PROGRESS REPORT` (for example `BACHELOR OF SCIENCE` / `ARTIFICIAL INTELLIGENCE FOR BUSINESS`). The rest:
+`prepared`, `programCode` (`PROGRAM:`, or `PROGRAM CODE:` in the single-column printout) and `catalogYear` come from the header. `major` comes from the title line under `STARS - DEGREE PROGRESS REPORT` (`ARTIFICIAL INTELLIGENCE FOR BUSINESS`). `degree` is the degree code on the `CURRENT POST` row whose program is this report's program code, so it works for any degree (BA, BS, BFA, BM…) and picks the right one on a double major's report; the title line (`BACHELOR OF SCIENCE` → `BS`) is the fallback. The rest:
 
 - `classLevel`, and `entryTerm` from `Term of USC Entrance`. Pathwise needs the entry term to place a student's year columns.
 - `expectedGraduation`, when present.
 - Every `CURRENT POST` row, kept as a list; the double-degree sample has two.
 - `minors[]` with each minor's own catalog year (`MINOR CATALOG YEAR IS PROCESSED AS 20243`).
 - `unitsRequired` from the unit block (128 or 130).
-- `gpa`: a number, or `null` when printed as `X.XXX` or `NEEDS: GPA`.
+- `gpa`: a number (printed `3.780 GPA`, or `3.166 AVE` on some reports), or `null` when printed as `X.XXX` or `NEEDS: GPA`.
 
 ### Requirement blocks (milestone 5, for the degree planner)
 
@@ -280,9 +271,9 @@ The checks come in two strengths. A **hard check** that fails means the parse fa
 | 3 | **Units earned reconcile:** the sum of printed units on completed USC rows from the master list, plus `TRNSFR WORK`, equals `EARNED`. | hard | The one check that proves the course list is complete. Held on all 11 samples, checked by hand. |
 | 4 | **Units in progress reconcile:** the sum of in-progress row units equals `IN-PROCESS`. | warning | The validator doesn't depend on it, and it was only checked on five samples (`aibiz_sr_minor` 24, `aibiz_sr_forgiveness` 18, `aibiz_jr_doubledegree` 31, `ene_fr_withdrawals` 16, `psyc_so_thematic` 18). |
 | 5 | **Class level matches units earned** (under 32 Freshman, 32–63.9 Sophomore, 64–95.9 Junior, 96+ Senior). | warning | The validator reads the printed class level, not this. Held on all 11, but a real report that trips it shouldn't lock a student out. |
-| 6 | **No unlabelled block contains course rows** (section 6). | hard | That's the "right pattern, wrong part of the document" bug, and it inflates the course list. |
+| 6 | **Every USC course row in the report is in the course list** (section 6). Transfer rows are collected from every block, so only USC rows can be missed. | hard | A row listed somewhere other than the master list and "other courses" would be dropped silently. Held on all 13 undergrad samples. |
 
-**How a failure reaches the caller** is still to be settled with Pathwise (section 11). Internally, stage 6 throws a `StarsParseError` whose `check` names what failed, so tests can assert exactly which check failed: `landmarks`, `masterListRows`, `unitsEarned` and `unlabelledRows` for checks 1, 2, 3 and 6; `graduate` for a graduate report; `notStars` when there's no `PREPARED:` line. The browser entry point adds `noText` (no text layer), `layout` (the section 4 sanity gates failed) and `unreadable` (pdf.js couldn't open the file). Warnings carry `check: "unitsInProgress"`, `"classLevel"` or `"unknownBlock"`.
+**How a failure reaches the caller** is still to be settled with Pathwise (section 11). Internally, stage 6 throws a `StarsParseError` whose `check` names what failed, so tests can assert exactly which check failed: `landmarks`, `masterListRows`, `unitsEarned` and `uncollectedRows` for checks 1, 2, 3 and 6; `graduate` for a graduate report; `notStars` when there's no `PREPARED:` line. The browser entry point adds `noText` (no text layer), `layout` (the section 4 sanity gates failed) and `unreadable` (pdf.js couldn't open the file). Warnings carry `check: "unitsInProgress"` or `"classLevel"`.
 
 Check 1 also fails if there's more than one `unitTotal` block.
 
@@ -355,6 +346,8 @@ Each milestone ends with green tests and is small enough to review in one sittin
 | `cpns_so` | `BCFFBA34…` | Dornsife; foreign language met by AP credit |
 | `psyc_so_thematic` | `7F0714F4…` | Thematic Option; language waiver |
 | `ene_fr_withdrawals` | `3D04E54E…` | 130 units; `W` grades; European date format; 3.30pt characters |
+| `ecds_so_minor` | `EA003582…` | Economics and Data Science; Chinese minor; printed from Safari (title-first header, `Page n of N` footer) |
+| `envs_sr_athlete` | `REDACTED-PII_SINGLEColumn` | Environmental Studies; student athlete (NCAA section); single-column printout with no preamble, `PROGRAM CODE:`, GPA printed as `AVE`; no current registration, so in-progress rows come only from "other courses". Names and IDs were redacted at source; grades and GPAs were then replaced with STARSRedacter's tokens. |
 | `grad_apsy` | `45E77EB0…` | **Refusal test only.** No `.json`. |
 
 **Redaction is checked by a test, not by hand.** `test/fixtures-redacted.test.js` runs over every `fixtures/stars/*.txt`, so a fixture that leaks can't be committed with the suite green. It fails if:
@@ -366,7 +359,7 @@ Each milestone ends with green tests and is small enough to review in one sittin
 
 The rules come from doc 01, "Where the personal information sits", and from what STARSRedacter replaces.
 
-**Still missing from the set:** an athlete (NCAA section), a study-abroad student, an unredacted report (real letter grades, real GPA), and a transfer that came in under a real USC code, if that happens at all. Ask for these through the collection tool. The NCAA skip ships untested until we have one. An unredacted report can only be run locally to answer the baseline question in section 11. It can never become a fixture, and the redaction test stops it from being committed by accident.
+**Still missing from the set:** a study-abroad student, an unredacted report (real letter grades, real GPA), and a transfer that came in under a real USC code, if that happens at all. Ask for these through the collection tool. An unredacted report can only be run locally to answer the baseline question in section 11. It can never become a fixture, and the redaction test stops it from being committed by accident.
 
 ---
 

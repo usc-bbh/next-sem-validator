@@ -6,11 +6,11 @@
 // surprising but readable report doesn't lock a student out.
 
 import { COURSE_ROW } from "./blocks.js";
-import { parseRow, isInProgress, sourceOf, TRANSFER_TOTAL_TERM } from "./fields.js";
+import { parseRow, isInProgress, sourceOf, TRANSFER_TOTAL_TERM, IN_PROCESS } from "./fields.js";
 
 export class StarsParseError extends Error {
   // `check` is a short id: "notStars", "graduate", "landmarks",
-  // "masterListRows", "unitsEarned", "unlabelledRows".
+  // "masterListRows", "unitsEarned", "uncollectedRows".
   constructor(check, message) {
     super(message);
     this.name = "StarsParseError";
@@ -88,7 +88,9 @@ function checkUnitsEarned(unitTotal, result) {
 }
 
 // Check 4 (warning): in-progress rows in the master list equal IN-PROCESS.
+// Nothing to reconcile when the master list prints no IN-PROCESS line.
 function checkUnitsInProgress(unitTotal, result) {
+  if (!unitTotal.lines.some((line) => IN_PROCESS.test(line))) return;
   const rows = unitTotal.lines.map(parseRow).filter(Boolean).filter(isInProgress);
   const counted = sum(rows.map((row) => row.units));
   if (!same(counted, result.units.inProgress)) {
@@ -110,18 +112,27 @@ function checkClassLevel(result) {
   }
 }
 
-// Check 6: no unlabelled block holds course rows. That would be the "right
-// pattern, wrong part of the document" bug. Unlabelled blocks without rows
-// are only reported.
-function checkUnlabelled(bs, result) {
-  for (const b of bs.filter((b) => b.label === "unknown")) {
-    if (b.lines.some((line) => COURSE_ROW.test(line))) {
+// Check 6: every course row anywhere in the report is in the course list.
+// Only the master list and "other courses" are read as the record, and
+// transfer rows are also taken from requirement blocks (stage 5), so a USC
+// row that shows up in some other block but not in the record is a course
+// the parser would silently drop. That's the "right pattern, wrong part of
+// the document" bug, caught by what the report lists rather than by what its
+// headings say, so a requirement worded in a way no sample has shown doesn't
+// fail the parse.
+function checkUncollected(bs, result) {
+  const collected = new Set(
+    [...result.completedCourses, ...result.inProgressCourses].map((c) => `${c.term}|${c.rawCode}`)
+  );
+  for (const b of bs) {
+    for (const line of b.lines) {
+      const row = parseRow(line);
+      if (!row || row.term === TRANSFER_TOTAL_TERM || collected.has(`${row.term}|${row.rawCode}`)) continue;
       throw new StarsParseError(
-        "unlabelledRows",
-        `A part of the report we don't recognise lists courses: ${b.heading.slice(0, 80)}`
+        "uncollectedRows",
+        `${row.term} ${row.code} is listed under "${b.heading.slice(0, 60)}" but isn't in the course list.`
       );
     }
-    result.meta.warnings.push({ check: "unknownBlock", message: `Unrecognised section: ${b.heading.slice(0, 80)}` });
   }
 }
 
@@ -134,8 +145,8 @@ export function checkStructure(bs) {
 
 export function checkResult(bs, result) {
   const unitTotal = bs.find((b) => b.label === "unitTotal");
-  checkUnlabelled(bs, result);
   checkUnitsEarned(unitTotal, result);
+  checkUncollected(bs, result);
   checkUnitsInProgress(unitTotal, result);
   checkClassLevel(result);
   return result;
