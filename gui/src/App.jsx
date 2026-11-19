@@ -13,6 +13,7 @@ import { resultSummary, isLowUnits, lowUnitsMessage } from "./resultSummary";
 import { INITIAL_STARS, hasUsableReport, withoutReport, canValidate as validateAllowed, reportHint, SKIPPED_CHECKS } from "./validateGate";
 import { C, HEAD, BODY, SHADOW, eyebrow, card, primaryButton, secondaryButton } from "./theme";
 import { EMPTY_REPORT } from "./emptyReport";
+import { searchCourses, getInstructors } from "./courseSearch";
 import { VALIDATOR_ASSETS } from "./validatorAssets";
 
 // ─────────────────────────────────────────────────────────────
@@ -392,37 +393,9 @@ export default function App() {
     return () => { cancelled = true; };
   }, []);
 
-  const courseNames = useMemo(() => catalog ? Object.keys(catalog) : [], [catalog]);
-
-  // Helper: collect all unique instructor names for a course (skipping TBD)
-  const getInstructors = (entry) => {
-    if (!entry?.sections) return [];
-    const names = new Set();
-    for (const secs of Object.values(entry.sections)) {
-      for (const s of secs) {
-        if (s.instructor && s.instructor !== "TBD") names.add(s.instructor);
-      }
-    }
-    return [...names];
-  };
-
-  const suggestions = useMemo(() => {
-    if (!query.trim() || !catalog) return [];
-    const q = query.toLowerCase().replace(/[\s-]/g, "");
-    return courseNames.filter((c) => {
-      if (expanded.includes(c)) return false;
-      // Match on course code
-      if (c.replace(/\s/g, "").toLowerCase().includes(q)) return true;
-      const entry = catalog[c];
-      if (!entry) return false;
-      // Match on description
-      if (entry.description?.toLowerCase().replace(/[\s-]/g, "").includes(q)) return true;
-      // Match on instructor name
-      const instructors = getInstructors(entry);
-      if (instructors.some((name) => name.toLowerCase().replace(/[\s-]/g, "").includes(q))) return true;
-      return false;
-    }).slice(0, 8);
-  }, [query, expanded, courseNames, catalog]);
+  const search = useMemo(() => searchCourses(catalog, query, expanded), [query, expanded, catalog]);
+  const suggestions = search.shown;
+  const showSearchNote = search.notFound || search.allAdded;
 
   const colorFor = (courseName) => PALETTE[expanded.indexOf(courseName) % PALETTE.length];
 
@@ -681,7 +654,7 @@ export default function App() {
               <input value={query} onChange={(e) => setQuery(e.target.value)}
                 placeholder="Add a course…"
                 style={{ width: "100%", background: "#fff", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 10, padding: "13px 16px", color: C.ink, fontSize: 14, fontFamily: "inherit", boxShadow: SHADOW, transition: "border-color .15s ease, box-shadow .15s ease" }} />
-              {suggestions.length > 0 && (
+              {(suggestions.length > 0 || showSearchNote) && (
                 <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 10, marginTop: 6, zIndex: 20, overflow: "hidden", boxShadow: "0 14px 34px rgba(0,0,0,0.16)" }}>
                   {suggestions.map((c) => {
                     const entry = catalog[c];
@@ -712,6 +685,21 @@ export default function App() {
                       </button>
                     );
                   })}
+                  {search.more > 0 && (
+                    <div style={{ padding: "9px 14px", fontSize: 12, color: C.muted, background: "rgba(0,0,0,0.02)" }}>
+                      … and {search.more} more {search.more === 1 ? "match" : "matches"}. Keep typing to narrow it down.
+                    </div>
+                  )}
+                  {search.notFound && (
+                    <div role="status" style={{ padding: "12px 14px", fontSize: 12.5, color: C.body, lineHeight: 1.5 }}>
+                      <b style={{ color: C.ink }}>No course found for “{query.trim()}”.</b> Try a course code like CSCI 104, part of a title, or an instructor's name. RegCheck only lists courses in the Spring 2027 schedule.
+                    </div>
+                  )}
+                  {search.allAdded && (
+                    <div role="status" style={{ padding: "12px 14px", fontSize: 12.5, color: C.body }}>
+                      Everything that matches “{query.trim()}” is already in your schedule.
+                    </div>
+                  )}
                 </div>
               )}
             </div>
