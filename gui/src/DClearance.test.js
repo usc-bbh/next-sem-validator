@@ -62,6 +62,19 @@ test("the page says the steps change and when they were last checked", () => {
   assert.match(html, /Last checked August 10, 2026\./);
 });
 
+// The page said only to check the department's page. Students see a new
+// requirement before we do, so it now says the steps may be out of date and
+// links the feedback form to send one in.
+test("the page warns the steps may be out of date and links the form to report a new requirement", async () => {
+  const { FEEDBACK_FORM_URL } = await server.ssrLoadModule("/src/Feedback.jsx");
+  const note = render().match(/<div role="note"[\s\S]*?Last checked[^<]*<\/div>/)?.[0];
+  assert.ok(note, "a notice, before the departments");
+  assert.match(note, /These steps may not be up to date/);
+  assert.match(note, /The D-clearance process can change every semester\./);
+  assert.match(note, new RegExp(`If you see a new requirement, <a href="${esc(FEEDBACK_FORM_URL)}" target="_blank" rel="noopener noreferrer"[^>]*>submit it through the feedback form ↗</a>`));
+  assert.ok(render().indexOf('role="note"') < render().indexOf('class="dc-school"'));
+});
+
 test("loading and failed states say so", () => {
   assert.match(render({ rules: null }), /Loading departments…/);
   assert.match(render({ rules: null, error: true }), /role="alert"[^>]*>The D-clearance steps didn&#x27;t load/);

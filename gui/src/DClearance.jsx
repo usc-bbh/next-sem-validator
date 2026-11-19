@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { C, HEAD, eyebrow, card, primaryButton } from "./theme";
 import { VALIDATOR_ASSETS } from "./validatorAssets";
 import { hashForPage } from "./route";
+import { FEEDBACK_FORM_URL } from "./Feedback";
 import { toPoints, splitLabel, sentences, listItems, linkify, shortUrl } from "./richText";
 
 // The D-clearance page (#/d-clearance). Each D-clearance notice in the results
@@ -218,10 +219,15 @@ export function DClearanceView({ rules, error = false, focus = null, onBack }) {
         </ul>
       </section>
 
-      <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6, maxWidth: 680, margin: "16px 0 0" }}>
-        Each department's steps come from its advising page and can change every semester, so check the department's
-        page before you apply.{rules?._last_updated && <> Last checked {longDate(rules._last_updated)}.</>}
-      </p>
+      {/* The steps are a snapshot of each department's page, and students see
+          changes before we do, so the notice asks them to send one in. */}
+      <div role="note" style={{ marginTop: 16, padding: "12px 16px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 10, fontSize: 13, color: C.body, lineHeight: 1.6 }}>
+        <div style={{ color: C.warn, fontWeight: 700, marginBottom: 2 }}>These steps may not be up to date</div>
+        The D-clearance process can change every semester. Each department's steps come from its advising page, so check the
+        department's page before you apply. If you see a new requirement, <a href={FEEDBACK_FORM_URL} target="_blank" rel="noopener noreferrer"
+          style={{ color: C.cardinal, fontWeight: 600 }}>submit it through the feedback form ↗</a>.
+        {rules?._last_updated && <> Last checked {longDate(rules._last_updated)}.</>}
+      </div>
 
       {error ? (
         <div role="alert" style={{ ...card, marginTop: 24, padding: "16px 18px", fontSize: 14, color: C.body }}>
