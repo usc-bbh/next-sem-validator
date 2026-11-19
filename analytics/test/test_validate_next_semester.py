@@ -1078,3 +1078,17 @@ def test_with_a_report_nothing_says_it_was_skipped(course_catalog, dept_clearanc
     result = validate_next_semester(NO_REPORT_PLAN, stars_summary, course_catalog, dept_clearance)
     text = " ".join(result.summary["warnings"] + [r for c in result.course_results for r in c.reasons])
     assert "without your STARS report" not in text
+
+
+# ---- a summer report's two in-progress terms ---------------------------------
+
+# A report printed over the summer lists Summer and Fall in progress. The notice said "in progress
+# this term" for both, as if they were one semester.
+def test_already_in_progress_names_the_term_so_summer_is_its_own_semester():
+    stars = load_shared_stars("aibiz_jr_doubledegree.json")  # printed 07/01/26
+    summer = next(r for r in stars["inProgressCourses"] if r["term"] == "20262")
+    fall = next(r for r in stars["inProgressCourses"] if r["term"] == "20263")
+    assert _check_already_taken(summer["code"], stars).reasons == [f"{_normalize_code(summer['code'])} is already in progress (Summer 2026)."]
+    assert _check_already_taken(fall["code"], stars).reasons == [f"{_normalize_code(fall['code'])} is already in progress (Fall 2026)."]
+    added = {"inProgressCourses": [{"term": "", "code": "CSCI 104", "rawCode": "CSCI104", "source": "usc", "origin": "student"}]}
+    assert _check_already_taken("CSCI 104", added).reasons == ["CSCI 104 is already in progress this term."]

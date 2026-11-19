@@ -44,3 +44,11 @@ test("the page lets a student continue without a report, from the upload card or
   assert.match(app, /\{\(starsReport \|\| noReport\) && \(\s*<div className="layout"/);
   assert.match(app, /setStarsSource\("skipped"\)/);
 });
+
+test("the review screen shows a summer report's Summer and Fall as two semesters", () => {
+  const summer = JSON.parse(readFileSync(new URL("../../fixtures/stars/aibiz_jr_doubledegree.json", import.meta.url), "utf8"));
+  const html = dialog({ initial: summer, mode: "parsed", failure: null });
+  const ip = html.slice(html.indexOf("In progress · 8"), html.indexOf("Class level"));
+  assert.ok(ip.indexOf(">Summer 2026<") >= 0 && ip.indexOf(">Summer 2026<") < ip.indexOf(">Fall 2026<"));
+  assert.doesNotMatch(html, /This semester/);
+});

@@ -403,7 +403,7 @@ def test_a_repeatable_course_you_finished_only_warns():
 def test_a_course_youre_taking_now_warns():
     sections = [s["section_id"] for s in CATALOG["WRIT 340"]["sections"]["lectures"][:1]]
     _, by = check(plan(("WRIT 340", sections)))
-    assert "WRIT 340 is already in progress this term." in by["WRIT 340"].reasons
+    assert "WRIT 340 is already in progress (Spring 2025)." in by["WRIT 340"].reasons
 
 
 def test_a_course_you_failed_or_withdrew_from_isnt_taken():

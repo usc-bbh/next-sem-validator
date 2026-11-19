@@ -225,8 +225,15 @@ def _repeat_note(course: str, catalog_entry: dict | None) -> str | None:
     return None
 
 
+def _term_label(term: str | None) -> str | None:
+    """"20262" -> "Summer 2026", the way the review screen names terms. None for a row without one
+    (the student added it)."""
+    m = re.fullmatch(r"((?:19|20)\d\d)([123])", term or "")
+    return f"{('Spring', 'Summer', 'Fall')[int(m.group(2)) - 1]} {m.group(1)}" if m else None
+
+
 def _check_already_taken(course: str, stars_summary: dict, catalog_entry: dict | None = None) -> CourseResult | None:
-    """Fails if already completed, warns if already in progress this term. A withdrawn or failed
+    """Fails if already completed, warns if already in progress (naming the term). A withdrawn or failed
     attempt isn't "completed", and a waived course isn't one the student took. A completed course
     the catalog lets students repeat (DSO 599, a different topic each time) is a warning to check
     the repeat qualifies, not a fail."""
@@ -234,8 +241,9 @@ def _check_already_taken(course: str, stars_summary: dict, catalog_entry: dict |
     completed = {
         code for code, how in _completed_evidence(stars_summary).items() if how != PROVEN_BY_WAIVER
     }
+    # Code -> the term it's in progress in. A report printed over the summer has two: Summer and Fall.
     in_progress = {
-        _normalize_code(c["code"]) for c in stars_summary.get("inProgressCourses", []) if _is_usc_row(c)
+        _normalize_code(c["code"]): c.get("term") for c in stars_summary.get("inProgressCourses", []) if _is_usc_row(c)
     }
     if norm in completed:
         repeat = _repeat_note(norm, catalog_entry)
@@ -245,7 +253,8 @@ def _check_already_taken(course: str, stars_summary: dict, catalog_entry: dict |
             ])
         return CourseResult(course, "fail", [f"{norm} is already completed."])
     if norm in in_progress:
-        return CourseResult(course, "warning", [f"{norm} is already in progress this term."])
+        term = _term_label(in_progress[norm])
+        return CourseResult(course, "warning", [f"{norm} is already in progress{f' ({term})' if term else ' this term'}."])
     return None
 
 

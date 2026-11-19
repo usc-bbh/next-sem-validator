@@ -77,6 +77,21 @@ export function groupCompleted(rows) {
   return [...semesters, ...transfer];
 }
 
+// In-progress rows, one group per term. A report printed over the summer
+// lists Summer and Fall as in progress, and they're two semesters, not one.
+// Rows the student added have no term; they go last.
+export function groupInProgress(rows) {
+  const terms = new Map();
+  rows.forEach((row, index) => {
+    const key = row.term || "";
+    if (!terms.has(key)) terms.set(key, []);
+    terms.get(key).push({ row, index });
+  });
+  return [...terms.entries()]
+    .sort(([a], [b]) => (a === "") - (b === "") || a.localeCompare(b))
+    .map(([term, items]) => ({ key: `ip:${term}`, title: term ? termLabel(term) : "Added by you", items }));
+}
+
 export function sumUnits(rows) {
   return rows.reduce((total, row) => total + (Number(row.units) || 0), 0);
 }

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { passed as passRule } from "../stars-parser/fields.js";
 import { C, HEAD, BODY, eyebrow, primaryButton, secondaryButton } from "./theme";
 import { SKIPPED_CHECKS } from "./validateGate";
-import { GRADE_GROUPS, gradeLabel, groupCompleted, isKnownGrade, sumUnits, termLabel, unitTotals } from "./starsDisplay";
+import { GRADE_GROUPS, gradeLabel, groupCompleted, groupInProgress, isKnownGrade, sumUnits, unitTotals } from "./starsDisplay";
 
 // ─────────────────────────────────────────────────────────────
 // The review screen (STARS_PARSER_DESIGN.md §9).
@@ -227,8 +227,9 @@ function ReviewHeading({ mode, compact }) {
 function StarsEditor({ editor, mode, failure, onSkip }) {
   const { draft, update, editRow, removeRow, moveRow, addRow } = editor;
   const groups = groupCompleted(draft.completedCourses);
-  const ipTerms = [...new Set(draft.inProgressCourses.map((r) => r.term).filter(Boolean))];
-  const [open, setOpen] = useState(() => new Set(["inProgress"]));
+  const ipGroups = groupInProgress(draft.inProgressCourses);
+  // Every in-progress term starts open; past semesters start closed.
+  const [open, setOpen] = useState(() => new Set(groupInProgress(editor.draft.inProgressCourses).map((g) => g.key)));
   const toggle = (key) =>
     setOpen((s) => {
       const next = new Set(s);
@@ -261,15 +262,18 @@ function StarsEditor({ editor, mode, failure, onSkip }) {
         <Notice key={i} tone={C.warn} bg="#FEFAEC">{w.message}</Notice>
       ))}
 
-      <AddCourse onAdd={(row) => { addRow(row); setOpen((s) => new Set(s).add(row.passed === null ? "inProgress" : "term:")); }} />
+      <AddCourse onAdd={(row) => { addRow(row); setOpen((s) => new Set(s).add(row.passed === null ? "ip:" : "term:")); }} />
 
       <div style={{ marginBottom: 16 }}>
         <div style={{ ...eyebrow, margin: "0 0 8px" }}>In progress · {draft.inProgressCourses.length}</div>
-        <Collapsible title={ipTerms.length === 1 ? termLabel(ipTerms[0]) : "This semester"} open={open.has("inProgress")} onToggle={() => toggle("inProgress")}
-          count={draft.inProgressCourses.length} units={sumUnits(draft.inProgressCourses)}>
-          <CourseRows list="inProgressCourses" items={draft.inProgressCourses.map((row, index) => ({ row, index }))} report={draft} inProgress showTerm={ipTerms.length > 1}
-            onEdit={editRow} onRemove={removeRow} onMove={moveRow} moveLabel="Move to completed" />
-        </Collapsible>
+        {ipGroups.length === 0 && <div style={{ fontSize: 13, color: C.faint, padding: "6px 0" }}>None.</div>}
+        {ipGroups.map((g) => (
+          <Collapsible key={g.key} title={g.title} open={open.has(g.key)} onToggle={() => toggle(g.key)}
+            count={g.items.length} units={sumUnits(g.items.map((i) => i.row))}>
+            <CourseRows list="inProgressCourses" items={g.items} report={draft} inProgress
+              onEdit={editRow} onRemove={removeRow} onMove={moveRow} moveLabel="Move to completed" />
+          </Collapsible>
+        ))}
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 14 }}>

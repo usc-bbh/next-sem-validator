@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 
-import { gradeLabel, groupCompleted, isKnownGrade, termLabel, unitTotals } from "./starsDisplay.js";
+import { gradeLabel, groupCompleted, groupInProgress, isKnownGrade, termLabel, unitTotals } from "./starsDisplay.js";
 
 const FIXTURES = new URL("../../fixtures/stars/", import.meta.url);
 const fixtures = readdirSync(FIXTURES)
@@ -63,4 +63,18 @@ test("the list's unit totals match every fixture report's own", () => {
     assert.equal(t.completed, t.earned, `${name} earned`);
     assert.equal(t.inProgress, t.reportInProgress, `${name} in progress`);
   }
+});
+
+// A report printed over the summer lists Summer and Fall in progress, and the
+// review screen showed them as one "This semester" group.
+test("in-progress courses group by term, so summer is its own semester", () => {
+  const read = (name) => JSON.parse(readFileSync(new URL(`../../fixtures/stars/${name}.json`, import.meta.url), "utf8"));
+  const summer = read("aibiz_jr_doubledegree"); // printed 07/01/26
+  const groups = groupInProgress(summer.inProgressCourses);
+  assert.deepEqual(groups.map((g) => [g.title, g.items.length]), [["Summer 2026", 3], ["Fall 2026", 5]]);
+  for (const g of groups) for (const { row, index } of g.items) assert.equal(summer.inProgressCourses[index], row);
+  assert.deepEqual(groupInProgress(read("aibiz_so").inProgressCourses).map((g) => g.title), ["Fall 2026"]);
+  const added = [...summer.inProgressCourses, { term: "", code: "CSCI 104", units: 4 }];
+  assert.deepEqual(groupInProgress(added).map((g) => g.title), ["Summer 2026", "Fall 2026", "Added by you"]);
+  assert.deepEqual(groupInProgress([]), []);
 });
