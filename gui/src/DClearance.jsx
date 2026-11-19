@@ -47,20 +47,16 @@ export const bySchool = (departments) => {
 // dept_clearance.json or its DEPT_CLEARANCE_SOURCES.md, not assumed: a
 // department's own steps (below) win where they differ.
 export const HOW_IT_WORKS = [
-  ["Find the sections that need it.",
-    "Look for the D after the section number. When you validate your schedule, RegCheck flags the sections you picked that need it."],
-  ["Request it from the department.",
-    "Find the department below by its course prefix and follow its steps. In some departments, majors get D-clearance at their advisement appointment instead."],
-  ["Wait for approval.",
-    "Most departments take a few business days. Once you're cleared, the section shows in WebReg under My Info > Cleared Sections."],
-  ["Register in WebReg yourself.",
-    "D-clearance only lets you register. It doesn't enroll you, so add the section in WebReg once you're cleared."],
+  ["Find the sections that need it.", "RegCheck flags them when you validate."],
+  ["Request it from the department.", "Find yours below. Some clear their majors at advising appointments."],
+  ["Wait for approval.", "Usually a few business days. Cleared sections show in WebReg under My Info > Cleared Sections."],
+  ["Register in WebReg yourself.", "Clearance doesn't enroll you."],
 ];
 
 export const GOOD_TO_KNOW = [
-  "D-clearance doesn't hold a seat. If the section fills before you register, you can't get in. GE office clearances for GE seminars are the exception: they come with a seat.",
-  "It isn't a prerequisite waiver. If you're missing a prerequisite, that's a separate request.",
-  "Many departments clear their majors first and open requests to other students later, so ask early.",
+  "It doesn't hold a seat, except GE office clearances for GE seminars.",
+  "It isn't a prerequisite waiver.",
+  "Majors are often cleared first, so ask early.",
 ];
 
 const isUrl = (s) => typeof s === "string" && /^https?:\/\//.test(s);
@@ -201,9 +197,7 @@ export function DClearanceView({ rules, error = false, focus = null, onBack }) {
         How to get D-clearance
       </h1>
       <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 680, margin: "12px 0 0" }}>
-        D-clearance is permission from the department that offers a course. Sections that need it have a D after the
-        five-digit section number in the Schedule of Classes and WebReg, and WebReg won't let you register for one until
-        the department clears you. Each department runs its own process, so find yours below.
+        Sections with a D after the section number need the department's permission before WebReg lets you register.
       </p>
 
       <section aria-labelledby="dc-how" style={{ ...card, marginTop: 24, padding: "20px 22px" }}>
@@ -222,10 +216,9 @@ export function DClearanceView({ rules, error = false, focus = null, onBack }) {
       {/* The steps are a snapshot of each department's page, and students see
           changes before we do, so the notice asks them to send one in. */}
       <div role="note" style={{ marginTop: 16, padding: "12px 16px", background: "#FEFAEC", border: `1px solid ${C.goldLine}`, borderRadius: 10, fontSize: 13, color: C.body, lineHeight: 1.6 }}>
-        <div style={{ color: C.warn, fontWeight: 700, marginBottom: 2 }}>These steps may not be up to date</div>
-        The D-clearance process can change every semester. Each department's steps come from its advising page, so check the
-        department's page before you apply. If you see a new requirement, <a href={FEEDBACK_FORM_URL} target="_blank" rel="noopener noreferrer"
-          style={{ color: C.cardinal, fontWeight: 600 }}>submit it through the feedback form ↗</a>.
+        <b style={{ color: C.warn }}>These steps may be out of date.</b> Departments change them every semester, so check the
+        department's page before you apply. See a new requirement? <a href={FEEDBACK_FORM_URL} target="_blank" rel="noopener noreferrer"
+          style={{ color: C.cardinal, fontWeight: 600 }}>Tell us ↗</a>.
         {rules?._last_updated && <> Last checked {longDate(rules._last_updated)}.</>}
       </div>
 

@@ -58,7 +58,7 @@ test("finding a department matches its course prefixes and name", () => {
 
 test("the page says the steps change and when they were last checked", () => {
   const html = render();
-  assert.match(html, /change every semester/);
+  assert.match(html, /change them every semester/);
   assert.match(html, /Last checked August 10, 2026\./);
 });
 
@@ -69,10 +69,18 @@ test("the page warns the steps may be out of date and links the form to report a
   const { FEEDBACK_FORM_URL } = await server.ssrLoadModule("/src/Feedback.jsx");
   const note = render().match(/<div role="note"[\s\S]*?Last checked[^<]*<\/div>/)?.[0];
   assert.ok(note, "a notice, before the departments");
-  assert.match(note, /These steps may not be up to date/);
-  assert.match(note, /The D-clearance process can change every semester\./);
-  assert.match(note, new RegExp(`If you see a new requirement, <a href="${esc(FEEDBACK_FORM_URL)}" target="_blank" rel="noopener noreferrer"[^>]*>submit it through the feedback form ↗</a>`));
+  assert.match(note, /These steps may be out of date\./);
+  assert.match(note, /Departments change them every semester/);
+  assert.match(note, new RegExp(`See a new requirement\\? <a href="${esc(FEEDBACK_FORM_URL)}" target="_blank" rel="noopener noreferrer"[^>]*>Tell us ↗</a>`));
   assert.ok(render().indexOf('role="note"') < render().indexOf('class="dc-school"'));
+});
+
+// The intro, steps, notes and notice ran to 275 words before the first
+// department. They're now about half that.
+test("the explainer before the departments stays short", () => {
+  const html = render();
+  const words = html.slice(html.indexOf("<h1"), html.indexOf('type="search"')).replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean);
+  assert.ok(words.length <= 150, `${words.length} words before the departments`);
 });
 
 test("loading and failed states say so", () => {
@@ -130,10 +138,10 @@ test("the page explains how D-clearance works, step by step", () => {
     "Wait for approval.",
     "Register in WebReg yourself.",
   ]);
-  assert.match(html, /Find the department below by its course prefix and follow its steps\. In some departments,/);
+  assert.match(html, /Find yours below\. Some clear their majors at advising appointments\./);
   assert.doesNotMatch(html, /Include the course, the five-digit section number and your USC ID/); // removed: each department's steps say what to send
   assert.match(html, /My Info &gt; Cleared Sections/);
-  assert.match(html, /doesn&#x27;t hold a seat/);
+  assert.match(html, /doesn&#x27;t hold a seat, except GE office clearances/);
   assert.match(html, /isn&#x27;t a prerequisite waiver/);
   assert.ok(html.indexOf("How it works") < html.indexOf('class="dc-school"'), "steps come before the departments");
 });
