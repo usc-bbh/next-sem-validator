@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { INITIAL_STARS, canValidate, hasUsableReport, reportHint } from "./validateGate.js";
+import { INITIAL_STARS, canValidate, hasUsableReport, reportHint, withoutReport } from "./validateGate.js";
 
 // Everything Validate needs except the report.
 const ready = { courseCount: 1, needSections: [], catalogReady: true, checkerReady: true, validating: false };
@@ -39,4 +39,15 @@ test("a report alone isn't enough: courses, sections and the checker are still r
   assert.equal(canValidate({ ...ready, source, checkerReady: false }), false);
   assert.equal(canValidate({ ...ready, source, catalogReady: false }), false);
   assert.equal(canValidate({ ...ready, source, validating: true }), false);
+});
+
+// A report that didn't parse left the student retyping every course before
+// Validate would run. They can now continue without one.
+test("continuing without a report turns Validate on, and it isn't a report", () => {
+  assert.equal(canValidate({ ...ready, source: "skipped" }), true);
+  assert.equal(reportHint("skipped"), null);
+  assert.equal(hasUsableReport("skipped"), false); // nothing to show or send as a report
+  assert.equal(withoutReport("skipped"), true);
+  for (const source of ["none", "parsing", "parsed", "review", "confirmed", "graduate"]) assert.equal(withoutReport(source), false, source);
+  assert.equal(canValidate({ ...ready, source: "skipped", courseCount: 0 }), false);
 });

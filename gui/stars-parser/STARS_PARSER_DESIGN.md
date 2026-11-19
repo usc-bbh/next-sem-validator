@@ -21,7 +21,7 @@ One rule carries over from the brief: **if a real report contradicts this docume
 - **Self-check:** units earned = completed USC rows + the `TRNSFR WORK` total. This held exactly on all 11 samples. The brief's check (transfer rows add up to `TRNSFR WORK`) fails on most of them, because exam credit is capped.
 - **Fixtures:** 11 redacted undergrad samples become shared `fixtures/stars/<name>.txt` + `.json` pairs. The JSON is checked by hand against the PDF, not generated and then trusted.
 - **Checks:** four checks fail the parse outright. Two that the validator doesn't depend on only raise warnings, so a surprising but readable report doesn't lock a student out.
-- **Review screen:** after every upload, the student sees what the parser read and can correct it before validating. A parse that fails opens the same screen empty, so a failure is never a dead end. Edits are marked as the student's, and the validator treats them as unconfirmed. See section 9.
+- **Review screen:** after every upload, the student sees what the parser read and can correct it before validating. A parse that fails opens the same screen empty, so a failure is never a dead end, and the student can also continue without a report (see section 9). Edits are marked as the student's, and the validator treats them as unconfirmed. See section 9.
 - **Build order:** milestones in section 10. **The app keeps the current parser until M4.** M4 switches the app to the new parser and ships the validator fixes in the same release, so nothing new reaches students before then.
 
 ---
@@ -290,7 +290,7 @@ Before validating, the student sees what the parser read from their report and c
 | Situation | What the screen shows |
 |---|---|
 | The parse succeeds | What was read, with anything doubtful flagged. The student confirms or edits. |
-| A hard check fails | The same screen, empty, with a plain-language reason ("we couldn't match your unit totals"). The student fills in what the validator needs: class level, GPA, completed and in-progress courses. This replaces the missing manual entry. |
+| A hard check fails | The same screen, empty, with a plain-language reason ("we couldn't match your unit totals"). The student fills in what the validator needs: class level, GPA, completed and in-progress courses. This replaces the missing manual entry. Or the student can **continue without their report**, a choice the upload card also offers before any upload: the validator gets `stars_summary=None`, still runs the schedule checks (time conflicts, labs and discussions, D-clearance, the catalog), and says which report checks it skipped, both on each course they would have applied to and in one schedule-wide warning. (Added Nov 2026: retyping every course was the only way forward.) |
 | The report is a graduate report (section 3) | A message that RegCheck only handles undergraduate reports. No form. |
 
 **What it shows:**

@@ -41,6 +41,13 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 MAX_RECOMMENDED_UNITS = 18
+
+# Without a STARS report (validate_next_semester's stars_summary is None).
+NOT_CHECKED_WITHOUT_REPORT = "This wasn't checked, since you continued without your STARS report."
+NO_REPORT_WARNING = (
+    "Checked without your STARS report: prerequisites, courses you've already taken, class standing, "
+    "GPA minimums and major restrictions weren't checked. Upload your report to check them."
+)
 CLASS_LEVEL_ORDER = {"Freshman": 1, "Sophomore": 2, "Junior": 3, "Senior": 4}
 EXPECTED_DEPT_CLEARANCE_SCHEMA_VERSION = "1.5"
 
@@ -301,7 +308,7 @@ def _gpa_minimum(description: str) -> float | None:
     return None
 
 
-def _check_gpa(course: str, catalog_entry: dict | None, stars_summary: dict) -> CourseResult | None:
+def _check_gpa(course: str, catalog_entry: dict | None, stars_summary: dict | None) -> CourseResult | None:
     """Checks a GPA minimum stated anywhere in the description. Most never say "prerequisite"
     ("Non-majors ... must have at least a 2.5 GPA"), so this can't live inside _check_prereq."""
     if not catalog_entry:
@@ -311,6 +318,8 @@ def _check_gpa(course: str, catalog_entry: dict | None, stars_summary: dict) -> 
     if required_gpa is None:
         return None
 
+    if stars_summary is None:
+        return CourseResult(course, "warning", [f"{course} requires a {required_gpa} GPA minimum. {NOT_CHECKED_WITHOUT_REPORT}"])
     gpa = stars_summary.get("gpa")
     if gpa is None:
         # Redacted (X.XXX) or not on the report. Not knowing isn't failing.
@@ -452,7 +461,17 @@ def _describe_group(alternatives: list[tuple[str, ...]]) -> str:
     return names[0] if len(names) == 1 else f"one of {', '.join(names[:-1])} or {names[-1]}"
 
 
-def _check_prereq(course: str, catalog_entry: dict | None, stars_summary: dict) -> CourseResult | None:
+def _prereq_clauses(catalog_entry: dict) -> list[str]:
+    """The prerequisite text _check_prereq reads: the catalog's structured field, else the
+    description's prerequisite clauses."""
+    field = catalog_entry.get("prereqs")
+    if isinstance(field, str) and field.strip() and _field_groups(field) is not None:
+        return [field.strip()]
+    description = catalog_entry.get("description") or ""
+    return [re.sub(r"\s+", " ", c).strip() for c in _PREREQ_CLAUSE.findall(description) if c.strip()]
+
+
+def _check_prereq(course: str, catalog_entry: dict | None, stars_summary: dict | None) -> CourseResult | None:
     """Best-effort: reads the description's prerequisite clause as groups of alternatives ("A or
     B", "A and B") and verifies them against the STARS summary. A course the student is taking
     now counts, since next semester's registration accepts it. Falls back to an unverified
@@ -465,6 +484,13 @@ def _check_prereq(course: str, catalog_entry: dict | None, stars_summary: dict) 
     # their prerequisites), else the description's prerequisite clause.
     field = catalog_entry.get("prereqs")
     field_groups = _field_groups(field) if isinstance(field, str) and field.strip() else None
+    if stars_summary is None:
+        clauses = _prereq_clauses(catalog_entry)
+        if not clauses:
+            return None
+        return CourseResult(course, "warning", [
+            f"{course} has prerequisites: \"{'; '.join(clauses)}\". {NOT_CHECKED_WITHOUT_REPORT}"
+        ])
     if field_groups is not None:
         clauses = [field.strip()]
         parsed = [([(alts, False) for alts in field_groups], [], False)]
@@ -597,7 +623,7 @@ def _check_lab_discussion_pairing(course: str, catalog_entry: dict | None, selec
 
 
 def _check_major_restrictions(
-    course: str, catalog_entry: dict | None, stars_summary: dict, selected_section_ids: set[str]
+    course: str, catalog_entry: dict | None, stars_summary: dict | None, selected_section_ids: set[str]
 ) -> CourseResult | None:
     """Best-effort: matches "reserved for X" / "not available for X majors" / "only open to
     undergrad/grad" phrasing in the selected sections' notes against the student's declared major
@@ -615,6 +641,9 @@ def _check_major_restrictions(
             return CourseResult(
                 course, "warning", [f"{course} has registration restrictions — check section notes on WebReg to confirm eligibility."]
             )
+
+    if stars_summary is None:
+        return CourseResult(course, "warning", [f"Registration restriction: {note} {NOT_CHECKED_WITHOUT_REPORT}" for note in notes])
 
     student_major = (stars_summary.get("major") or "").lower()
     major_words = [w for w in student_major.split() if len(w) > 3]
@@ -792,8 +821,13 @@ def _check_time_conflicts(parsed_entries: list[tuple[str, set[str]]], catalog: d
 
 
 def validate_next_semester(
-    planned_courses: list[dict], stars_summary: dict, course_catalog: dict, dept_clearance: dict
+    planned_courses: list[dict], stars_summary: dict | None, course_catalog: dict, dept_clearance: dict
 ) -> ValidationResult:
+    """stars_summary is None when the student continued without a STARS report (theirs didn't
+    parse, or they chose to). The schedule checks still run: time conflicts, labs and discussions,
+    D-clearance, the catalog. Each check that needs the report says it wasn't checked wherever it
+    would have applied, and one schedule-wide warning lists them all, so the result never reads
+    as clean."""
     dept_clearance_by_prefix = _dept_clearance_by_prefix(dept_clearance)
     catalog = {_normalize_code(code): entry for code, entry in course_catalog.get("courses", course_catalog).items()}
 
@@ -808,9 +842,10 @@ def validate_next_semester(
         catalog_entry = catalog.get(_normalize_code(course))
         _, unresolved_time_sections = _section_time_options(catalog_entry, selected_section_ids)
 
+        report = stars_summary is not None
         checks = [
-            _check_already_taken(course, stars_summary, catalog_entry),
-            _check_standing(course, stars_summary),
+            report and _check_already_taken(course, stars_summary, catalog_entry),
+            report and _check_standing(course, stars_summary),
             _check_prereq(course, catalog_entry, stars_summary),
             _check_gpa(course, catalog_entry, stars_summary),
             _check_in_catalog(course, catalog),
@@ -842,7 +877,7 @@ def validate_next_semester(
             d_clearance=bool(clearance), clearance_dept=clearance.clearance_dept if clearance else None,
         ))
 
-    summary_warnings = []
+    summary_warnings = [] if stars_summary is not None else [NO_REPORT_WARNING]
     if total_units > MAX_RECOMMENDED_UNITS:
         summary_warnings.append(
             f"Planned load is {total_units} units, above the recommended max of {MAX_RECOMMENDED_UNITS}."

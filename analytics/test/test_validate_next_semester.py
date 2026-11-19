@@ -1029,3 +1029,52 @@ def test_d_clearance_lines_come_last_in_the_course_result(dept_clearance):
     reasons = result.course_results[0].reasons
     assert len(reasons) > 2, reasons  # the missing discussion is reported too
     assert reasons[-2:] == ["ENGL 174 section 32613 needs D-clearance from the department.", "Fill out the ENGL D-clearance Google Form."]
+
+
+# ---- without a STARS report --------------------------------------------------
+
+# A report that doesn't parse used to leave the student retyping every course before Validate
+# would run. They can now continue without one, and the validator gets stars_summary=None.
+NO_REPORT_PLAN = [
+    {"course": "CSCI 104", "sections": ["29903", "30119"]},  # the junior already completed it
+    {"course": "ANTH 491", "sections": ["10641"]},  # 3.0 GPA minimum and a prerequisite clause
+    {"course": "ARCH 203", "sections": ["11230"]},  # reserved for GeoDesign students
+    {"course": "ACCT 371", "sections": ["14042", "14044"]},  # D-clearance, Mon/Wed 2:00
+    {"course": "ANTH 338", "sections": ["10687"]},  # also Mon/Wed 2:00
+]
+
+
+def _by_course(result):
+    return {c.course: c for c in result.course_results}
+
+
+def test_without_a_report_the_report_checks_say_they_werent_checked(course_catalog, dept_clearance):
+    result = validate_next_semester(NO_REPORT_PLAN, None, course_catalog, dept_clearance)
+    courses = _by_course(result)
+    assert result.summary["warnings"][0].startswith("Checked without your STARS report: prerequisites, courses you've already taken")
+    assert result.overall_status != "valid"
+    assert courses["CSCI 104"].status == "pass"  # not "already completed": there's no record to say so
+    anth = " ".join(courses["ANTH 491"].reasons)
+    assert "ANTH 491 has prerequisites" in anth and "requires a 3.0 GPA minimum" in anth
+    assert anth.count("continued without your STARS report") == 2
+    assert "missing" not in anth
+    restriction = validate_next_semester(NO_REPORT_PLAN[2:3], None, course_catalog, dept_clearance).course_results[0]
+    assert restriction.status == "warning"  # "not available for ARCH majors" can't fail a major we don't know
+    assert "reserved for students in the B.S. GeoDesign" in restriction.reasons[0]
+    assert "continued without your STARS report" in restriction.reasons[0]
+
+
+def test_without_a_report_the_schedule_checks_still_run(course_catalog, dept_clearance, stars_summary):
+    without = _by_course(validate_next_semester(NO_REPORT_PLAN, None, course_catalog, dept_clearance))
+    with_report = _by_course(validate_next_semester(NO_REPORT_PLAN, stars_summary, course_catalog, dept_clearance))
+    assert without["ACCT 371"].d_clearance and without["ACCT 371"].clearance_dept == with_report["ACCT 371"].clearance_dept
+    for course in ("ACCT 371", "ANTH 338"):
+        assert any("conflict" in r.lower() for r in without[course].reasons), course
+        assert [r for r in without[course].reasons if "conflict" in r.lower()] == [r for r in with_report[course].reasons if "conflict" in r.lower()]
+    assert with_report["CSCI 104"].status == "fail"  # the same plan with the report is still checked
+
+
+def test_with_a_report_nothing_says_it_was_skipped(course_catalog, dept_clearance, stars_summary):
+    result = validate_next_semester(NO_REPORT_PLAN, stars_summary, course_catalog, dept_clearance)
+    text = " ".join(result.summary["warnings"] + [r for c in result.course_results for r in c.reasons])
+    assert "without your STARS report" not in text

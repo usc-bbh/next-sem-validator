@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { passed as passRule } from "../stars-parser/fields.js";
 import { C, HEAD, BODY, eyebrow, primaryButton, secondaryButton } from "./theme";
+import { SKIPPED_CHECKS } from "./validateGate";
 import { GRADE_GROUPS, gradeLabel, groupCompleted, isKnownGrade, sumUnits, termLabel, unitTotals } from "./starsDisplay";
 
 // ─────────────────────────────────────────────────────────────
@@ -108,7 +109,7 @@ function useStarsDraft(initial) {
 
 const canSave = (draft) => CLASS_LEVELS.includes(draft.classLevel);
 
-export default function StarsReview({ initial, mode, failure, onConfirm, onCancel, onSideBySide }) {
+export default function StarsReview({ initial, mode, failure, onConfirm, onCancel, onSideBySide, onSkip }) {
   const editor = useStarsDraft(initial);
   const { draft } = editor;
   const ready = canSave(draft);
@@ -127,7 +128,7 @@ export default function StarsReview({ initial, mode, failure, onConfirm, onCance
         </div>
 
         <div style={{ padding: "18px 22px" }}>
-          <StarsEditor editor={editor} mode={mode} failure={failure} />
+          <StarsEditor editor={editor} mode={mode} failure={failure} onSkip={onSkip} />
         </div>
 
         <div style={{ padding: "14px 24px", borderTop: `1px solid ${C.line}`, display: "flex", justifyContent: "flex-end", gap: 10, alignItems: "center", flexWrap: "wrap", background: C.page }}>
@@ -137,6 +138,7 @@ export default function StarsReview({ initial, mode, failure, onConfirm, onCance
             </button>
           )}
           {!ready && <span style={{ fontSize: 12.5, color: C.muted }}>Choose your class level to continue.</span>}
+          {mode === "failed" && onSkip && <SkipButton onSkip={onSkip} />}
           <button onClick={onCancel} className="outline-btn" style={secondaryButton}>Cancel</button>
           <button onClick={() => onConfirm(draft)} disabled={!ready}
             style={{ ...primaryButton, opacity: ready ? 1 : 0.5, cursor: ready ? "pointer" : "not-allowed" }}>
@@ -150,7 +152,7 @@ export default function StarsReview({ initial, mode, failure, onConfirm, onCance
 
 // The same editor as a full page, with the uploaded PDF on the left so the
 // student can check each line against the report itself.
-export function StarsSideBySide({ initial, mode, failure, pdfUrl, onConfirm, onCancel, onExpand }) {
+export function StarsSideBySide({ initial, mode, failure, pdfUrl, onConfirm, onCancel, onExpand, onSkip }) {
   const editor = useStarsDraft(initial);
   const { draft } = editor;
   const ready = canSave(draft);
@@ -169,6 +171,7 @@ export function StarsSideBySide({ initial, mode, failure, pdfUrl, onConfirm, onC
       <div style={{ padding: "12px 20px", borderBottom: `1px solid ${C.line}`, background: C.card, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <div style={{ marginRight: "auto" }}><ReviewHeading mode={mode} compact /></div>
         {!ready && <span style={{ fontSize: 12.5, color: C.muted }}>Choose your class level to save.</span>}
+        {mode === "failed" && onSkip && <SkipButton onSkip={onSkip} />}
         <button onClick={onCancel} className="outline-btn" style={secondaryButton}>Back</button>
         <button onClick={() => onConfirm(draft)} disabled={!ready}
           style={{ ...primaryButton, opacity: ready ? 1 : 0.5, cursor: ready ? "pointer" : "not-allowed" }}>
@@ -188,10 +191,20 @@ export function StarsSideBySide({ initial, mode, failure, pdfUrl, onConfirm, onC
               </button>
             )}
           </div>
-          <StarsEditor editor={editor} mode={mode} failure={failure} />
+          <StarsEditor editor={editor} mode={mode} failure={failure} onSkip={onSkip} />
         </div>
       </div>
     </div>
+  );
+}
+
+// A failed parse needn't mean retyping every course: the student can check
+// their schedule without the report.
+function SkipButton({ onSkip }) {
+  return (
+    <button onClick={onSkip} className="outline-btn" style={secondaryButton}>
+      Continue without your report
+    </button>
   );
 }
 
@@ -211,7 +224,7 @@ function ReviewHeading({ mode, compact }) {
   );
 }
 
-function StarsEditor({ editor, mode, failure }) {
+function StarsEditor({ editor, mode, failure, onSkip }) {
   const { draft, update, editRow, removeRow, moveRow, addRow } = editor;
   const groups = groupCompleted(draft.completedCourses);
   const ipTerms = [...new Set(draft.inProgressCourses.map((r) => r.term).filter(Boolean))];
@@ -240,6 +253,7 @@ function StarsEditor({ editor, mode, failure }) {
         <Notice tone={C.bad} bg="#FDF2F2">
           <b>{FAILURE_TEXT[failure?.check] ?? "We couldn't read your report."}</b> Fill in what the checker needs below:
           your class level, your GPA if you know it, and your courses.
+          {onSkip && <> Or continue without your report: your schedule is still checked, but not {SKIPPED_CHECKS}.</>}
           {failure?.message && DETAIL_CHECKS.has(failure.check) && <div style={{ fontSize: 11.5, color: C.muted, marginTop: 4 }}>Details: {failure.message}</div>}
         </Notice>
       )}

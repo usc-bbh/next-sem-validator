@@ -5,11 +5,12 @@ import Tour from "./Tour";
 import About from "./About";
 import Feedback from "./Feedback";
 import NavBrand from "./NavBrand";
+import Hero from "./Hero";
 import DClearance, { ClearanceLink } from "./DClearance";
 import { pageFromHash, deptFromHash, hashForPage } from "./route";
 import { calendarRange, hasTime, toMin } from "./calendarRange";
 import { resultSummary, isLowUnits, lowUnitsMessage } from "./resultSummary";
-import { INITIAL_STARS, hasUsableReport, canValidate as validateAllowed, reportHint } from "./validateGate";
+import { INITIAL_STARS, hasUsableReport, withoutReport, canValidate as validateAllowed, reportHint, SKIPPED_CHECKS } from "./validateGate";
 import { C, HEAD, BODY, SHADOW, eyebrow, card, primaryButton, secondaryButton } from "./theme";
 import { EMPTY_REPORT } from "./emptyReport";
 import { VALIDATOR_ASSETS } from "./validatorAssets";
@@ -252,6 +253,7 @@ export default function App() {
   // the review screen, since there's nothing to use (STARS_PARSER_DESIGN.md §9).
   const [starsReport, setStarsReport] = useState(INITIAL_STARS.report);
   const [starsSource, setStarsSource] = useState(INITIAL_STARS.source);
+  const noReport = withoutReport(starsSource);
   const [starsStatusMsg, setStarsStatusMsg] = useState("");
   const [review, setReview] = useState(null); // { mode: "parsed" | "failed", initial, failure, pdfUrl, view: "dialog" | "side" }
   // Where Cancel on the review screen returns to: no report, or the report
@@ -331,16 +333,16 @@ export default function App() {
   const closeTour = (finished) => {
     markSeen("tourDone");
     setShowTour(false);
-    setResumeTour(finished && !starsReport);
+    setResumeTour(finished && !starsReport && !withoutReport(starsSource));
   };
 
   useEffect(() => {
-    if (resumeTour && starsReport && !review) {
+    if (resumeTour && (starsReport || noReport) && !review) {
       setResumeTour(false);
       setTourFrom("search");
       setShowTour(true);
     }
-  }, [resumeTour, starsReport, review]);
+  }, [resumeTour, starsReport, noReport, review]);
 
   const confirmReview = (confirmed) => {
     setStarsReport(confirmed);
@@ -348,6 +350,18 @@ export default function App() {
     setStarsSource("confirmed");
     setReview(null);
     setResult(null);
+  };
+
+  // No report: from a failed parse, or straight from the upload card. Courses
+  // can still be picked and checked; the validator skips the report's checks.
+  const continueWithoutReport = () => {
+    if (review?.pdfUrl) URL.revokeObjectURL(review.pdfUrl);
+    setReview(null);
+    setStarsReport(null);
+    setPdfUrl(null);
+    setStarsSource("skipped");
+    setResult(null);
+    setShowUploadNotice(false);
   };
 
   const cancelReview = () => {
@@ -592,36 +606,32 @@ export default function App() {
         : (<>
 
       <div style={{ maxWidth: 1320, margin: "0 auto", padding: "36px 28px 0" }}>
-        <h1 style={{ fontSize: "clamp(30px, 5vw, 44px)", fontFamily: HEAD, fontWeight: 700, color: C.ink, lineHeight: 1.05, margin: 0 }}>
-          Reg<span style={{ color: C.cardinal }}>Check</span>
-        </h1>
-        <p style={{ fontSize: "clamp(18px, 2.4vw, 22px)", fontFamily: HEAD, fontWeight: 600, color: C.ink, lineHeight: 1.3, maxWidth: 680, margin: "12px 0 0" }}>
-          Find out what will block your registration before WebReg does.
-        </p>
-        <p style={{ fontSize: 15, color: C.body, lineHeight: 1.7, maxWidth: 680, margin: "8px 0 0" }}>
-          RegCheck flags missing prerequisites,
-          D-clearance, time conflicts, missing labs or discussions, and courses you've already taken, so you can fix
-          them before your registration window opens.
-        </p>
+        <Hero />
 
-        <Steps current={!hasReport ? 1 : pickedList.length === 0 ? 2 : 3} />
+        <Steps current={!hasReport && !noReport ? 1 : pickedList.length === 0 ? 2 : 3} skipped={noReport} />
 
         <input ref={fileInputRef} type="file" accept="application/pdf" onChange={handleStarsUpload} style={{ display: "none" }} />
         {/* Until there's a report, the upload card is the one thing to do, so it's outlined in cardinal. */}
         <div data-tour="stars" style={{ ...card, marginTop: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap",
-          ...(!hasReport && { border: `1.5px solid ${C.cardinal}`, boxShadow: `0 0 0 4px ${C.cardinalTint}` }) }}>
+          ...(!hasReport && !noReport && { border: `1.5px solid ${C.cardinal}`, boxShadow: `0 0 0 4px ${C.cardinalTint}` }) }}>
           <div style={{ flex: 1, minWidth: 240 }}>
-            <div style={{ ...eyebrow, marginBottom: 4, ...(!hasReport && { color: C.cardinal }) }}>{hasReport ? "Your STARS report" : "Start here"}</div>
+            <div style={{ ...eyebrow, marginBottom: 4, ...(!hasReport && !noReport && { color: C.cardinal }) }}>{hasReport || noReport ? "Your STARS report" : "Start here"}</div>
             <div style={{ fontSize: 14, color: C.ink }}>
               {starsSource === "parsing" ? (starsStatusMsg || "Reading your report…")
                 : starsSource === "review" ? "Check what we read from your report…"
                 : hasReport ? <>
                     <span style={{ color: C.ok, fontWeight: 600 }}>{starsSource === "confirmed" ? "✓ Checked" : "✓ Read"}</span> · {starsReport.classLevel ?? "No class level"} · {starsReport.completedCourses.length} completed courses
                   </>
+                : noReport ? <>
+                    <span style={{ color: C.warn, fontWeight: 600 }}>Continuing without a report</span> · Your schedule is checked, but not {SKIPPED_CHECKS}.
+                  </>
                 : <>Upload your report, printed to PDF from experience.usc.edu. It stays on your device and is never sent to a server.</>}
             </div>
           </div>
           {hasReport && <button onClick={openCurrentReport} className="outline-btn" style={secondaryButton}>View details</button>}
+          {starsSource === "none" && (
+            <button onClick={continueWithoutReport} style={{ ...linkButton, fontSize: 13, fontWeight: 500, color: C.muted }}>Continue without a report</button>
+          )}
           <button onClick={() => fileInputRef.current?.click()} disabled={starsSource === "parsing"}
             className={hasReport ? "outline-btn" : undefined}
             style={hasReport ? secondaryButton : primaryButton}>
@@ -648,12 +658,12 @@ export default function App() {
 
       {review?.view === "dialog" && (
         <StarsReview key={review.mode + (review.failure?.check ?? "")} initial={review.initial} mode={review.mode}
-          failure={review.failure} onConfirm={confirmReview} onCancel={cancelReview}
+          failure={review.failure} onConfirm={confirmReview} onCancel={cancelReview} onSkip={continueWithoutReport}
           onSideBySide={review.pdfUrl ? (draft) => setReview({ ...review, initial: draft, view: "side" }) : undefined} />
       )}
       {review?.view === "side" && (
         <StarsSideBySide initial={review.initial} mode={review.mode} failure={review.failure} pdfUrl={review.pdfUrl}
-          onConfirm={confirmReview} onCancel={cancelReview}
+          onConfirm={confirmReview} onCancel={cancelReview} onSkip={continueWithoutReport}
           onExpand={(draft) => setReview({ ...review, initial: draft, view: "dialog" })} />
       )}
       {showTour && !review && starsSource !== "graduate" && <Tour from={tourFrom} onClose={closeTour} />}
@@ -662,7 +672,7 @@ export default function App() {
       )}
 
       {/* Courses and the calendar come after the report: upload is step one. */}
-      {starsReport && (
+      {(starsReport || noReport) && (
         <div className="layout" style={{ maxWidth: 1320, margin: "0 auto", padding: "28px 28px 0" }}>
 
           {/* LEFT — pick courses + sections */}
@@ -916,12 +926,14 @@ export default function App() {
 // nothing below the report card appears until there's a report.
 const STEPS = ["Upload your STARS report", "Pick next semester's sections", "Validate before you register"];
 
-function Steps({ current }) {
+// Without a report, step one is skipped, not done: it shows a dash, not a check.
+function Steps({ current, skipped = false }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "8px 14px", flexWrap: "wrap", marginTop: 22, fontSize: 13, fontFamily: HEAD }}>
       {STEPS.map((label, i) => {
         const n = i + 1;
-        const done = n < current;
+        const skip = skipped && n === 1;
+        const done = n < current && !skip;
         const on = n === current;
         return (
           <React.Fragment key={label}>
@@ -929,7 +941,7 @@ function Steps({ current }) {
             <span aria-current={on ? "step" : undefined} style={{ display: "inline-flex", alignItems: "center", gap: 7, color: on ? C.ink : C.muted, fontWeight: on ? 700 : 500 }}>
               <span style={{ width: 20, height: 20, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, flexShrink: 0,
                 background: done ? C.ok : on ? C.cardinal : "transparent", color: done || on ? "#fff" : C.faint, border: done || on ? "none" : `1px solid ${C.lineStrong}` }}>
-                {done ? "✓" : n}
+                {done ? "✓" : skip ? "–" : n}
               </span>
               {label}
             </span>
