@@ -50,7 +50,7 @@ export const HOW_IT_WORKS = [
   ["Find the sections that need it.",
     "Look for the D after the section number. When you validate your schedule, RegCheck flags the sections you picked that need it."],
   ["Request it from the department.",
-    "Find the department below by its course prefix and follow its steps. Include the course, the five-digit section number and your USC ID. In some departments, majors get D-clearance at their advisement appointment instead."],
+    "Find the department below by its course prefix and follow its steps. In some departments, majors get D-clearance at their advisement appointment instead."],
   ["Wait for approval.",
     "Most departments take a few business days. Once you're cleared, the section shows in WebReg under My Info > Cleared Sections."],
   ["Register in WebReg yourself.",

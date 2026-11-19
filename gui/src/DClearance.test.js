@@ -130,7 +130,8 @@ test("the page explains how D-clearance works, step by step", () => {
     "Wait for approval.",
     "Register in WebReg yourself.",
   ]);
-  assert.match(html, /five-digit section number and your USC ID/);
+  assert.match(html, /Find the department below by its course prefix and follow its steps\. In some departments,/);
+  assert.doesNotMatch(html, /Include the course, the five-digit section number and your USC ID/); // removed: each department's steps say what to send
   assert.match(html, /My Info &gt; Cleared Sections/);
   assert.match(html, /doesn&#x27;t hold a seat/);
   assert.match(html, /isn&#x27;t a prerequisite waiver/);
